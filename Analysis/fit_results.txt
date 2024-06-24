@@ -1,6 +1,12 @@
 Global Fit Parameters:
-Mean: 90.7131
-Width: 2.78082
+Gaussian Amplitude: 118.099
+Gaussian Mean: 90.738
+Gaussian Sigma: 2.59947
+Exponential Amplitude: 2.93631
+Exponential Decay: 0.00425638
 RPC Fit Parameters:
-Mean: 90.9171
-Width: 2.66435
+Gaussian Amplitude: 983.784
+Gaussian Mean: 91.3901
+Gaussian Sigma: 0.0505093
+Exponential Amplitude: 2.28878
+Exponential Decay: 0.00232674

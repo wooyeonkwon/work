@@ -28,11 +28,15 @@ private:
   mutable TFile* outputFile;
   mutable TTree* treeGlobal;
   mutable TTree* treeRPC;
+  mutable TTree* treenotRPC;
   
   mutable std::vector<reco::Muon> globalMuons; //isglobal
   mutable std::vector<reco::Muon> rpcMuons;    //isglobal & isRPC
+  mutable std::vector<reco::Muon> notrpcMuons; //isglobal & notRPC
+  
   mutable double zBosonMassGlobal;
   mutable double zBosonMassRPC;
+  mutable double zBosonMassnotRPC;
 };
 
 Analysis::Analysis(const edm::ParameterSet& iConfig)
@@ -58,6 +62,9 @@ void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm:
       globalMuons.push_back(muon);
       if (muon.isRPCMuon()) {
         rpcMuons.push_back(muon);
+      }
+      else{
+        notrpcMuons.push_back(muon); //add not rpc muons
       }
     }
   }
@@ -86,6 +93,7 @@ void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm:
 
   zBosonMassGlobal = reconstructZBoson(globalMuons);
   zBosonMassRPC = reconstructZBoson(rpcMuons);
+  zBosonMassnotRPC = reconstructZBoson(notrpcMuons);
 
   if (zBosonMassGlobal > 0.0) {
     treeGlobal->Fill();
@@ -94,20 +102,27 @@ void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm:
   if (zBosonMassRPC > 0.0) {
     treeRPC->Fill();
   }
+  
+  if (zBosonMassnotRPC > 0.0) {
+    treenotRPC->Fill();
+  }  
 }
 
 void Analysis::beginJob() {
     outputFile = new TFile("data.root", "RECREATE");
     treeGlobal = new TTree("GlobalMuons", "Global Muons");
     treeRPC = new TTree("RPCMuons", "RPC Muons");
+    treenotRPC = new TTree("notRPCMuons", "G0lboal & notRPC Muons");
     treeGlobal->Branch("zBosonMass", &zBosonMassGlobal, "zBosonMass/D");
     treeRPC->Branch("zBosonMass", &zBosonMassRPC, "zBosonMass/D");
+    treenotRPC->Branch("zBosonMass", &zBosonMassnotRPC, "zBosonMass/D");
 }
 
 void Analysis::endJob() {
     outputFile->Write();
     delete treeGlobal;
     delete treeRPC;
+    delete treenoRPC;
     outputFile->Close();
     delete outputFile;
 }
