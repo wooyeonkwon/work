@@ -25,15 +25,11 @@ private:
 
   edm::EDGetTokenT<reco::MuonCollection> muonToken_;
   
-  mutable TFile* outputFile;
-  mutable TTree* treeGlobal;
-  mutable TTree* treeRPC;
-  mutable TTree* treenotRPC;
-  
-  mutable std::vector<reco::Muon> globalMuons; //isglobal
-  mutable std::vector<reco::Muon> rpcMuons;    //isglobal & isRPC
-  mutable std::vector<reco::Muon> notrpcMuons; //isglobal & notRPC
-  
+  TFile* outputFile;
+  TTree* treeGlobal;
+  TTree* treeRPC;
+  TTree* treenotRPC;
+
   mutable double zBosonMassGlobal;
   mutable double zBosonMassRPC;
   mutable double zBosonMassnotRPC;
@@ -52,10 +48,9 @@ void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm:
   edm::Handle<reco::MuonCollection> muons;
   iEvent.getByToken(muonToken_, muons);
 
-  globalMuons.clear();
-  rpcMuons.clear();
-  zBosonMassGlobal = -1;
-  zBosonMassRPC = -1;
+  std::vector<reco::Muon> globalMuons;
+  std::vector<reco::Muon> rpcMuons;
+  std::vector<reco::Muon> notrpcMuons;
 
   for (const auto& muon : *muons) {
     if (muon.isGlobalMuon() && muon.pt() > 20 && fabs(muon.eta()) < 2.4) {
@@ -63,24 +58,24 @@ void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm:
       if (muon.isRPCMuon()) {
         rpcMuons.push_back(muon);
       }
-      else{
-        notrpcMuons.push_back(muon); //add not rpc muons
+      else {
+        notrpcMuons.push_back(muon);
       }
     }
   }
   
-  auto reconstructZBoson = [](const std::vector<reco::Muon>& muons) {
+  auto reconstructZBoson = [](const std::vector<reco::Muon>& muons) -> double {
+    if (muons.size() < 2) return 0.0;
+
     math::XYZTLorentzVector goodZBoson;
     double goodMass = 0.0;
-    if(muons.size() < 2){
-      return goodMass;
-    }
+    
     for (size_t i = 0; i < muons.size() - 1; ++i) {
       for (size_t j = i + 1; j < muons.size(); ++j) {
         if (muons[i].charge() + muons[j].charge() == 0) {
           math::XYZTLorentzVector zBoson = muons[i].p4() + muons[j].p4();
           double mass = zBoson.M();
-          if (fabs(mass-91.2) < fabs(goodMass-91.2)) {
+          if (fabs(mass - 91.2) < fabs(goodMass - 91.2)) {
             goodMass = mass;
             goodZBoson = zBoson;
           }
@@ -112,7 +107,7 @@ void Analysis::beginJob() {
     outputFile = new TFile("data.root", "RECREATE");
     treeGlobal = new TTree("GlobalMuons", "Global Muons");
     treeRPC = new TTree("RPCMuons", "RPC Muons");
-    treenotRPC = new TTree("notRPCMuons", "G0lboal & notRPC Muons");
+    treenotRPC = new TTree("notRPCMuons", "Global & notRPC Muons");
     treeGlobal->Branch("zBosonMass", &zBosonMassGlobal, "zBosonMass/D");
     treeRPC->Branch("zBosonMass", &zBosonMassRPC, "zBosonMass/D");
     treenotRPC->Branch("zBosonMass", &zBosonMassnotRPC, "zBosonMass/D");
@@ -122,7 +117,7 @@ void Analysis::endJob() {
     outputFile->Write();
     delete treeGlobal;
     delete treeRPC;
-    delete treenoRPC;
+    delete treenotRPC;
     outputFile->Close();
     delete outputFile;
 }
