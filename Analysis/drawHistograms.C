@@ -20,7 +20,7 @@ void drawHistograms() {
     file->GetObject("RPCMuons", treeRPC);
     file->GetObject("notRPCMuons", treenotRPC);
 
-    if (!treeGlobal || !treeRPC) {
+    if (!treeGlobal || !treeRPC || !treenotRPC) {
         std::cerr << "Error: Trees not found in file" << std::endl;
         file->Close();
         delete file;
@@ -90,7 +90,7 @@ void drawHistograms() {
 
 
     TCanvas *c3 = new TCanvas("c3", "Histograms", 800, 600);
-    h_zBosonsRPC->Draw();
+    h_zBosonsnotRPC->Draw();
     TF1 *fitFuncnotRPC = new TF1("fitFuncnotRPC", "gaus(0) + [3]*exp(-[4]*x)", 40, 140);
     
     // Set parameter limits for notRPC fit
