@@ -30,18 +30,26 @@ private:
   TTree* treeRPC;
   TTree* treenotRPC;
 
+  //define variable for root leaf
+  
   mutable double zBosonMassGlobal;
   mutable double zBosonMassRPC;
   mutable double zBosonMassnotRPC;
+
+  mutable int eventNumber;
+  mutable int runNumber;
+  mutable int lumiSection;
+
+  mutable int muonSizeGlobal;
+  mutable int muonSizeRPC;
+  mutable int muonSizeNotRPC;
 };
 
 Analysis::Analysis(const edm::ParameterSet& iConfig)
     : muonToken_(consumes<reco::MuonCollection>(iConfig.getParameter<edm::InputTag>("muons"))) {
-    // Initialization of other members can be done here if needed
 }
 
 Analysis::~Analysis() {
-    // Resources will be cleaned up in endJob
 }
 
 void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm::EventSetup& iSetup) const {
@@ -52,13 +60,18 @@ void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm:
   std::vector<reco::Muon> rpcMuons;
   std::vector<reco::Muon> notrpcMuons;
 
+  eventNumber = iEvent.id().event();
+  runNumber = iEvent.id().run();
+  lumiSection = iEvent.luminosityBlock();
+
   for (const auto& muon : *muons) {
-    if (muon.isGlobalMuon() && muon.pt() > 20 && fabs(muon.eta()) < 2.4) {
-      globalMuons.push_back(muon);
+    if (muon.pt() > -1 && fabs(muon.eta()) < 99) { // Relaxed selection criteria
+      if (muon.isGlobalMuon()) {
+        globalMuons.push_back(muon);
+      }
       if (muon.isRPCMuon()) {
         rpcMuons.push_back(muon);
-      }
-      else {
+      } else {
         notrpcMuons.push_back(muon);
       }
     }
@@ -90,6 +103,10 @@ void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm:
   zBosonMassRPC = reconstructZBoson(rpcMuons);
   zBosonMassnotRPC = reconstructZBoson(notrpcMuons);
 
+  muonSizeGlobal = globalMuons.size();
+  muonSizeRPC = rpcMuons.size();
+  muonSizeNotRPC = notrpcMuons.size();
+
   if (zBosonMassGlobal > 0.0) {
     treeGlobal->Fill();
   }
@@ -104,13 +121,29 @@ void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm:
 }
 
 void Analysis::beginJob() {
-    outputFile = new TFile("data.root", "RECREATE");
+    outputFile = new TFile("data2.root", "RECREATE");
     treeGlobal = new TTree("GlobalMuons", "Global Muons");
     treeRPC = new TTree("RPCMuons", "RPC Muons");
     treenotRPC = new TTree("notRPCMuons", "Global & notRPC Muons");
     treeGlobal->Branch("zBosonMass", &zBosonMassGlobal, "zBosonMass/D");
     treeRPC->Branch("zBosonMass", &zBosonMassRPC, "zBosonMass/D");
     treenotRPC->Branch("zBosonMass", &zBosonMassnotRPC, "zBosonMass/D");
+
+    // Add branches for the additional variables
+    treeGlobal->Branch("eventNumber", &eventNumber, "eventNumber/I");
+    treeGlobal->Branch("runNumber", &runNumber, "runNumber/I");
+    treeGlobal->Branch("lumiSection", &lumiSection, "lumiSection/I");
+    treeGlobal->Branch("muonSizeGlobal", &muonSizeGlobal, "muonSizeGlobal/I");
+
+    treeRPC->Branch("eventNumber", &eventNumber, "eventNumber/I");
+    treeRPC->Branch("runNumber", &runNumber, "runNumber/I");
+    treeRPC->Branch("lumiSection", &lumiSection, "lumiSection/I");
+    treeRPC->Branch("muonSizeRPC", &muonSizeRPC, "muonSizeRPC/I");
+
+    treenotRPC->Branch("eventNumber", &eventNumber, "eventNumber/I");
+    treenotRPC->Branch("runNumber", &runNumber, "runNumber/I");
+    treenotRPC->Branch("lumiSection", &lumiSection, "lumiSection/I");
+    treenotRPC->Branch("muonSizeNotRPC", &muonSizeNotRPC, "muonSizeNotRPC/I");
 }
 
 void Analysis::endJob() {
