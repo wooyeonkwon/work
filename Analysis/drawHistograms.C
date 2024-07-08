@@ -61,13 +61,13 @@ void drawHistograms() {
     
     TCanvas *c1 = new TCanvas("c1", "Histograms", 800, 600);
     h_zBosonsGlobal->Draw();
-    TF1 *fitFuncGlobal = new TF1("fitFuncGlobal", "gaus(0) + [3]*exp(-[4]*x)", 40, 140);
+    TF1 *fitFuncGlobal = new TF1("fitFuncGlobal", "gaus(0) + [3]*exp(-[4]*x)", 10, 170);
     
     // Set parameter limits for Global fit
     fitFuncGlobal->SetParLimits(0, 500, 2000);  // Gaussian amplitude
     fitFuncGlobal->SetParLimits(1, 80, 100);  // Gaussian mean
     fitFuncGlobal->SetParLimits(2, 0, 5);    // Gaussian sigma
-    fitFuncGlobal->SetParLimits(3, 0, 1000);  // Exponential amplitude
+    fitFuncGlobal->SetParLimits(3, 0, 10000);  // Exponential amplitude
     fitFuncGlobal->SetParLimits(4, 0, 1);     // Exponential decay constant
     
     h_zBosonsGlobal->Fit(fitFuncGlobal, "R");
@@ -76,13 +76,13 @@ void drawHistograms() {
 
     TCanvas *c2 = new TCanvas("c2", "Histograms", 800, 600);
     h_zBosonsRPC->Draw();
-    TF1 *fitFuncRPC = new TF1("fitFuncRPC", "gaus(0) + [3]*exp(-[4]*x)", 40, 140);
+    TF1 *fitFuncRPC = new TF1("fitFuncRPC", "gaus(0) + [3]*exp(-[4]*x)", 10, 170);
     
     // Set parameter limits for RPC fit
     fitFuncRPC->SetParLimits(0, 500, 1000);  // Gaussian amplitude
     fitFuncRPC->SetParLimits(1, 80, 100);  // Gaussian mean
     fitFuncRPC->SetParLimits(2, 0, 5);    // Gaussian sigma
-    fitFuncRPC->SetParLimits(3, 0, 1000);  // Exponential amplitude
+    fitFuncRPC->SetParLimits(3, 0, 10000);  // Exponential amplitude
     fitFuncRPC->SetParLimits(4, 0, 1);     // Exponential decay constant
     
     h_zBosonsRPC->Fit(fitFuncRPC, "R");
@@ -91,13 +91,13 @@ void drawHistograms() {
 
     TCanvas *c3 = new TCanvas("c3", "Histograms", 800, 600);
     h_zBosonsnotRPC->Draw();
-    TF1 *fitFuncnotRPC = new TF1("fitFuncnotRPC", "gaus(0) + [3]*exp(-[4]*x)", 40, 140);
+    TF1 *fitFuncnotRPC = new TF1("fitFuncnotRPC", "gaus(0) + [3]*exp(-[4]*x)", 10, 170);
     
     // Set parameter limits for notRPC fit
     fitFuncRPC->SetParLimits(0, 500, 1000);  // Gaussian amplitude
     fitFuncRPC->SetParLimits(1, 80, 100);  // Gaussian mean
     fitFuncRPC->SetParLimits(2, 0, 5);    // Gaussian sigma
-    fitFuncRPC->SetParLimits(3, 0, 1000);  // Exponential amplitude
+    fitFuncRPC->SetParLimits(3, 0, 10000);  // Exponential amplitude
     fitFuncRPC->SetParLimits(4, 0, 1);     // Exponential decay constant
     
     h_zBosonsnotRPC->Fit(fitFuncnotRPC, "R");
