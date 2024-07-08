@@ -65,7 +65,7 @@ void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm:
   lumiSection = iEvent.luminosityBlock();
 
   for (const auto& muon : *muons) {
-    if (muon.pt() > -1 && fabs(muon.eta()) < 99) { // Relaxed selection criteria
+    if (muon.pt() > 20 && fabs(muon.eta()) < 2.4) { // Relaxed selection criteria
       if (muon.isGlobalMuon()) {
         globalMuons.push_back(muon);
       }
@@ -121,7 +121,7 @@ void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm:
 }
 
 void Analysis::beginJob() {
-    outputFile = new TFile("data2.root", "RECREATE");
+    outputFile = new TFile("data0.root", "RECREATE");
     treeGlobal = new TTree("GlobalMuons", "Global Muons");
     treeRPC = new TTree("RPCMuons", "RPC Muons");
     treenotRPC = new TTree("notRPCMuons", "Global & notRPC Muons");
