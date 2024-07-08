@@ -9,7 +9,7 @@ Gaussian Amplitude: 651.405
 Gaussian Mean: 90.7574
 Gaussian Sigma: 2.3769
 Exponential Amplitude: 1107.95
-Exponential Decay: 0.0492127
+Exponential Decay: 0.0492128
 notRPC Fit Parameters:
 Gaussian Amplitude: 0
 Gaussian Mean: 0

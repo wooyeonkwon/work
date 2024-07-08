@@ -79,7 +79,7 @@ void drawHistograms() {
     TF1 *fitFuncRPC = new TF1("fitFuncRPC", "gaus(0) + [3]*exp(-[4]*x)", 10, 170);
     
     // Set parameter limits for RPC fit
-    fitFuncRPC->SetParLimits(0, 500, 1000);  // Gaussian amplitude
+    fitFuncRPC->SetParLimits(0, 500, 2000);  // Gaussian amplitude
     fitFuncRPC->SetParLimits(1, 80, 100);  // Gaussian mean
     fitFuncRPC->SetParLimits(2, 0, 5);    // Gaussian sigma
     fitFuncRPC->SetParLimits(3, 0, 10000);  // Exponential amplitude
@@ -94,14 +94,14 @@ void drawHistograms() {
     TF1 *fitFuncnotRPC = new TF1("fitFuncnotRPC", "gaus(0) + [3]*exp(-[4]*x)", 10, 170);
     
     // Set parameter limits for notRPC fit
-    fitFuncRPC->SetParLimits(0, 500, 1000);  // Gaussian amplitude
+    fitFuncRPC->SetParLimits(0, 0, 1000);  // Gaussian amplitude
     fitFuncRPC->SetParLimits(1, 80, 100);  // Gaussian mean
     fitFuncRPC->SetParLimits(2, 0, 5);    // Gaussian sigma
     fitFuncRPC->SetParLimits(3, 0, 10000);  // Exponential amplitude
     fitFuncRPC->SetParLimits(4, 0, 1);     // Exponential decay constant
     
     h_zBosonsnotRPC->Fit(fitFuncnotRPC, "R");
-    c2->SaveAs("zBosonsnotRPC.png");
+    c3->SaveAs("zBosonsnotRPC.png");
 
 
     std::ofstream logFile("fit_results.txt");
