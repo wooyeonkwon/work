@@ -1,18 +1,27 @@
 Global Fit Parameters:
-Gaussian Amplitude: 1065.88
-Gaussian Mean: 90.7442
-Gaussian Sigma: 2.55477
-Exponential Amplitude: 2923.26
-Exponential Decay: 0.0514145
+AlphaL: 1.48675
+AlphaH: 1.91472
+nL: 1.23596
+nH: 0.948853
+Mean: 90.8313
+Sigma: 2.14159
+Amplitude: 140.971
+
 RPC Fit Parameters:
-Gaussian Amplitude: 651.405
-Gaussian Mean: 90.7574
-Gaussian Sigma: 2.3769
-Exponential Amplitude: 1107.95
-Exponential Decay: 0.0492128
+AlphaL: 1.40033
+AlphaH: 2.02427
+nL: 1.13039
+nH: 0.702872
+Mean: 90.9535
+Sigma: 1.91323
+Amplitude: 93.1704
+
 notRPC Fit Parameters:
-Gaussian Amplitude: 0
-Gaussian Mean: 0
-Gaussian Sigma: 0
-Exponential Amplitude: 8.15098
-Exponential Decay: 0
+AlphaL: 1.39184
+AlphaH: 1.55357
+nL: 0.0752872
+nH: 0.0219558
+Mean: 89.5867
+Sigma: -3.09246
+Amplitude: 3.93346
+
