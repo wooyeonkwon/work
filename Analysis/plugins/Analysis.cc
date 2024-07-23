@@ -29,7 +29,7 @@ private:
   TTree* treeGlobal;
   TTree* treeRPC;
   TTree* treenotRPC;
-
+  
   mutable double zBosonMassGlobal;
   mutable double zBosonMassRPC;
   mutable double zBosonMassnotRPC;
@@ -136,10 +136,11 @@ void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm:
 }
 
 void Analysis::beginJob() {
-  outputFile = new TFile("data0.root", "RECREATE");
+  outputFile = new TFile("data3.root", "RECREATE");
   treeGlobal = new TTree("GlobalMuons", "Global Muons");
   treeRPC = new TTree("RPCMuons", "RPC Muons");
   treenotRPC = new TTree("notRPCMuons", "Global & notRPC Muons");
+
   treeGlobal->Branch("zBosonMass", &zBosonMassGlobal, "zBosonMass/D");
   treeGlobal->Branch("eventNumber", &eventNumber, "eventNumber/I");
   treeGlobal->Branch("runNumber", &runNumber, "runNumber/I");
