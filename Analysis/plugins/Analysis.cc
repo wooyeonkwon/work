@@ -29,7 +29,7 @@ private:
   TTree* treeGlobal;
   TTree* treeRPC;
   TTree* treenotRPC;
-  
+
   mutable double zBosonMassGlobal;
   mutable double zBosonMassRPC;
   mutable double zBosonMassnotRPC;
@@ -41,10 +41,6 @@ private:
   mutable int muonSizeGlobal;
   mutable int muonSizeRPC;
   mutable int muonSizeNotRPC;
-
-  mutable float isolationGlobal;
-  mutable float isolationRPC;
-  mutable float isolationNotRPC;
 };
 
 Analysis::Analysis(const edm::ParameterSet& iConfig)
@@ -66,28 +62,31 @@ void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm:
   runNumber = iEvent.id().run();
   lumiSection = iEvent.luminosityBlock();
 
+//muon selection
   for (const auto& muon : *muons) {
-    if (muon.pt() > 20 && fabs(muon.eta()) < 2.4) { // Relaxed selection criteria
-      float isolation = muon.isolationR03().sumPt / muon.pt();
-      if (isolation < 0.3) { // Isolation cut
+    if (muon.pt() > 20 && fabs(muon.eta()) < 2.4) {
+      float isolation = (muon.pfIsolationR04().sumChargedHadronPt + 
+                         ((muon.pfIsolationR04().sumNeutralHadronEt + muon.pfIsolationR04().sumPhotonEt - 0.5 * muon.pfIsolationR04().sumPUPt) > 0 ? 
+                          (muon.pfIsolationR04().sumNeutralHadronEt + muon.pfIsolationR04().sumPhotonEt - 0.5 * muon.pfIsolationR04().sumPUPt) : 0)) / muon.pt();
+      if (isolation < 0.15) {
         if (muon.isGlobalMuon()) {
           globalMuons.push_back(muon);
+          if (muon.isRPCMuon()) {
+            rpcMuons.push_back(muon);
+          } else {
+            notrpcMuons.push_back(muon);
         }
-        if (muon.isRPCMuon()) {
-          rpcMuons.push_back(muon);
-        } else {
-          notrpcMuons.push_back(muon);
-        }
+          }
       }
     }
   }
-  
-  auto reconstructZBoson = [](const std::vector<reco::Muon>& muons) -> std::pair<double, float> {
-    if (muons.size() < 2) return {0.0, 0.0};
+
+//Z reconstruction  
+  auto reconstructZBoson = [](const std::vector<reco::Muon>& muons) -> double {
+    if (muons.size() < 2) return 0.0;
 
     math::XYZTLorentzVector goodZBoson;
     double goodMass = 0.0;
-    float isolation = 0.0;
     
     for (size_t i = 0; i < muons.size() - 1; ++i) {
       for (size_t j = i + 1; j < muons.size(); ++j) {
@@ -97,26 +96,17 @@ void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm:
           if (fabs(mass - 91.2) < fabs(goodMass - 91.2)) {
             goodMass = mass;
             goodZBoson = zBoson;
-            isolation = (muons[i].isolationR03().sumPt / muons[i].pt() + muons[j].isolationR03().sumPt / muons[j].pt()) / 2.0;
           }
         }
       }
     }
     
-    return {goodMass, isolation};
+    return goodMass;
   };
 
-  auto [massGlobal, isoGlobal] = reconstructZBoson(globalMuons);
-  zBosonMassGlobal = massGlobal;
-  isolationGlobal = isoGlobal;
-
-  auto [massRPC, isoRPC] = reconstructZBoson(rpcMuons);
-  zBosonMassRPC = massRPC;
-  isolationRPC = isoRPC;
-
-  auto [massNotRPC, isoNotRPC] = reconstructZBoson(notrpcMuons);
-  zBosonMassnotRPC = massNotRPC;
-  isolationNotRPC = isoNotRPC;
+  zBosonMassGlobal = reconstructZBoson(globalMuons);
+  zBosonMassRPC = reconstructZBoson(rpcMuons);
+  zBosonMassnotRPC = reconstructZBoson(notrpcMuons);
 
   muonSizeGlobal = globalMuons.size();
   muonSizeRPC = rpcMuons.size();
@@ -146,21 +136,18 @@ void Analysis::beginJob() {
   treeGlobal->Branch("runNumber", &runNumber, "runNumber/I");
   treeGlobal->Branch("lumiSection", &lumiSection, "lumiSection/I");
   treeGlobal->Branch("muonSizeGlobal", &muonSizeGlobal, "muonSizeGlobal/I");
-  treeGlobal->Branch("isolation", &isolationGlobal, "isolation/F");
 
   treeRPC->Branch("zBosonMass", &zBosonMassRPC, "zBosonMass/D");
   treeRPC->Branch("eventNumber", &eventNumber, "eventNumber/I");
   treeRPC->Branch("runNumber", &runNumber, "runNumber/I");
   treeRPC->Branch("lumiSection", &lumiSection, "lumiSection/I");
   treeRPC->Branch("muonSizeRPC", &muonSizeRPC, "muonSizeRPC/I");
-  treeRPC->Branch("isolation", &isolationRPC, "isolation/F");
 
   treenotRPC->Branch("zBosonMass", &zBosonMassnotRPC, "zBosonMass/D");
   treenotRPC->Branch("eventNumber", &eventNumber, "eventNumber/I");
   treenotRPC->Branch("runNumber", &runNumber, "runNumber/I");
   treenotRPC->Branch("lumiSection", &lumiSection, "lumiSection/I");
   treenotRPC->Branch("muonSizeNotRPC", &muonSizeNotRPC, "muonSizeNotRPC/I");
-  treenotRPC->Branch("isolation", &isolationNotRPC, "isolation/F");
 }
 
 void Analysis::endJob() {

@@ -1,27 +1,27 @@
 Global Fit Parameters:
-AlphaL: 1.48675
-AlphaH: 1.91472
-nL: 1.23596
-nH: 0.948853
-Mean: 90.8313
-Sigma: 2.14159
-Amplitude: 140.971
+AlphaL: 1.19594
+AlphaH: 1.40779
+nL: 1.65259
+nH: 1.92168
+Mean: 90.8574
+Sigma: 2.01486
+Amplitude: 3174.3
 
 RPC Fit Parameters:
-AlphaL: 1.40033
-AlphaH: 2.02427
-nL: 1.13039
-nH: 0.702872
-Mean: 90.9535
-Sigma: 1.91323
-Amplitude: 93.1704
+AlphaL: 1.18105
+AlphaH: 1.39229
+nL: 1.70741
+nH: 2.00316
+Mean: 90.8706
+Sigma: 1.87083
+Amplitude: 1897.99
 
 notRPC Fit Parameters:
-AlphaL: 1.39184
-AlphaH: 1.55357
-nL: 0.0752872
-nH: 0.0219558
-Mean: 89.5867
-Sigma: -3.09246
-Amplitude: 3.93346
+AlphaL: 1.45875
+AlphaH: 1.68304
+nL: 1.18171
+nH: 1.42534
+Mean: 90.8216
+Sigma: 2.70413
+Amplitude: 192.045
 

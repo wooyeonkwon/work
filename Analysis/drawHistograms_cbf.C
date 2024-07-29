@@ -39,7 +39,7 @@ double dscbf(double *x, double *par)
 }
 
 void drawHistograms_cbf() {
-    TFile *file = new TFile("data.root", "READ");
+    TFile *file = new TFile("data3.root", "READ");
     if (!file || file->IsZombie()) {
         std::cerr << "Error opening file" << std::endl;
         return;
