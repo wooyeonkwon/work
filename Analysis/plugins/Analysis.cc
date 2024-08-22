@@ -10,6 +10,7 @@
 #include "DataFormats/Math/interface/LorentzVector.h"
 #include "TFile.h"
 #include "TTree.h"
+#include <cstdlib>
 
 class Analysis : public edm::global::EDAnalyzer<> {
 public:
@@ -126,7 +127,14 @@ void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm:
 }
 
 void Analysis::beginJob() {
-  outputFile = new TFile("data3.root", "RECREATE");
+  //outputFile = new TFile("data_test.root", "RECREATE"); //use this with local job
+
+  const char* filename = std::getenv("CRAB_OUTPUT_FILENAME"); //use this with crab job
+  if (filename == nullptr) {
+    filename = "data_E.root";
+  }
+  outputFile = new TFile(filename, "RECREATE");
+    
   treeGlobal = new TTree("GlobalMuons", "Global Muons");
   treeRPC = new TTree("RPCMuons", "RPC Muons");
   treenotRPC = new TTree("notRPCMuons", "Global & notRPC Muons");
