@@ -4,13 +4,13 @@ config = config()
 
 config.Site.blacklist = ['T2_US_MIT']
 
-config.General.requestName = 'MuonAnalysis_Run2022E'
+config.General.requestName = 'MuonAnalysis_Run2022D_4'
 config.General.workArea = 'crab_projects' 
 
 config.JobType.pluginName = 'Analysis'
 config.JobType.psetName = 'conf.py'
 
-config.Data.inputDataset = '/Muon/Run2022E-27Jun2023-v1/AOD'
+config.Data.inputDataset = '/Muon/Run2022D-27Jun2023-v2/AOD'
 config.Data.inputDBS = 'global'
 config.Data.splitting    = 'LumiBased'
 config.Data.unitsPerJob = 100

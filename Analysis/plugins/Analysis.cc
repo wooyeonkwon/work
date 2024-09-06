@@ -8,6 +8,8 @@
 #include "DataFormats/MuonReco/interface/Muon.h"
 #include "DataFormats/MuonReco/interface/MuonFwd.h"
 #include "DataFormats/Math/interface/LorentzVector.h"
+#include "DataFormats/Common/interface/TriggerResults.h"
+#include "FWCore/Common/interface/TriggerNames.h"
 #include "TFile.h"
 #include "TTree.h"
 #include <cstdlib>
@@ -25,27 +27,30 @@ private:
   void endJob() override;
 
   edm::EDGetTokenT<reco::MuonCollection> muonToken_;
-  
+  edm::EDGetTokenT<edm::TriggerResults> triggerToken_;
+  std::string hltPath_;
+
   TFile* outputFile;
   TTree* treeGlobal;
   TTree* treeRPC;
-  TTree* treenotRPC;
 
   mutable double zBosonMassGlobal;
   mutable double zBosonMassRPC;
-  mutable double zBosonMassnotRPC;
 
   mutable int eventNumber;
   mutable int runNumber;
   mutable int lumiSection;
 
-  mutable int muonSizeGlobal;
-  mutable int muonSizeRPC;
-  mutable int muonSizeNotRPC;
+  mutable int tagMuonSizeGlobal;
+  mutable int probeMuonSizeGlobal;
+  mutable int tagMuonSizeRPC;
+  mutable int probeMuonSizeRPC;
 };
 
 Analysis::Analysis(const edm::ParameterSet& iConfig)
-    : muonToken_(consumes<reco::MuonCollection>(iConfig.getParameter<edm::InputTag>("muons"))) {
+    : muonToken_(consumes<reco::MuonCollection>(iConfig.getParameter<edm::InputTag>("muons"))),
+      triggerToken_(consumes<edm::TriggerResults>(iConfig.getParameter<edm::InputTag>("triggerResults"))),
+      hltPath_(iConfig.getParameter<std::string>("hltPath")) {
 }
 
 Analysis::~Analysis() {
@@ -55,44 +60,67 @@ void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm:
   edm::Handle<reco::MuonCollection> muons;
   iEvent.getByToken(muonToken_, muons);
 
-  std::vector<reco::Muon> globalMuons;
-  std::vector<reco::Muon> rpcMuons;
-  std::vector<reco::Muon> notrpcMuons;
+  edm::Handle<edm::TriggerResults> triggerResults;
+  iEvent.getByToken(triggerToken_, triggerResults);
+  
+  const edm::TriggerNames &triggerNames = iEvent.triggerNames(*triggerResults);
+  bool passTrigger = false;
+
+  // Check if the event passes the HLT_Mu50_v trigger
+  for (unsigned int i = 0; i < triggerResults->size(); ++i) {
+    if (triggerNames.triggerName(i).find(hltPath_) != std::string::npos) {
+      if (triggerResults->accept(i)) {
+        passTrigger = true;
+        break;
+      }
+    }
+  }
+
+  if (!passTrigger) return;  // Skip event if it doesn't pass the trigger
+
+  std::vector<reco::Muon> globalTagMuons;
+  std::vector<reco::Muon> globalProbeMuons;
+  std::vector<reco::Muon> rpcTagMuons;
+  std::vector<reco::Muon> rpcProbeMuons;
 
   eventNumber = iEvent.id().event();
   runNumber = iEvent.id().run();
   lumiSection = iEvent.luminosityBlock();
 
-//muon selection
+  // Muon selection
+
   for (const auto& muon : *muons) {
-    if (muon.pt() > 20 && fabs(muon.eta()) < 2.4) {
-      float isolation = (muon.pfIsolationR04().sumChargedHadronPt + 
+    float isolation = (muon.pfIsolationR04().sumChargedHadronPt + 
                          ((muon.pfIsolationR04().sumNeutralHadronEt + muon.pfIsolationR04().sumPhotonEt - 0.5 * muon.pfIsolationR04().sumPUPt) > 0 ? 
                           (muon.pfIsolationR04().sumNeutralHadronEt + muon.pfIsolationR04().sumPhotonEt - 0.5 * muon.pfIsolationR04().sumPUPt) : 0)) / muon.pt();
-      if (isolation < 0.15) {
-        if (muon.isGlobalMuon()) {
-          globalMuons.push_back(muon);
-          if (muon.isRPCMuon()) {
-            rpcMuons.push_back(muon);
-          } else {
-            notrpcMuons.push_back(muon);
+    if (muon.pt() > 26 && fabs(muon.eta()) < 2.4 && isolation < 0.2) {
+      if (muon.isGlobalMuon()) {
+        globalTagMuons.push_back(muon);
+        if (muon.isRPCMuon()) {
+          rpcTagMuons.push_back(muon);
         }
-          }
+      }
+    } else if (muon.pt() > 15 && fabs(muon.eta()) < 2.4 && muon.isTrackerMuon() ) {
+      if (muon.isGlobalMuon()) {
+        globalProbeMuons.push_back(muon);
+        if (muon.isRPCMuon()) {
+          rpcProbeMuons.push_back(muon);
+        }
       }
     }
   }
 
-//Z reconstruction  
-  auto reconstructZBoson = [](const std::vector<reco::Muon>& muons) -> double {
-    if (muons.size() < 2) return 0.0;
+  // Z reconstruction function
+  auto reconstructZBoson = [](const std::vector<reco::Muon>& tagMuons, const std::vector<reco::Muon>& probeMuons) -> double {
+    if (tagMuons.empty() || probeMuons.empty()) return 0.0;
 
     math::XYZTLorentzVector goodZBoson;
     double goodMass = 0.0;
     
-    for (size_t i = 0; i < muons.size() - 1; ++i) {
-      for (size_t j = i + 1; j < muons.size(); ++j) {
-        if (muons[i].charge() + muons[j].charge() == 0) {
-          math::XYZTLorentzVector zBoson = muons[i].p4() + muons[j].p4();
+    for (const auto& tagMuon : tagMuons) {
+      for (const auto& probeMuon : probeMuons) {
+        if ((tagMuon.charge() != probeMuon.charge()) && (fabs(tagMuon.vz()-probeMuon.vz()) < 0.5)) {
+          math::XYZTLorentzVector zBoson = tagMuon.p4() + probeMuon.p4();
           double mass = zBoson.M();
           if (fabs(mass - 91.2) < fabs(goodMass - 91.2)) {
             goodMass = mass;
@@ -105,13 +133,13 @@ void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm:
     return goodMass;
   };
 
-  zBosonMassGlobal = reconstructZBoson(globalMuons);
-  zBosonMassRPC = reconstructZBoson(rpcMuons);
-  zBosonMassnotRPC = reconstructZBoson(notrpcMuons);
+  zBosonMassGlobal = reconstructZBoson(globalTagMuons, globalProbeMuons);
+  zBosonMassRPC = reconstructZBoson(rpcTagMuons, rpcProbeMuons);
 
-  muonSizeGlobal = globalMuons.size();
-  muonSizeRPC = rpcMuons.size();
-  muonSizeNotRPC = notrpcMuons.size();
+  tagMuonSizeGlobal = globalTagMuons.size();
+  probeMuonSizeGlobal = globalProbeMuons.size();
+  tagMuonSizeRPC = rpcTagMuons.size();
+  probeMuonSizeRPC = rpcProbeMuons.size();
 
   if (zBosonMassGlobal > 0.0) {
     treeGlobal->Fill();
@@ -120,49 +148,37 @@ void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm:
   if (zBosonMassRPC > 0.0) {
     treeRPC->Fill();
   }
-  
-  if (zBosonMassnotRPC > 0.0) {
-    treenotRPC->Fill();
-  }  
 }
 
 void Analysis::beginJob() {
-  //outputFile = new TFile("data_test.root", "RECREATE"); //use this with local job
-
   const char* filename = std::getenv("CRAB_OUTPUT_FILENAME"); //use this with crab job
   if (filename == nullptr) {
-    filename = "data_E.root";
+    filename = "data_D.root";
   }
   outputFile = new TFile(filename, "RECREATE");
     
-  treeGlobal = new TTree("GlobalMuons", "Global Muons");
-  treeRPC = new TTree("RPCMuons", "RPC Muons");
-  treenotRPC = new TTree("notRPCMuons", "Global & notRPC Muons");
+  treeGlobal = new TTree("GlobalMuons", "Global Muons (Tag and Probe)");
+  treeRPC = new TTree("RPCMuons", "RPC Muons (Tag and Probe)");
 
   treeGlobal->Branch("zBosonMass", &zBosonMassGlobal, "zBosonMass/D");
   treeGlobal->Branch("eventNumber", &eventNumber, "eventNumber/I");
   treeGlobal->Branch("runNumber", &runNumber, "runNumber/I");
   treeGlobal->Branch("lumiSection", &lumiSection, "lumiSection/I");
-  treeGlobal->Branch("muonSizeGlobal", &muonSizeGlobal, "muonSizeGlobal/I");
+  treeGlobal->Branch("tagMuonSize", &tagMuonSizeGlobal, "tagMuonSize/I");
+  treeGlobal->Branch("probeMuonSize", &probeMuonSizeGlobal, "probeMuonSize/I");
 
   treeRPC->Branch("zBosonMass", &zBosonMassRPC, "zBosonMass/D");
   treeRPC->Branch("eventNumber", &eventNumber, "eventNumber/I");
   treeRPC->Branch("runNumber", &runNumber, "runNumber/I");
   treeRPC->Branch("lumiSection", &lumiSection, "lumiSection/I");
-  treeRPC->Branch("muonSizeRPC", &muonSizeRPC, "muonSizeRPC/I");
-
-  treenotRPC->Branch("zBosonMass", &zBosonMassnotRPC, "zBosonMass/D");
-  treenotRPC->Branch("eventNumber", &eventNumber, "eventNumber/I");
-  treenotRPC->Branch("runNumber", &runNumber, "runNumber/I");
-  treenotRPC->Branch("lumiSection", &lumiSection, "lumiSection/I");
-  treenotRPC->Branch("muonSizeNotRPC", &muonSizeNotRPC, "muonSizeNotRPC/I");
+  treeRPC->Branch("tagMuonSize", &tagMuonSizeRPC, "tagMuonSize/I");
+  treeRPC->Branch("probeMuonSize", &probeMuonSizeRPC, "probeMuonSize/I");
 }
 
 void Analysis::endJob() {
   outputFile->Write();
   delete treeGlobal;
   delete treeRPC;
-  delete treenotRPC;
   outputFile->Close();
   delete outputFile;
 }

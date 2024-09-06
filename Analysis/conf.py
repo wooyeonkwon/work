@@ -19,11 +19,13 @@ process.options = cms.untracked.PSet(
 )
 
 process.TFileService = cms.Service("TFileService",
-    fileName = cms.string("data_E.root")
+    fileName = cms.string("data_D.root")
 )
 
 process.Analysis = cms.EDAnalyzer('Analysis',
-    muons = cms.InputTag("muons")
+    muons = cms.InputTag("muons"),
+    triggerResults = cms.InputTag("TriggerResults", "", "HLT"),
+    hltPath = cms.string("HLT_IsoMu24_v")
 )
 
 process.p = cms.Path(process.Analysis)
