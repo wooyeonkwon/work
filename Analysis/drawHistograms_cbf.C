@@ -38,12 +38,15 @@ double dscbf(double *x, double *par)
     return N*result;
 }
 
-void drawHistograms_cbf() {
-    TFile *file = new TFile("data3.root", "READ");
+
+
+void drawHistograms_cbf(const char* filename) {
+    TFile *file = new TFile(filename, "READ");
     if (!file || file->IsZombie()) {
-        std::cerr << "Error opening file" << std::endl;
+        std::cerr << "Error opening file: " << filename << std::endl;
         return;
     }
+
 
     TTree *treeGlobal = nullptr;
     TTree *treeRPC = nullptr;
@@ -173,3 +176,4 @@ void drawHistograms_cbf() {
     file->Close();
     delete file;
 }
+

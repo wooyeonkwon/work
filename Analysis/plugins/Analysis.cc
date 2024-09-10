@@ -9,10 +9,14 @@
 #include "DataFormats/MuonReco/interface/MuonFwd.h"
 #include "DataFormats/Math/interface/LorentzVector.h"
 #include "DataFormats/Common/interface/TriggerResults.h"
+#include "DataFormats/VertexReco/interface/Vertex.h"
+#include "DataFormats/VertexReco/interface/VertexFwd.h"
 #include "FWCore/Common/interface/TriggerNames.h"
+#include "DataFormats/MuonReco/interface/MuonSelectors.h"
 #include "TFile.h"
 #include "TTree.h"
 #include <cstdlib>
+
 
 class Analysis : public edm::global::EDAnalyzer<> {
 public:
@@ -28,6 +32,7 @@ private:
 
   edm::EDGetTokenT<reco::MuonCollection> muonToken_;
   edm::EDGetTokenT<edm::TriggerResults> triggerToken_;
+  edm::EDGetTokenT<reco::VertexCollection> vertexToken_;
   std::string hltPath_;
 
   TFile* outputFile;
@@ -47,9 +52,13 @@ private:
   mutable int probeMuonSizeRPC;
 };
 
+
+
+
 Analysis::Analysis(const edm::ParameterSet& iConfig)
     : muonToken_(consumes<reco::MuonCollection>(iConfig.getParameter<edm::InputTag>("muons"))),
       triggerToken_(consumes<edm::TriggerResults>(iConfig.getParameter<edm::InputTag>("triggerResults"))),
+      vertexToken_(consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("vertices"))),
       hltPath_(iConfig.getParameter<std::string>("hltPath")) {
 }
 
@@ -60,13 +69,16 @@ void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm:
   edm::Handle<reco::MuonCollection> muons;
   iEvent.getByToken(muonToken_, muons);
 
+  edm::Handle<reco::VertexCollection> vertices;
+  iEvent.getByToken(vertexToken_, vertices);
+
   edm::Handle<edm::TriggerResults> triggerResults;
   iEvent.getByToken(triggerToken_, triggerResults);
-  
+
   const edm::TriggerNames &triggerNames = iEvent.triggerNames(*triggerResults);
   bool passTrigger = false;
 
-  // Check if the event passes the HLT_Mu50_v trigger
+  // Check if the event passes the HLT_IsoMu24_v trigger
   for (unsigned int i = 0; i < triggerResults->size(); ++i) {
     if (triggerNames.triggerName(i).find(hltPath_) != std::string::npos) {
       if (triggerResults->accept(i)) {
@@ -78,6 +90,11 @@ void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm:
 
   if (!passTrigger) return;  // Skip event if it doesn't pass the trigger
 
+  reco::Vertex primaryVertex;
+  if (!vertices->empty()) {
+    primaryVertex = vertices->front();  // get first good vertex
+  }
+  
   std::vector<reco::Muon> globalTagMuons;
   std::vector<reco::Muon> globalProbeMuons;
   std::vector<reco::Muon> rpcTagMuons;
@@ -88,19 +105,19 @@ void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm:
   lumiSection = iEvent.luminosityBlock();
 
   // Muon selection
-
   for (const auto& muon : *muons) {
     float isolation = (muon.pfIsolationR04().sumChargedHadronPt + 
                          ((muon.pfIsolationR04().sumNeutralHadronEt + muon.pfIsolationR04().sumPhotonEt - 0.5 * muon.pfIsolationR04().sumPUPt) > 0 ? 
                           (muon.pfIsolationR04().sumNeutralHadronEt + muon.pfIsolationR04().sumPhotonEt - 0.5 * muon.pfIsolationR04().sumPUPt) : 0)) / muon.pt();
-    if (muon.pt() > 26 && fabs(muon.eta()) < 2.4 && isolation < 0.2) {
+
+    if (muon::isTightMuon(muon, primaryVertex) && muon.pt() > 26 && fabs(muon.eta()) < 2.4 && isolation < 0.2) {
       if (muon.isGlobalMuon()) {
         globalTagMuons.push_back(muon);
         if (muon.isRPCMuon()) {
           rpcTagMuons.push_back(muon);
         }
       }
-    } else if (muon.pt() > 15 && fabs(muon.eta()) < 2.4 && muon.isTrackerMuon() ) {
+    } else if (muon::isTightMuon(muon, primaryVertex) && muon.pt() > 15 && fabs(muon.eta()) < 2.4 && muon.isTrackerMuon()) {
       if (muon.isGlobalMuon()) {
         globalProbeMuons.push_back(muon);
         if (muon.isRPCMuon()) {
@@ -190,3 +207,6 @@ void Analysis::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
 }
 
 DEFINE_FWK_MODULE(Analysis);
+
+
+ 

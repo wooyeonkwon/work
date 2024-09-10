@@ -4,7 +4,7 @@ config = config()
 
 config.Site.blacklist = ['T2_US_MIT']
 
-config.General.requestName = 'MuonAnalysis_Run2022D_4'
+config.General.requestName = 'MuonAnalysis_Run2022D_6'
 config.General.workArea = 'crab_projects' 
 
 config.JobType.pluginName = 'Analysis'
