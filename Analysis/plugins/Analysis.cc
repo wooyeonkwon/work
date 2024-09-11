@@ -117,7 +117,7 @@ void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm:
           rpcTagMuons.push_back(muon);
         }
       }
-    } else if (muon::isTightMuon(muon, primaryVertex) && muon.pt() > 15 && fabs(muon.eta()) < 2.4 && muon.isTrackerMuon()) {
+    } else if (muon.pt() > 15 && fabs(muon.eta()) < 2.4) {
       if (muon.isGlobalMuon()) {
         globalProbeMuons.push_back(muon);
         if (muon.isRPCMuon()) {
