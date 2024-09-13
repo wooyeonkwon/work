@@ -5,12 +5,12 @@
 <use name="DataFormats/TrackReco"/>
 <use name="DataFormats/MuonReco"/>
 <use name="DataFormats/Math"/>
-<use name="CommonTools/UtilAlgos"/>
 <use name="DataFormats/HepMCCandidate"/>
 <use name="DataFormats/PatCandidates"/>
 <use name="DataFormats/Common"/>
+<use name="SimDataFormats/GeneratorProducts"/>
 <use name="CLHEP"/>
 <use name="root"/>
-<library file="Analysis.cc" name="Analysis">
+<library file="AnalysisMC.cc" name="AnalysisMC">
   <flags EDM_PLUGIN="1"/>
 </library>

@@ -39,123 +39,109 @@ double dscbf(double *x, double *par)
     return N*result;
 }
 
+
+void drawHistogramAndFit(TTree* tree, const char* branchName, const char* histTitle, const char* histFileName, const char* canvasTitle, const char* logFileName, double xMin = 60, double xMax = 120) {
+    double zBosonMass;
+    tree->SetBranchAddress(branchName, &zBosonMass);
+    TH1F* hist = new TH1F(histTitle, Form("%s;Mass (GeV);Events", histTitle), 360, 0, 180);
+
+
+    Long64_t nEntries = tree->GetEntries();
+    for (Long64_t i = 0; i < nEntries; ++i) {
+        tree->GetEntry(i);
+        hist->Fill(zBosonMass);
+    }
+
+
+    TCanvas* canvas = new TCanvas(canvasTitle, canvasTitle, 800, 600);
+    gStyle->SetOptStat(0);
+    hist->Draw();
+    TF1* fitFunc = new TF1(Form("fitFunc%s", canvasTitle), dscbf, xMin, xMax, 7);
+    fitFunc->SetParNames("AlphaL", "AlphaH", "nL", "nH", "Mean", "Sigma", "Events");
+    fitFunc->SetParameters(1.25, 1.44, 1.59, 1.8, 91.2, 2.0, nEntries);
+    hist->Fit(fitFunc, "R");
+
+
+    TLatex latex;
+    latex.SetNDC();
+    latex.SetTextSize(0.035);
+    latex.DrawLatex(0.70, 0.85, Form("Nevents: %d", (int)nEntries));
+    latex.DrawLatex(0.70, 0.80, Form("Mean: %.2f", fitFunc->GetParameter(4)));
+    latex.DrawLatex(0.70, 0.75, Form("Sigma: %.2f", fitFunc->GetParameter(5)));
+
+
+    canvas->SaveAs(histFileName);
+
+
+    std::ofstream logFile(logFileName, std::ios_base::app);
+    if (logFile.is_open()) {
+        logFile << canvasTitle << " Fit Parameters:\n"
+                << "AlphaL: " << fitFunc->GetParameter(0) << "\n"
+                << "AlphaH: " << fitFunc->GetParameter(1) << "\n"
+                << "nL: " << fitFunc->GetParameter(2) << "\n"
+                << "nH: " << fitFunc->GetParameter(3) << "\n"
+                << "Mean: " << fitFunc->GetParameter(4) << "\n"
+                << "Sigma: " << fitFunc->GetParameter(5) << "\n"
+                << "Amplitude: " << fitFunc->GetParameter(6) << "\n\n";
+        logFile.close();
+    }
+
+    delete hist;
+    delete fitFunc;
+    delete canvas;
+}
+
 void drawHistograms_cbf(const char* filename) {
-    TFile *file = new TFile(filename, "READ");
+    TFile* file = new TFile(filename, "READ");
     if (!file || file->IsZombie()) {
         std::cerr << "Error opening file: " << filename << std::endl;
         return;
     }
 
-
+    // define trees and get objects
     TTree *treeGlobal = nullptr;
+    TTree *treeTracker = nullptr;
+    TTree *treeStandAlone = nullptr;
+    TTree *treeCalo = nullptr;
+    TTree *treePF = nullptr;
     TTree *treeRPC = nullptr;
+    TTree *treeGEM = nullptr;
+    TTree *treeME0 = nullptr;
     file->GetObject("GlobalMuons", treeGlobal);
+    file->GetObject("TrackerMuons", treeTracker);
+    file->GetObject("StandAloneMuons", treeStandAlone);
+    file->GetObject("CaloMuons", treeCalo);
+    file->GetObject("PFMuons", treePF);
     file->GetObject("RPCMuons", treeRPC);
+    file->GetObject("GEMMuons", treeGEM);
+    file->GetObject("ME0Muons", treeME0);
 
-    if (!treeGlobal || !treeRPC) {
-        std::cerr << "Error: Trees not found in file" << std::endl;
-        file->Close();
-        delete file;
-        return;
-    }
+    // draw hist for exist trees
+    if (!treeGlobal) std::cerr << "GlobalMuons tree not found." << std::endl;
+    else drawHistogramAndFit(treeGlobal, "zBosonMass", "Z Bosons (Global)", "zBosonsGlobal.png", "Global Z mass", "fit_results.txt");
+    if (!treeTracker) std::cerr << "TrackerMuons tree not found." << std::endl;
+    else drawHistogramAndFit(treeTracker, "zBosonMass", "Z Bosons (Tracker)", "zBosonsTracker.png", "Tracker Z mass", "fit_results.txt");
+    if (!treeStandAlone) std::cerr << "StandAloneMuons tree not found." << std::endl;
+    else drawHistogramAndFit(treeStandAlone, "zBosonMass", "Z Bosons (StandAlone)", "zBosonsStandAlone.png", "StandAlone Z mass", "fit_results.txt");
+    if (!treeCalo) std::cerr << "CaloMuons tree not found." << std::endl;
+    else drawHistogramAndFit(treeCalo, "zBosonMass", "Z Bosons (Calo)", "zBosonsCalo.png", "Calo Z mass", "fit_results.txt");
+    if (!treePF) std::cerr << "PFMuons tree not found." << std::endl;
+    else drawHistogramAndFit(treePF, "zBosonMass", "Z Bosons (PF)", "zBosonsPF.png", "PF Z mass", "fit_results.txt");
+    if (!treeRPC) std::cerr << "RPCMuons tree not found." << std::endl;
+    else drawHistogramAndFit(treeRPC, "zBosonMass", "Z Bosons (RPC)", "zBosonsRPC.png", "RPC Z mass", "fit_results.txt");
+    if (!treeGEM) std::cerr << "GEMMuons tree not found." << std::endl;
+    else drawHistogramAndFit(treeGEM, "zBosonMass", "Z Bosons (GEM)", "zBosonsGEM.png", "GEM Z mass", "fit_results.txt");
+    if (!treeME0) std::cerr << "ME0Muons tree not found." << std::endl;
+    else drawHistogramAndFit(treeME0, "zBosonMass", "Z Bosons (ME0)", "zBosonsME0.png", "ME0 Z mass", "fit_results.txt");
 
-    std::cerr << "File read success" << std::endl;
 
-    double zBosonMassGlobal;
-    double zBosonMassRPC;
-
-    treeGlobal->SetBranchAddress("zBosonMass", &zBosonMassGlobal);
-    treeRPC->SetBranchAddress("zBosonMass", &zBosonMassRPC);
-
-    TH1F *h_zBosonsGlobal = new TH1F("zBosonsGlobal", "Z Bosons (Global);Mass (GeV);Events", 360, 0, 180);
-    TH1F *h_zBosonsRPC = new TH1F("zBosonsRPC", "Z Bosons (RPC);Mass (GeV);Events", 360, 0, 180);
-    
-    Long64_t nEntriesGlobal = treeGlobal->GetEntries();
-    for (Long64_t i = 0; i < nEntriesGlobal; ++i) {
-        treeGlobal->GetEntry(i);
-        h_zBosonsGlobal->Fill(zBosonMassGlobal);
-    }
-  
-    Long64_t nEntriesRPC = treeRPC->GetEntries();
-    for (Long64_t i = 0; i < nEntriesRPC; ++i) {
-        treeRPC->GetEntry(i);
-        h_zBosonsRPC->Fill(zBosonMassRPC);
-    }
-    
-
-    std::ofstream logFile("fit_results.txt");
-    if (!logFile.is_open()) {
-        std::cerr << "Unable to open log file for writing fit results." << std::endl;
-        delete h_zBosonsGlobal;
-        delete h_zBosonsRPC;
-        file->Close();
-        delete file;
-        return;
-    }
-
-    // Fit and plot for Global Muons
-    TCanvas *c1 = new TCanvas("c1", "Global Z mass", 800, 600);
-    gStyle->SetOptStat(0);
-    h_zBosonsGlobal->Draw();
-    TF1 *fitFuncGlobal = new TF1("fitFuncGlobal", dscbf, 60, 120, 7);
-    int NeventsGlobal = h_zBosonsGlobal->GetEntries();
-    fitFuncGlobal->SetParNames("AlphaL", "AlphaH", "nL", "nH", "Mean", "Sigma", "Events");
-    fitFuncGlobal->SetParameters(1.25, 1.44, 1.59, 1.8, 91.2, 2.0, NeventsGlobal);
-    h_zBosonsGlobal->Fit(fitFuncGlobal, "R");
-
-    // Add text to the canvas
-    TLatex latex;
-    latex.SetNDC();
-    latex.SetTextSize(0.035);
-    latex.DrawLatex(0.70, 0.85, Form("Entries: %d", NeventsGlobal));
-    latex.DrawLatex(0.70, 0.80, Form("Mean: %.2f", fitFuncGlobal->GetParameter(4)));
-    latex.DrawLatex(0.70, 0.75, Form("Sigma: %.2f", fitFuncGlobal->GetParameter(5)));
-
-    c1->SaveAs("zBosonsGlobal.png");
-
-    logFile << "Global Fit Parameters:\n"
-            << "AlphaL: " << fitFuncGlobal->GetParameter(0) << "\n"
-            << "AlphaH: " << fitFuncGlobal->GetParameter(1) << "\n"
-            << "nL: " << fitFuncGlobal->GetParameter(2) << "\n"
-            << "nH: " << fitFuncGlobal->GetParameter(3) << "\n"
-            << "Mean: " << fitFuncGlobal->GetParameter(4) << "\n"
-            << "Sigma: " << fitFuncGlobal->GetParameter(5) << "\n"
-            << "Amplitude: " << fitFuncGlobal->GetParameter(6) << "\n\n";
-
-    // Fit and plot for RPC Muons
-    TCanvas *c2 = new TCanvas("c2", "RPC Z mass", 800, 600);
-    gStyle->SetOptStat(0);
-    h_zBosonsRPC->Draw();
-    TF1 *fitFuncRPC = new TF1("fitFuncRPC", dscbf, 60, 120, 7);
-    int NeventsRPC = h_zBosonsRPC->GetEntries();
-    fitFuncRPC->SetParNames("AlphaL", "AlphaH", "nL", "nH", "Mean", "Sigma", "Events");
-    fitFuncRPC->SetParameters(1.25, 1.44, 1.59, 1.8, 91.2, 2.0, NeventsRPC);
-    h_zBosonsRPC->Fit(fitFuncRPC, "R");
-
-    // Add text to the canvas
-    latex.DrawLatex(0.70, 0.85, Form("Entries: %d", NeventsRPC));
-    latex.DrawLatex(0.70, 0.80, Form("Mean: %.2f", fitFuncRPC->GetParameter(4)));
-    latex.DrawLatex(0.70, 0.75, Form("Sigma: %.2f", fitFuncRPC->GetParameter(5)));
-
-    c2->SaveAs("zBosonsRPC.png");
-
-    logFile << "RPC Fit Parameters:\n"
-            << "AlphaL: " << fitFuncRPC->GetParameter(0) << "\n"
-            << "AlphaH: " << fitFuncRPC->GetParameter(1) << "\n"
-            << "nL: " << fitFuncRPC->GetParameter(2) << "\n"
-            << "nH: " << fitFuncRPC->GetParameter(3) << "\n"
-            << "Mean: " << fitFuncRPC->GetParameter(4) << "\n"
-            << "Sigma: " << fitFuncRPC->GetParameter(5) << "\n"
-            << "Amplitude: " << fitFuncRPC->GetParameter(6) << "\n\n";
-
-    logFile.close();
-
-    delete h_zBosonsGlobal;
-    delete h_zBosonsRPC;
-    delete fitFuncGlobal;
-    delete fitFuncRPC;
-    delete c1;
-    delete c2;
     file->Close();
     delete file;
 }
+
+
+
+
+
+
+

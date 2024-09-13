@@ -1,7 +1,7 @@
 import FWCore.ParameterSet.Config as cms
 import os
 
-process = cms.Process("mc")
+process = cms.Process("AnalysisMC")
 
 # Configure the MessageLogger
 process.load("FWCore.MessageService.MessageLogger_cfi")
@@ -15,10 +15,10 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 10000  # Report every 10000 e
 
 process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(-1))
 
-directory_path = '/eos/cms/store/mc/Run3Summer22DRPremix/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/AODSIM/124X_mcRun3_2022_realistic_v12_ext1-v1/70000/'
-file_list = os.listdir(directory_path)
-file_paths = [f'file://{directory_path}{filename}' for filename in file_list]
-#file_paths =  ['file:///eos/cms/store/relval/CMSSW_14_0_7/Muon0/AOD/140X_dataRun3_Prompt_HCAL_w19_2024_v1_2024C_HCALCalibChecks_RelVal_2024C-v2/2580000/c72720a0-f5ea-413e-a912-4bc307f6b2c1.root']
+#directory_path = '/eos/cms/store/mc/Run3Summer22DRPremix/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/AODSIM/124X_mcRun3_2022_realistic_v12_ext1-v1/70000/'
+#file_list = os.listdir(directory_path)
+#file_paths = [f'file://{directory_path}{filename}' for filename in file_list]
+file_paths =  ['file:///eos/cms/store/mc/Run3Summer22DRPremix/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/AODSIM/124X_mcRun3_2022_realistic_v12_ext1-v1/70000/00775a3b-7386-44ac-8ade-e3aafbdc0261.root']
 file_names_string = ',\n'.join([f'"{file_path}"' for file_path in file_paths])
 
 process.source = cms.Source("PoolSource",
@@ -27,18 +27,24 @@ process.source = cms.Source("PoolSource",
 
 # Enable multithreading
 process.options = cms.untracked.PSet(
-    numberOfThreads = cms.untracked.uint32(1),  # Number of threads
-    numberOfStreams = cms.untracked.uint32(0)   # Number of streams
+    numberOfThreads = cms.untracked.uint32(8),  # Number of threads
+    numberOfStreams = cms.untracked.uint32(8)   # Number of streams
 )
 
 process.TFileService = cms.Service("TFileService",
     fileName = cms.string("mc_data.root")
 )
 
-process.myAnalyzer = cms.EDAnalyzer('mc',
-    muons = cms.InputTag("muons")
+process.Analysis = cms.EDAnalyzer('AnalysisMC',
+    muons = cms.InputTag("muons"),
+    triggerResults = cms.InputTag("TriggerResults", "", "HLT"),
+    vertices = cms.InputTag("offlinePrimaryVertices"),  
+    hltPath = cms.string("HLT_IsoMu24_v"),
+    genEventInfo = cms.InputTag("generator"),
+    genMuons = cms.InputTag("genParticles"),
+    lheEvent = cms.InputTag("externalLHEProducer")
 )
 
-process.p = cms.Path(process.myAnalyzer)
+process.p = cms.Path(process.Analysis)
 
 process.options.wantSummary = True
