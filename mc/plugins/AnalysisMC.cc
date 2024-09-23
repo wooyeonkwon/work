@@ -8,8 +8,8 @@
 #include "DataFormats/MuonReco/interface/Muon.h"
 #include "DataFormats/MuonReco/interface/MuonFwd.h"
 #include "DataFormats/Math/interface/LorentzVector.h"
-#include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h" // For generator-level info
-#include "SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h"     // For PDF weights
+#include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
+#include "SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h"    
 #include "DataFormats/Common/interface/TriggerResults.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
@@ -19,6 +19,8 @@
 #include "TFile.h"
 #include "TTree.h"
 #include <cstdlib>
+#include "DataFormats/Math/interface/deltaR.h"
+#include <mutex>
 
 class AnalysisMC : public edm::global::EDAnalyzer<> {
 public:
@@ -36,16 +38,16 @@ private:
   edm::EDGetTokenT<reco::MuonCollection> muonToken_;
   edm::EDGetTokenT<edm::TriggerResults> triggerToken_;
   edm::EDGetTokenT<reco::VertexCollection> vertexToken_;
-  edm::EDGetTokenT<GenEventInfoProduct> genEventToken_;       // For MC weight
-  edm::EDGetTokenT<edm::View<reco::GenParticle>> genMuonToken_; // For gen-level muons
-  edm::EDGetTokenT<LHEEventProduct> lheEventToken_;           // For PDF weights
+  edm::EDGetTokenT<GenEventInfoProduct> genEventToken_;       
+  edm::EDGetTokenT<edm::View<reco::GenParticle>> genMuonToken_; 
+  edm::EDGetTokenT<LHEEventProduct> lheEventToken_;           
   
   std::string hltPath_;
 
   // Output ROOT file and trees
-  TFile* outputFile;
-  TTree* treeReco;
-  TTree* treeGen;
+  TFile* outputFile = nullptr;
+  TTree* treeReco = nullptr;
+  TTree* treeGen = nullptr;
 
   // Variables for tree branches
   mutable double zBosonMassReco;
@@ -58,6 +60,10 @@ private:
 
   mutable int recoMuonSize;
   mutable int genMuonSize;
+  mutable double scaleFactor;
+
+  // Mutex for thread safety
+  mutable std::mutex mtx_;
 };
 
 AnalysisMC::AnalysisMC(const edm::ParameterSet& iConfig)
@@ -70,7 +76,12 @@ AnalysisMC::AnalysisMC(const edm::ParameterSet& iConfig)
       hltPath_(iConfig.getParameter<std::string>("hltPath")) {
 }
 
-AnalysisMC::~AnalysisMC() {}
+AnalysisMC::~AnalysisMC() {
+  if (outputFile) {
+    outputFile->Close();
+    delete outputFile;
+  }
+}
 
 void AnalysisMC::analyze(const edm::StreamID, const edm::Event& iEvent, const edm::EventSetup& iSetup) const {
   // Get the muons and event information
@@ -92,6 +103,10 @@ void AnalysisMC::analyze(const edm::StreamID, const edm::Event& iEvent, const ed
   edm::Handle<LHEEventProduct> lheEventInfo;
   iEvent.getByToken(lheEventToken_, lheEventInfo);
 
+  if (!muons.isValid() || !vertices.isValid() || !triggerResults.isValid() || !genEventInfo.isValid() || !genMuons.isValid() || !lheEventInfo.isValid()) {
+    return;
+  }
+
   // Check if the event passes the trigger
   const edm::TriggerNames &triggerNames = iEvent.triggerNames(*triggerResults);
   bool passTrigger = false;
@@ -109,14 +124,19 @@ void AnalysisMC::analyze(const edm::StreamID, const edm::Event& iEvent, const ed
 
   reco::Vertex primaryVertex;
   if (!vertices->empty()) {
-    primaryVertex = vertices->front();  // Get first good vertex
+    primaryVertex = vertices->front();  
   }
 
   // Store reco muons
   std::vector<reco::Muon> recoMuons;
   for (const auto& muon : *muons) {
     if (muon.pt() > 24 && fabs(muon.eta()) < 2.4) {
-      recoMuons.push_back(muon);
+      float isolation = (muon.pfIsolationR04().sumChargedHadronPt + 
+                         ((muon.pfIsolationR04().sumNeutralHadronEt + muon.pfIsolationR04().sumPhotonEt - 0.5 * muon.pfIsolationR04().sumPUPt) > 0 ? 
+                          (muon.pfIsolationR04().sumNeutralHadronEt + muon.pfIsolationR04().sumPhotonEt - 0.5 * muon.pfIsolationR04().sumPUPt) : 0)) / muon.pt();
+      if (isolation < 0.15) {
+        recoMuons.push_back(muon);
+      }
     }
   }
 
@@ -132,11 +152,46 @@ void AnalysisMC::analyze(const edm::StreamID, const edm::Event& iEvent, const ed
 
   genMuonSize = genMuonCandidates.size();
 
+  // MC Truth Matching - dR
+  double deltaRCut = 0.15;
+  std::vector<reco::Muon> matchedRecoMuons;
+  std::vector<reco::GenParticle> matchedGenMuons;
+
+  for (const auto& recoMuon : recoMuons) {
+    for (const auto& genMuon : genMuonCandidates) {
+      double deltaR = reco::deltaR(recoMuon.eta(), recoMuon.phi(), genMuon.eta(), genMuon.phi());
+      if (deltaR < deltaRCut) {
+        matchedRecoMuons.push_back(recoMuon);
+        matchedGenMuons.push_back(genMuon);
+        break;  
+      }
+    }
+  }
+
+  // Scale Factor 
+  // ...?
+
   // Reco-level Z boson mass
   auto reconstructZBoson = [](const std::vector<reco::Muon>& muons) -> double {
     if (muons.size() < 2) return 0.0;
-    math::XYZTLorentzVector zBoson = muons[0].p4() + muons[1].p4();
-    return zBoson.M();
+
+    math::XYZTLorentzVector goodZBoson;
+    double goodMass = 0.0;
+    
+    for (size_t i = 0; i < muons.size() - 1; ++i) {
+      for (size_t j = i + 1; j < muons.size(); ++j) {
+        if ((muons[i].charge() + muons[j].charge() == 0) && (fabs(muons[i].vz()-muons[j].vz()) < 0.5)) {
+          math::XYZTLorentzVector zBoson = muons[i].p4() + muons[j].p4();
+          double mass = zBoson.M();
+          if (fabs(mass - 91.2) < fabs(goodMass - 91.2)) {
+            goodMass = mass;
+            goodZBoson = zBoson;
+          }
+        }
+      }
+    }
+    
+    return goodMass;
   };
 
   zBosonMassReco = recoMuons.size() >= 2 ? reconstructZBoson(recoMuons) : 0;
@@ -144,56 +199,61 @@ void AnalysisMC::analyze(const edm::StreamID, const edm::Event& iEvent, const ed
   // Gen-level Z boson mass
   auto reconstructGenZBoson = [](const std::vector<reco::GenParticle>& genMuons) -> double {
     if (genMuons.size() < 2) return 0.0;
-    math::XYZTLorentzVector zBoson = genMuons[0].p4() + genMuons[1].p4();
-    return zBoson.M();
+
+    math::XYZTLorentzVector goodZBoson;
+    double goodMass = 0.0;
+    
+    for (size_t i = 0; i < genMuons.size() - 1; ++i) {
+      for (size_t j = i + 1; j < genMuons.size(); ++j) {
+        if ((genMuons[i].charge() + genMuons[j].charge() == 0) && (fabs(genMuons[i].vz()-genMuons[j].vz()) < 0.5)) {
+          math::XYZTLorentzVector zBoson = genMuons[i].p4() + genMuons[j].p4();
+          double mass = zBoson.M();
+          if (fabs(mass - 91.1876) < fabs(goodMass - 91.1876)) {
+            goodMass = mass;
+            goodZBoson = zBoson;
+          }
+        }
+      }
+    }
+    
+    return goodMass;
   };
 
   zBosonMassGen = genMuonCandidates.size() >= 2 ? reconstructGenZBoson(genMuonCandidates) : 0;
 
-  // Get event info and MC weights
-  eventNumber = iEvent.id().event();
-  runNumber = iEvent.id().run();
-  lumiSection = iEvent.luminosityBlock();
+  // Store weights
   mcWeight = genEventInfo->weight();
 
-  // Get PDF weights
-  if (lheEventInfo.isValid() && lheEventInfo->weights().size() > 0) {
-    pdfWeight = lheEventInfo->weights()[0].wgt;
+  // Write to tree
+  {
+    std::lock_guard<std::mutex> lock(mtx_);
+    treeReco->Fill();
+    treeGen->Fill();
   }
-
-  // Fill trees
-  treeReco->Fill();
-  treeGen->Fill();
 }
 
 void AnalysisMC::beginJob() {
-  // Setup output file and trees
-//  const char* filename = std::getenv("CRAB_OUTPUT_FILENAME"); // For CRAB jobs
-//  if (filename == nullptr) {
-//    filename = "mc_data.root";
-//  }
-  
-  outputFile = new TFile("mc_data.root", "RECREATE");
+  std::lock_guard<std::mutex> lock(mtx_);
+  outputFile = new TFile("z_analysis_output.root", "RECREATE");
 
-  // Trees for Reco-level and Gen-level information
-  treeReco = new TTree("RecoTree", "Reco-level Muons and Z Boson");
-  treeGen = new TTree("GenTree", "Gen-level Muons and Z Boson");
-
+  treeReco = new TTree("treeReco", "Reconstructed objects");
   treeReco->Branch("zBosonMassReco", &zBosonMassReco, "zBosonMassReco/D");
-  treeReco->Branch("eventNumber", &eventNumber, "eventNumber/I");
-  treeReco->Branch("runNumber", &runNumber, "runNumber/I");
-  treeReco->Branch("lumiSection", &lumiSection, "lumiSection/I");
-  treeReco->Branch("mcWeight", &mcWeight, "mcWeight/D");
   treeReco->Branch("recoMuonSize", &recoMuonSize, "recoMuonSize/I");
+  treeReco->Branch("scaleFactor", &scaleFactor, "scaleFactor/D");
 
+  treeGen = new TTree("treeGen", "Generated objects");
   treeGen->Branch("zBosonMassGen", &zBosonMassGen, "zBosonMassGen/D");
   treeGen->Branch("genMuonSize", &genMuonSize, "genMuonSize/I");
-  treeGen->Branch("pdfWeight", &pdfWeight, "pdfWeight/D");
 }
 
 void AnalysisMC::endJob() {
-  outputFile->Write();
-  outputFile->Close();
+  std::lock_guard<std::mutex> lock(mtx_);
+  if (outputFile) {
+    outputFile->Write();
+    outputFile->Close();
+    delete outputFile;
+    outputFile = nullptr;
+  }
 }
 
 void AnalysisMC::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
@@ -202,5 +262,4 @@ void AnalysisMC::fillDescriptions(edm::ConfigurationDescriptions& descriptions) 
   descriptions.addDefault(desc);
 }
 
-// Define the plugin
 DEFINE_FWK_MODULE(AnalysisMC);
