@@ -156,20 +156,35 @@ void AnalysisMC::analyze(const edm::StreamID, const edm::Event& iEvent, const ed
   double deltaRCut = 0.15;
   std::vector<reco::Muon> matchedRecoMuons;
   std::vector<reco::GenParticle> matchedGenMuons;
+  std::vector<bool> genMuonMatched(genMuonCandidates.size(), false);  
 
   for (const auto& recoMuon : recoMuons) {
-    for (const auto& genMuon : genMuonCandidates) {
-      double deltaR = reco::deltaR(recoMuon.eta(), recoMuon.phi(), genMuon.eta(), genMuon.phi());
-      if (deltaR < deltaRCut) {
-        matchedRecoMuons.push_back(recoMuon);
-        matchedGenMuons.push_back(genMuon);
-        break;  
+    double bestDeltaR = deltaRCut;
+    int bestGenMuonIndex = -1;
+
+    for (size_t i = 0; i < genMuonCandidates.size(); ++i) {
+      if (genMuonMatched[i]) continue;  
+
+      double deltaR = reco::deltaR(recoMuon.eta(), recoMuon.phi(), genMuonCandidates[i].eta(), genMuonCandidates[i].phi());
+      if (deltaR < bestDeltaR) {
+        bestDeltaR = deltaR;
+        bestGenMuonIndex = i;
       }
+    }
+
+    if (bestGenMuonIndex >= 0) {
+      matchedRecoMuons.push_back(recoMuon);
+      matchedGenMuons.push_back(genMuonCandidates[bestGenMuonIndex]);
+      genMuonMatched[bestGenMuonIndex] = true; 
     }
   }
 
   // Scale Factor 
-  // ...?
+  if (!matchedRecoMuons.empty() && !matchedGenMuons.empty()) {
+    scaleFactor = static_cast<double>(matchedRecoMuons.size()) / genMuonCandidates.size();
+  } else {
+    scaleFactor = 0.0;
+  }
 
   // Reco-level Z boson mass
   auto reconstructZBoson = [](const std::vector<reco::Muon>& muons) -> double {
@@ -215,8 +230,12 @@ void AnalysisMC::analyze(const edm::StreamID, const edm::Event& iEvent, const ed
         }
       }
     }
-    
-    return goodMass;
+    if (goodMass > 1) {
+      return goodMass;
+    }
+    else {
+      return 0.0;
+    }
   };
 
   zBosonMassGen = genMuonCandidates.size() >= 2 ? reconstructGenZBoson(genMuonCandidates) : 0;
@@ -234,8 +253,6 @@ void AnalysisMC::analyze(const edm::StreamID, const edm::Event& iEvent, const ed
 
 void AnalysisMC::beginJob() {
   std::lock_guard<std::mutex> lock(mtx_);
-  outputFile = new TFile("z_analysis_output.root", "RECREATE");
-
   treeReco = new TTree("treeReco", "Reconstructed objects");
   treeReco->Branch("zBosonMassReco", &zBosonMassReco, "zBosonMassReco/D");
   treeReco->Branch("recoMuonSize", &recoMuonSize, "recoMuonSize/I");
@@ -248,12 +265,6 @@ void AnalysisMC::beginJob() {
 
 void AnalysisMC::endJob() {
   std::lock_guard<std::mutex> lock(mtx_);
-  if (outputFile) {
-    outputFile->Write();
-    outputFile->Close();
-    delete outputFile;
-    outputFile = nullptr;
-  }
 }
 
 void AnalysisMC::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {

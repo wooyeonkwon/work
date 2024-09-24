@@ -19,7 +19,7 @@ directory_path = '/eos/cms/store/mc/Run3Summer22DRPremix/DYto2L-2Jets_MLL-50_Tun
 file_list = os.listdir(directory_path)
 file_paths = [f'file://{directory_path}{filename}' for filename in file_list]
 #file_paths =  ['file:///eos/cms/store/mc/Run3Summer22DRPremix/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/AODSIM/124X_mcRun3_2022_realistic_v12_ext1-v1/70000/00775a3b-7386-44ac-8ade-e3aafbdc0261.root']
-#file_names_string = ',\n'.join([f'"{file_path}"' for file_path in file_paths])
+
 
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(*file_paths)
@@ -28,12 +28,14 @@ process.source = cms.Source("PoolSource",
 # Enable multithreading
 process.options = cms.untracked.PSet(
     numberOfThreads = cms.untracked.uint32(1),  # Number of threads
-    numberOfStreams = cms.untracked.uint32(0)   # Number of streams
+    numberOfStreams = cms.untracked.uint32(0),  # Number of streams
+#    sizeOfStackForThreadsInKB = cms.untracked.uint32(10*1024)  # Stack size per thread in KB
 )
 
-#process.TFileService = cms.Service("TFileService",
-#    fileName = cms.string("mc_data.root")
-#)
+# Use TFileService to manage output file
+process.TFileService = cms.Service("TFileService",
+    fileName = cms.string("mc_data.root")
+)
 
 process.Analysis = cms.EDAnalyzer('AnalysisMC',
     muons = cms.InputTag("muons"),

@@ -43,7 +43,7 @@ double dscbf(double *x, double *par)
 void drawHistogramAndFit(TTree* tree, const char* branchName, const char* histTitle, const char* histFileName, const char* canvasTitle, const char* logFileName, double xMin = 60, double xMax = 120) {
     double zBosonMass;
     tree->SetBranchAddress(branchName, &zBosonMass);
-    TH1F* hist = new TH1F(histTitle, Form("%s;Mass (GeV);Events", histTitle), 360, 0, 180);
+    TH1F* hist = new TH1F(histTitle, Form("%s;Mass (GeV);Events", histTitle), 1800, 0, 180);
 
 
     Long64_t nEntries = tree->GetEntries();
@@ -56,7 +56,7 @@ void drawHistogramAndFit(TTree* tree, const char* branchName, const char* histTi
     TCanvas* canvas = new TCanvas(canvasTitle, canvasTitle, 800, 600);
     gStyle->SetOptStat(0);
     hist->Draw();
-    TF1* fitFunc = new TF1(Form("fitFunc%s", canvasTitle), dscbf, xMin, xMax, 7);
+    TF1* fitFunc = new TF1(Form("fitFunc%s", canvasTitle), dscbf, 60, 120, 7);
     fitFunc->SetParNames("AlphaL", "AlphaH", "nL", "nH", "Mean", "Sigma", "Events");
     fitFunc->SetParameters(1.25, 1.44, 1.59, 1.8, 91.2, 2.0, nEntries);
     hist->Fit(fitFunc, "R");
@@ -107,6 +107,9 @@ void drawHistograms_cbf(const char* filename) {
     TTree *treeRPC = nullptr;
     TTree *treeGEM = nullptr;
     TTree *treeME0 = nullptr;
+    TTree *treeReco = nullptr;
+    TTree *treeGen = nullptr;
+
     file->GetObject("GlobalMuons", treeGlobal);
     file->GetObject("TrackerMuons", treeTracker);
     file->GetObject("StandAloneMuons", treeStandAlone);
@@ -115,6 +118,9 @@ void drawHistograms_cbf(const char* filename) {
     file->GetObject("RPCMuons", treeRPC);
     file->GetObject("GEMMuons", treeGEM);
     file->GetObject("ME0Muons", treeME0);
+    file->GetObject("treeReco", treeReco);
+    file->GetObject("treeGen", treeGen);
+
 
     // draw hist for exist trees
     if (!treeGlobal) std::cerr << "GlobalMuons tree not found." << std::endl;
@@ -133,6 +139,10 @@ void drawHistograms_cbf(const char* filename) {
     else drawHistogramAndFit(treeGEM, "zBosonMass", "Z Bosons (GEM)", "zBosonsGEM.png", "GEM Z mass", "fit_results.txt");
     if (!treeME0) std::cerr << "ME0Muons tree not found." << std::endl;
     else drawHistogramAndFit(treeME0, "zBosonMass", "Z Bosons (ME0)", "zBosonsME0.png", "ME0 Z mass", "fit_results.txt");
+    if (!treeReco) std::cerr << "RecoMuons tree not found." << std::endl;
+    else drawHistogramAndFit(treeReco, "zBosonMassReco", "Z Bosons (Reco)", "zBosonsReco.png", "Reco Z mass", "fit_results.txt");
+    if (!treeGen) std::cerr << "GenMuons tree not found." << std::endl;
+    else drawHistogramAndFit(treeGen, "zBosonMassGen", "Z Bosons (Gen)", "zBosonsGen.png", "Gen Z mass", "fit_results.txt");
 
 
     file->Close();

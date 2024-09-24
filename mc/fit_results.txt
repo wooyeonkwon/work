@@ -1,0 +1,18 @@
+Reco Z mass Fit Parameters:
+AlphaL: 1.1226
+AlphaH: 1.30722
+nL: 2.05874
+nH: 2.2078
+Mean: 90.9799
+Sigma: 1.90361
+Amplitude: 8502.33
+
+Gen Z mass Fit Parameters:
+AlphaL: 0.907997
+AlphaH: 1.08054
+nL: 1.80621
+nH: 2.10425
+Mean: 91.0834
+Sigma: 1.11432
+Amplitude: 13180.4
+
