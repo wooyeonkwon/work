@@ -16,3 +16,21 @@ Mean: 91.0834
 Sigma: 1.11432
 Amplitude: 13180.4
 
+Reco Z mass Fit Parameters:
+AlphaL: 1.1206
+AlphaH: 1.31127
+nL: 2.06635
+nH: 2.19414
+Mean: 90.9814
+Sigma: 1.90424
+Amplitude: 8500.88
+
+Gen Z mass Fit Parameters:
+AlphaL: 0.908012
+AlphaH: 1.08058
+nL: 1.80623
+nH: 2.10422
+Mean: 91.0834
+Sigma: 1.11435
+Amplitude: 13180.2
+

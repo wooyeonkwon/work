@@ -1,4 +1,5 @@
 #include <memory>
+#include <mutex>
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/global/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Event.h"
@@ -16,7 +17,6 @@
 #include "TFile.h"
 #include "TTree.h"
 #include <cstdlib>
-
 
 class Analysis : public edm::global::EDAnalyzer<> {
 public:
@@ -66,11 +66,9 @@ private:
   mutable int muonSizeRPC;
   mutable int muonSizeGEM;
   mutable int muonSizeME0;
-  
+
+  mutable std::mutex mtx_;
 };
-
-
-
 
 Analysis::Analysis(const edm::ParameterSet& iConfig)
     : muonToken_(consumes<reco::MuonCollection>(iConfig.getParameter<edm::InputTag>("muons"))),
@@ -82,171 +80,25 @@ Analysis::Analysis(const edm::ParameterSet& iConfig)
 Analysis::~Analysis() {
 }
 
-void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm::EventSetup& iSetup) const {
-  edm::Handle<reco::MuonCollection> muons;
-  iEvent.getByToken(muonToken_, muons);
-
-  edm::Handle<reco::VertexCollection> vertices;
-  iEvent.getByToken(vertexToken_, vertices);
-
-  edm::Handle<edm::TriggerResults> triggerResults;
-  iEvent.getByToken(triggerToken_, triggerResults);
-
-  const edm::TriggerNames &triggerNames = iEvent.triggerNames(*triggerResults);
-  bool passTrigger = false;
-
-  // Check if the event passes the HLT_IsoMu24_v trigger
-  for (unsigned int i = 0; i < triggerResults->size(); ++i) {
-    if (triggerNames.triggerName(i).find(hltPath_) != std::string::npos) {
-      if (triggerResults->accept(i)) {
-        passTrigger = true;
-        break;
-      }
-    }
-  }
-
-  if (!passTrigger) return;  // Skip event if it doesn't pass the trigger
-
-  reco::Vertex primaryVertex;
-  if (!vertices->empty()) {
-    primaryVertex = vertices->front();  // get first good vertex
-  }
-  
-  std::vector<reco::Muon> globalMuons;
-  std::vector<reco::Muon> trackerMuons;
-  std::vector<reco::Muon> standAloneMuons;
-  std::vector<reco::Muon> caloMuons;
-  std::vector<reco::Muon> pfMuons;
-  std::vector<reco::Muon> rpcMuons;
-  std::vector<reco::Muon> gemMuons;
-  std::vector<reco::Muon> me0Muons;
-  
-  eventNumber = iEvent.id().event();
-  runNumber = iEvent.id().run();
-  lumiSection = iEvent.luminosityBlock();
-
-//muon selection
-  for (const auto& muon : *muons) {
-    if (muon.pt() > 24 && fabs(muon.eta()) < 2.4) {
-      float isolation = (muon.pfIsolationR04().sumChargedHadronPt + 
-                         ((muon.pfIsolationR04().sumNeutralHadronEt + muon.pfIsolationR04().sumPhotonEt - 0.5 * muon.pfIsolationR04().sumPUPt) > 0 ? 
-                          (muon.pfIsolationR04().sumNeutralHadronEt + muon.pfIsolationR04().sumPhotonEt - 0.5 * muon.pfIsolationR04().sumPUPt) : 0)) / muon.pt();
-      if (isolation < 0.15) {
-        if (muon.isGlobalMuon()) {
-          globalMuons.push_back(muon);
-          if (muon.isTrackerMuon()) {
-            trackerMuons.push_back(muon);
-          }
-          if (muon.isStandAloneMuon()) {
-            standAloneMuons.push_back(muon);
-          }
-          if (muon.isCaloMuon()) {
-            caloMuons.push_back(muon);
-          }
-          if (muon.isPFMuon()) {
-            pfMuons.push_back(muon);
-          }
-          if (muon.isRPCMuon()) {
-            rpcMuons.push_back(muon); 
-          }
-          if (muon.isGEMMuon()) {
-            gemMuons.push_back(muon);
-          }
-          if (muon.isME0Muon()) {
-            me0Muons.push_back(muon);
-          }
-          }
-      }
-    }
-  }
-
-
-
-//Z reconstruction  
-  auto reconstructZBoson = [](const std::vector<reco::Muon>& muons) -> double {
-    if (muons.size() < 2) return 0.0;
-
-    math::XYZTLorentzVector goodZBoson;
-    double goodMass = 0.0;
-    
-    for (size_t i = 0; i < muons.size() - 1; ++i) {
-      for (size_t j = i + 1; j < muons.size(); ++j) {
-        if ((muons[i].charge() + muons[j].charge() == 0) && (fabs(muons[i].vz()-muons[j].vz()) < 0.5)) {
-          math::XYZTLorentzVector zBoson = muons[i].p4() + muons[j].p4();
-          double mass = zBoson.M();
-          if (fabs(mass - 91.2) < fabs(goodMass - 91.2)) {
-            goodMass = mass;
-            goodZBoson = zBoson;
-          }
-        }
-      }
-    }
-    
-    return goodMass;
-  };
-
-
-  zBosonMassGlobal = reconstructZBoson(globalMuons);
-  zBosonMassTracker = reconstructZBoson(trackerMuons);
-  zBosonMassStandAlone = reconstructZBoson(standAloneMuons);
-  zBosonMassCalo = reconstructZBoson(caloMuons);
-  zBosonMassPF = reconstructZBoson(pfMuons);
-  zBosonMassRPC = reconstructZBoson(rpcMuons);
-  zBosonMassGEM = reconstructZBoson(gemMuons);
-  zBosonMassME0 = reconstructZBoson(me0Muons);
-
-  muonSizeGlobal = globalMuons.size();
-  muonSizeTracker = trackerMuons.size();
-  muonSizeStandAlone = standAloneMuons.size();
-  muonSizeCalo = caloMuons.size();
-  muonSizePF = pfMuons.size();
-  muonSizeRPC = rpcMuons.size();
-  muonSizeGEM = gemMuons.size();
-  muonSizeME0 = me0Muons.size();
-
-
-  if (zBosonMassGlobal > 0.0) {
-    treeGlobal->Fill();
-  }
-  
-  if (zBosonMassTracker > 0.0) {
-    treeTracker->Fill();
-  }
-  
-  if (zBosonMassStandAlone > 0.0) {
-    treeStandAlone->Fill();
-  }
-  
-  if (zBosonMassCalo > 0.0) {
-    treeCalo->Fill();
-  }
-  
-  if (zBosonMassPF > 0.0) {
-    treePF->Fill();
-  }
-  
-  if (zBosonMassRPC > 0.0) {
-    treeRPC->Fill();
-  }
-  
-  if (zBosonMassGEM > 0.0) {
-    treeGEM->Fill();
-  }
-  
-  if (zBosonMassME0 > 0.0) {
-    treeME0->Fill();
-  }
-}
-
 void Analysis::beginJob() {
-  const char* filename = std::getenv("CRAB_OUTPUT_FILENAME"); //use this with crab job
-  if (filename == nullptr) {
-    filename = "data_D.root";
-  }
-  outputFile = new TFile(filename, "RECREATE");
+  std::lock_guard<std::mutex> lock(mtx_);
+  // TFileService를 사용하므로 파일 생성 코드 제거
+  // const char* crabId = std::getenv("CRAB_Id");
+  // std::string filename = "data";
+  // if (crabId != nullptr) {
+  //   filename += "_" + std::string(crabId);
+  // }
+  // filename += ".root";
 
+  // outputFile = new TFile(filename.c_str(), "RECREATE");
+  // if (!outputFile || outputFile->IsZombie()) {
+  //   throw std::runtime_error("Failed to open output file");
+  // }
 
   treeGlobal = new TTree("GlobalMuons", "Global Muons");
+  if (!treeGlobal) {
+    throw std::runtime_error("Failed to create treeGlobal");
+  }
   treeTracker = new TTree("TrackerMuons", "Tracker Muons");
   treeStandAlone = new TTree("StandAloneMuons", "StandAlone Muons");
   treeCalo = new TTree("CaloMuons", "Calo Muons");
@@ -254,7 +106,6 @@ void Analysis::beginJob() {
   treeRPC = new TTree("RPCMuons", "RPC Muons");
   treeGEM = new TTree("GEMMuons", "GEM Muons");
   treeME0 = new TTree("ME0Muons", "ME0 Muons");
-
 
   treeGlobal->Branch("zBosonMass", &zBosonMassGlobal, "zBosonMass/D");
   treeGlobal->Branch("eventNumber", &eventNumber, "eventNumber/I");
@@ -305,28 +156,211 @@ void Analysis::beginJob() {
   treeME0->Branch("muonSize", &muonSizeME0, "muonSize/I");
 }
 
+void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm::EventSetup& iSetup) const {
+  edm::Handle<reco::MuonCollection> muons;
+  int retryCount = 0;
+  const int maxRetries = 3;
+  bool success = false;
 
-void Analysis::endJob() {
-  outputFile->Write();
+  while (retryCount < maxRetries && !success) {
+    try {
+      iEvent.getByToken(muonToken_, muons);
+      success = true;
+    } catch (const cms::Exception& e) {
+      ++retryCount;
+      if (retryCount == maxRetries) {
+        throw;
+      }
+      edm::LogWarning("Analysis") << "Failed to get muon collection, retrying... (" << retryCount << "/" << maxRetries << ")";
+    }
+  }
 
-  delete treeGlobal;
-  delete treeTracker;
-  delete treeStandAlone;
-  delete treeCalo;
-  delete treePF;
-  delete treeRPC;
-  delete treeGEM;
-  delete treeME0;
+  edm::Handle<reco::VertexCollection> vertices;
+  iEvent.getByToken(vertexToken_, vertices);
 
-  outputFile->Close();
-  delete outputFile;
+  edm::Handle<edm::TriggerResults> triggerResults;
+  iEvent.getByToken(triggerToken_, triggerResults);
+
+  const edm::TriggerNames &triggerNames = iEvent.triggerNames(*triggerResults);
+  bool passTrigger = false;
+
+  // Check if the event passes the HLT_IsoMu24_v trigger
+  for (unsigned int i = 0; i < triggerResults->size(); ++i) {
+    if (triggerNames.triggerName(i).find(hltPath_) != std::string::npos) {
+      if (triggerResults->accept(i)) {
+        passTrigger = true;
+        break;
+      }
+    }
+  }
+
+  if (!passTrigger) return;  // Skip event if it doesn't pass the trigger
+
+  reco::Vertex primaryVertex;
+  if (!vertices->empty()) {
+    primaryVertex = vertices->front();  // get first good vertex
+  }
+  
+  std::vector<reco::Muon> globalMuons;
+  std::vector<reco::Muon> trackerMuons;
+  std::vector<reco::Muon> standAloneMuons;
+  std::vector<reco::Muon> caloMuons;
+  std::vector<reco::Muon> pfMuons;
+  std::vector<reco::Muon> rpcMuons;
+  std::vector<reco::Muon> gemMuons;
+  std::vector<reco::Muon> me0Muons;
+  
+  eventNumber = iEvent.id().event();
+  runNumber = iEvent.id().run();
+  lumiSection = iEvent.luminosityBlock();
+
+//muon selection
+  for (const auto& muon : *muons) {
+    if (muon.pt() > 24 && fabs(muon.eta()) < 2.4 && muon::isTightMuon(muon, primaryVertex)) {
+      float isolation = (muon.pfIsolationR04().sumChargedHadronPt + 
+                         ((muon.pfIsolationR04().sumNeutralHadronEt + muon.pfIsolationR04().sumPhotonEt - 0.5 * muon.pfIsolationR04().sumPUPt) > 0 ? 
+                          (muon.pfIsolationR04().sumNeutralHadronEt + muon.pfIsolationR04().sumPhotonEt - 0.5 * muon.pfIsolationR04().sumPUPt) : 0)) / muon.pt();
+      if (isolation < 0.15) {
+        if (muon.isGlobalMuon()) {
+          globalMuons.push_back(muon);
+          if (muon.isTrackerMuon()) {
+            trackerMuons.push_back(muon);
+          }
+          if (muon.isStandAloneMuon()) {
+            standAloneMuons.push_back(muon);
+          }
+          if (muon.isCaloMuon()) {
+            caloMuons.push_back(muon);
+          }
+          if (muon.isPFMuon()) {
+            pfMuons.push_back(muon);
+          }
+          if (muon.isRPCMuon()) {
+            rpcMuons.push_back(muon); 
+          }
+          if (muon.isGEMMuon()) {
+            gemMuons.push_back(muon);
+          }
+          if (muon.isME0Muon()) {
+            me0Muons.push_back(muon);
+          }
+          }
+      }
+    }
+  }
+
+
+
+//Z reconstruction  
+  auto reconstructZBoson = [](const std::vector<reco::Muon>& muons) -> double {
+    if (muons.size() < 2) return 0.0;
+
+    math::XYZTLorentzVector goodZBoson;
+    double goodMass = 0.0;
+    
+    for (size_t i = 0; i < muons.size() - 1; ++i) {
+      for (size_t j = i + 1; j < muons.size(); ++j) {
+        if ((muons[i].charge() + muons[j].charge() == 0) && (fabs(muons[i].vz()-muons[j].vz()) < 0.5)) {
+          math::XYZTLorentzVector zBoson = muons[i].p4() + muons[j].p4();
+          double mass = zBoson.M();
+          if (fabs(mass - 91.1876) < fabs(goodMass - 91.1876)) {
+            goodMass = mass;
+            goodZBoson = zBoson;
+          }
+        }
+      }
+    }
+    
+    if (goodMass > 1) {   
+      return goodMass;
+    }
+    else {
+      return 0;
+    }
+  };
+
+
+  zBosonMassGlobal = reconstructZBoson(globalMuons);
+  zBosonMassTracker = reconstructZBoson(trackerMuons);
+  zBosonMassStandAlone = reconstructZBoson(standAloneMuons);
+  zBosonMassCalo = reconstructZBoson(caloMuons);
+  zBosonMassPF = reconstructZBoson(pfMuons);
+  zBosonMassRPC = reconstructZBoson(rpcMuons);
+  zBosonMassGEM = reconstructZBoson(gemMuons);
+  zBosonMassME0 = reconstructZBoson(me0Muons);
+
+  muonSizeGlobal = globalMuons.size();
+  muonSizeTracker = trackerMuons.size();
+  muonSizeStandAlone = standAloneMuons.size();
+  muonSizeCalo = caloMuons.size();
+  muonSizePF = pfMuons.size();
+  muonSizeRPC = rpcMuons.size();
+  muonSizeGEM = gemMuons.size();
+  muonSizeME0 = me0Muons.size();
+
+
+  if (zBosonMassGlobal > 0.0) {
+    treeGlobal->Fill();
+  }
+  
+  if (zBosonMassTracker > 0.0) {
+    treeTracker->Fill();
+  }
+  
+  if (zBosonMassStandAlone > 0.0) {
+    treeStandAlone->Fill();
+  }
+  
+  if (zBosonMassCalo > 0.0) {
+    treeCalo->Fill();
+  }
+  
+  if (zBosonMassPF > 0.0) {
+    treePF->Fill();
+  }
+  
+  if (zBosonMassRPC > 0.0) {
+    treeRPC->Fill();
+  }
+  if (zBosonMassGEM > 0.0) {
+    treeGEM->Fill();
+
+  }
+  
+  if (zBosonMassME0 > 0.0) {
+    treeME0->Fill();
+  }
 }
 
+void Analysis::endJob() {
+  std::lock_guard<std::mutex> lock(mtx_);
+  if (outputFile) {
+    outputFile->Write();
+    outputFile->Close();
+    delete outputFile;
+    outputFile = nullptr;
+  }
+
+  // TFileService를 사용하므로 트리 삭제 코드 제거
+  // delete treeGlobal;
+  // delete treeTracker;
+  // delete treeStandAlone;
+  // delete treeCalo;
+  // delete treePF;
+  // delete treeRPC;
+  // delete treeGEM;
+  // delete treeME0;
+
+  std::cout << "endJob" << std::endl;
+}
 
 void Analysis::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
   edm::ParameterSetDescription desc;
-  desc.setUnknown();
-  descriptions.addDefault(desc);
+  desc.add<edm::InputTag>("muons", edm::InputTag("muons"));
+  desc.add<edm::InputTag>("triggerResults", edm::InputTag("TriggerResults"));
+  desc.add<edm::InputTag>("vertices", edm::InputTag("offlinePrimaryVertices"));
+  desc.add<std::string>("hltPath", "HLT_IsoMu24_v*");
+  descriptions.add("analysis", desc);
 }
 
 DEFINE_FWK_MODULE(Analysis);

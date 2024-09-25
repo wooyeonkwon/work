@@ -130,7 +130,7 @@ void AnalysisMC::analyze(const edm::StreamID, const edm::Event& iEvent, const ed
   // Store reco muons
   std::vector<reco::Muon> recoMuons;
   for (const auto& muon : *muons) {
-    if (muon.pt() > 24 && fabs(muon.eta()) < 2.4) {
+    if (muon.pt() > 24 && fabs(muon.eta()) < 2.4 &&  muon::isTightMuon(muon, primaryVertex)) {
       float isolation = (muon.pfIsolationR04().sumChargedHadronPt + 
                          ((muon.pfIsolationR04().sumNeutralHadronEt + muon.pfIsolationR04().sumPhotonEt - 0.5 * muon.pfIsolationR04().sumPUPt) > 0 ? 
                           (muon.pfIsolationR04().sumNeutralHadronEt + muon.pfIsolationR04().sumPhotonEt - 0.5 * muon.pfIsolationR04().sumPUPt) : 0)) / muon.pt();
@@ -145,14 +145,14 @@ void AnalysisMC::analyze(const edm::StreamID, const edm::Event& iEvent, const ed
   // Store gen-level muons
   std::vector<reco::GenParticle> genMuonCandidates;
   for (const auto& genMuon : *genMuons) {
-    if (fabs(genMuon.pdgId()) == 13 && genMuon.status() == 1 && genMuon.pt() > 24 && fabs(genMuon.eta()) < 2.4) {
+    if (fabs(genMuon.pdgId()) == 13 && genMuon.status() == 1 && genMuon.pt() > 24 && fabs(genMuon.eta()) < 2.4 && genMuon.isTightMuon(primaryVertex)) {
       genMuonCandidates.push_back(genMuon);
     }
   }
 
   genMuonSize = genMuonCandidates.size();
 
-  // MC Truth Matching - dR
+  // MC Truth Matching - dR and charge matching
   double deltaRCut = 0.15;
   std::vector<reco::Muon> matchedRecoMuons;
   std::vector<reco::GenParticle> matchedGenMuons;
@@ -166,7 +166,7 @@ void AnalysisMC::analyze(const edm::StreamID, const edm::Event& iEvent, const ed
       if (genMuonMatched[i]) continue;  
 
       double deltaR = reco::deltaR(recoMuon.eta(), recoMuon.phi(), genMuonCandidates[i].eta(), genMuonCandidates[i].phi());
-      if (deltaR < bestDeltaR) {
+      if (deltaR < bestDeltaR && recoMuon.charge() == genMuonCandidates[i].charge()) {
         bestDeltaR = deltaR;
         bestGenMuonIndex = i;
       }
@@ -198,15 +198,19 @@ void AnalysisMC::analyze(const edm::StreamID, const edm::Event& iEvent, const ed
         if ((muons[i].charge() + muons[j].charge() == 0) && (fabs(muons[i].vz()-muons[j].vz()) < 0.5)) {
           math::XYZTLorentzVector zBoson = muons[i].p4() + muons[j].p4();
           double mass = zBoson.M();
-          if (fabs(mass - 91.2) < fabs(goodMass - 91.2)) {
+          if (fabs(mass - 91.1876) < fabs(goodMass - 91.1876)) {
             goodMass = mass;
             goodZBoson = zBoson;
           }
         }
       }
     }
-    
-    return goodMass;
+    if (goodMass > 1) { 
+      return goodMass;
+    }
+    else {
+      return 0;
+    }
   };
 
   zBosonMassReco = recoMuons.size() >= 2 ? reconstructZBoson(recoMuons) : 0;
@@ -230,11 +234,11 @@ void AnalysisMC::analyze(const edm::StreamID, const edm::Event& iEvent, const ed
         }
       }
     }
-    if (goodMass > 1) {
+    if (goodMass > 1) {   
       return goodMass;
     }
     else {
-      return 0.0;
+      return 0;
     }
   };
 
@@ -271,6 +275,10 @@ void AnalysisMC::fillDescriptions(edm::ConfigurationDescriptions& descriptions) 
   edm::ParameterSetDescription desc;
   desc.setUnknown();
   descriptions.addDefault(desc);
+}
+
+DEFINE_FWK_MODULE(AnalysisMC);
+criptions.addDefault(desc);
 }
 
 DEFINE_FWK_MODULE(AnalysisMC);

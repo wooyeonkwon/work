@@ -601,3 +601,101 @@ Traceback (most recent call last):
 CRABClient.ClientExceptions.ConfigException: Working area '/eos/home-w/wkwon/CMSSW_14_0_12/src/work/Analysis/crab_projects/crab_MuonAnalysis_Run2022D_6' already exists 
 Please change the requestName in the config file
 INFO 2024-09-09 04:14:34.744 UTC: 	 Log file is /eos/home-w/wkwon/CMSSW_14_0_12/src/work/Analysis/crab.log
+DEBUG 2024-09-14 06:17:18.558 UTC: 	 CRAB Client version: v3.240621
+DEBUG 2024-09-14 06:17:18.558 UTC: 	 Running on: Linux lxplus906.cern.ch 5.14.0-427.26.1.el9_4.x86_64 #1 SMP PREEMPT_DYNAMIC Fri Jul 5 11:34:54 EDT 2024 x86_64 x86_64 x86_64 GNU/Linux - Red Hat Enterprise Linux 9.4 (Plow)
+DEBUG 2024-09-14 06:17:18.558 UTC: 	 Executing command: 'submit'
+DEBUG 2024-09-14 06:17:18.559 UTC: 	 Found CRAB cache file /afs/cern.ch/user/w/wkwon/.crab3
+INFO 2024-09-14 06:17:18.559 UTC: 	 Will use CRAB configuration file crab_conf.py
+DEBUG 2024-09-14 06:17:18.559 UTC: 	 Loading CRAB configuration file.
+DEBUG 2024-09-14 06:17:18.563 UTC: 	 Will use CRAB plugin ANALYSIS (i.e. will run an analysis job type).
+ERROR 2024-09-14 06:17:18.564 UTC: 	 Working area '/eos/home-w/wkwon/CMSSW_14_0_12/src/work/Analysis/crab_projects/crab_MuonAnalysis_Run2022C' already exists 
+Please change the requestName in the config file
+ERROR 2024-09-14 06:17:18.564 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.240621.01/bin/crab.py", line 152, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.240621.01/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.240621.01/lib/CRABClient/Commands/submit.py", line 36, in __init__
+    SubCommand.__init__(self, logger, cmdargs, disable_interspersed_args=True)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.240621.01/lib/CRABClient/Commands/SubCommand.py", line 327, in __init__
+    self.requestarea, self.requestname, self.logfile = createWorkArea(
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.240621.01/lib/CRABClient/ClientUtilities.py", line 392, in createWorkArea
+    raise ConfigException("Working area '%s' already exists \nPlease change the requestName in the config file" % fullpath)
+CRABClient.ClientExceptions.ConfigException: Working area '/eos/home-w/wkwon/CMSSW_14_0_12/src/work/Analysis/crab_projects/crab_MuonAnalysis_Run2022C' already exists 
+Please change the requestName in the config file
+INFO 2024-09-14 06:17:18.567 UTC: 	 Log file is /eos/home-w/wkwon/CMSSW_14_0_12/src/work/Analysis/crab.log
+DEBUG 2024-09-19 05:11:27.719 UTC: 	 CRAB Client version: v3.240621
+DEBUG 2024-09-19 05:11:27.719 UTC: 	 Running on: Linux lxplus9115.cern.ch 5.14.0-427.24.1.el9_4.x86_64 #1 SMP PREEMPT_DYNAMIC Sun Jun 23 11:48:35 EDT 2024 x86_64 x86_64 x86_64 GNU/Linux - Red Hat Enterprise Linux 9.4 (Plow)
+DEBUG 2024-09-19 05:11:27.719 UTC: 	 Executing command: 'submit'
+DEBUG 2024-09-19 05:11:27.719 UTC: 	 Found CRAB cache file /afs/cern.ch/user/w/wkwon/.crab3
+INFO 2024-09-19 05:11:27.722 UTC: 	 Will use CRAB configuration file crab_conf.py
+DEBUG 2024-09-19 05:11:27.722 UTC: 	 Loading CRAB configuration file.
+DEBUG 2024-09-19 05:11:27.762 UTC: 	 Will use CRAB plugin ANALYSIS (i.e. will run an analysis job type).
+ERROR 2024-09-19 05:11:27.762 UTC: 	 Working area '/eos/home-w/wkwon/CMSSW_14_0_12/src/work/Analysis/crab_projects/crab_MuonAnalysis_Run2024G1' already exists 
+Please change the requestName in the config file
+ERROR 2024-09-19 05:11:27.763 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.240621.01/bin/crab.py", line 152, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.240621.01/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.240621.01/lib/CRABClient/Commands/submit.py", line 36, in __init__
+    SubCommand.__init__(self, logger, cmdargs, disable_interspersed_args=True)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.240621.01/lib/CRABClient/Commands/SubCommand.py", line 327, in __init__
+    self.requestarea, self.requestname, self.logfile = createWorkArea(
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.240621.01/lib/CRABClient/ClientUtilities.py", line 392, in createWorkArea
+    raise ConfigException("Working area '%s' already exists \nPlease change the requestName in the config file" % fullpath)
+CRABClient.ClientExceptions.ConfigException: Working area '/eos/home-w/wkwon/CMSSW_14_0_12/src/work/Analysis/crab_projects/crab_MuonAnalysis_Run2024G1' already exists 
+Please change the requestName in the config file
+INFO 2024-09-19 05:11:27.766 UTC: 	 Log file is /eos/home-w/wkwon/CMSSW_14_0_12/src/work/Analysis/crab.log
+DEBUG 2024-09-23 05:59:28.691 UTC: 	 CRAB Client version: v3.240621
+DEBUG 2024-09-23 05:59:28.692 UTC: 	 Running on: Linux lxplus959.cern.ch 5.14.0-427.31.1.el9_4.x86_64 #1 SMP PREEMPT_DYNAMIC Fri Aug 9 14:06:03 EDT 2024 x86_64 x86_64 x86_64 GNU/Linux - Red Hat Enterprise Linux 9.4 (Plow)
+DEBUG 2024-09-23 05:59:28.692 UTC: 	 Executing command: 'submit'
+DEBUG 2024-09-23 05:59:28.692 UTC: 	 Found CRAB cache file /afs/cern.ch/user/w/wkwon/.crab3
+INFO 2024-09-23 05:59:28.694 UTC: 	 Will use CRAB configuration file crab_conf.py
+DEBUG 2024-09-23 05:59:28.694 UTC: 	 Loading CRAB configuration file.
+DEBUG 2024-09-23 05:59:28.745 UTC: 	 Will use CRAB plugin ANALYSIS (i.e. will run an analysis job type).
+ERROR 2024-09-23 05:59:28.755 UTC: 	 Working area '/eos/home-w/wkwon/CMSSW_14_0_12/src/work/Analysis/crab_projects/crab_MuonAnalysis_Run2022E' already exists 
+Please change the requestName in the config file
+ERROR 2024-09-23 05:59:28.755 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.240621.01/bin/crab.py", line 152, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.240621.01/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.240621.01/lib/CRABClient/Commands/submit.py", line 36, in __init__
+    SubCommand.__init__(self, logger, cmdargs, disable_interspersed_args=True)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.240621.01/lib/CRABClient/Commands/SubCommand.py", line 327, in __init__
+    self.requestarea, self.requestname, self.logfile = createWorkArea(
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.240621.01/lib/CRABClient/ClientUtilities.py", line 392, in createWorkArea
+    raise ConfigException("Working area '%s' already exists \nPlease change the requestName in the config file" % fullpath)
+CRABClient.ClientExceptions.ConfigException: Working area '/eos/home-w/wkwon/CMSSW_14_0_12/src/work/Analysis/crab_projects/crab_MuonAnalysis_Run2022E' already exists 
+Please change the requestName in the config file
+INFO 2024-09-23 05:59:28.764 UTC: 	 Log file is /eos/home-w/wkwon/CMSSW_14_0_12/src/work/Analysis/crab.log
+DEBUG 2024-09-23 08:24:21.166 UTC: 	 CRAB Client version: v3.240621
+DEBUG 2024-09-23 08:24:21.167 UTC: 	 Running on: Linux lxplus959.cern.ch 5.14.0-427.31.1.el9_4.x86_64 #1 SMP PREEMPT_DYNAMIC Fri Aug 9 14:06:03 EDT 2024 x86_64 x86_64 x86_64 GNU/Linux - Red Hat Enterprise Linux 9.4 (Plow)
+DEBUG 2024-09-23 08:24:21.167 UTC: 	 Executing command: 'submit'
+DEBUG 2024-09-23 08:24:21.167 UTC: 	 Found CRAB cache file /afs/cern.ch/user/w/wkwon/.crab3
+INFO 2024-09-23 08:24:21.212 UTC: 	 Will use CRAB configuration file crab_conf.py
+DEBUG 2024-09-23 08:24:21.212 UTC: 	 Loading CRAB configuration file.
+DEBUG 2024-09-23 08:24:21.270 UTC: 	 Will use CRAB plugin ANALYSIS (i.e. will run an analysis job type).
+ERROR 2024-09-23 08:24:21.270 UTC: 	 Task requests 8000 MB of memory, above the allowed maximum of 5000 for a 1 core(s) job.
+
+The documentation about the CRAB configuration file can be found in https://twiki.cern.ch/twiki/bin/view/CMSPublic/CRAB3ConfigurationFile
+ERROR 2024-09-23 08:24:21.270 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.240621.01/bin/crab.py", line 152, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.240621.01/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.240621.01/lib/CRABClient/Commands/submit.py", line 36, in __init__
+    SubCommand.__init__(self, logger, cmdargs, disable_interspersed_args=True)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.240621.01/lib/CRABClient/Commands/SubCommand.py", line 325, in __init__
+    self.loadConfig(self.options.config, self.args)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.240621.01/lib/CRABClient/Commands/SubCommand.py", line 96, in loadConfig
+    raise ConfigurationException(configmsg)
+CRABClient.ClientExceptions.ConfigurationException: Task requests 8000 MB of memory, above the allowed maximum of 5000 for a 1 core(s) job.
+
+The documentation about the CRAB configuration file can be found in https://twiki.cern.ch/twiki/bin/view/CMSPublic/CRAB3ConfigurationFile
+INFO 2024-09-23 08:24:21.277 UTC: 	 Log file is /eos/home-w/wkwon/CMSSW_14_0_12/src/work/Analysis/crab.log

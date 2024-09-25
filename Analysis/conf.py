@@ -1,4 +1,5 @@
 import FWCore.ParameterSet.Config as cms
+import os
 
 process = cms.Process("Analysis")
 
@@ -12,14 +13,14 @@ process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring()
 )
 
-# Enable multithreading    
+# Enable multithreading 
 process.options = cms.untracked.PSet(
     numberOfThreads = cms.untracked.uint32(1),
     numberOfStreams = cms.untracked.uint32(0)
 )
 
 process.TFileService = cms.Service("TFileService",
-    fileName = cms.string("data_D.root")
+    fileName = cms.string("data.root")
 )
 
 process.Analysis = cms.EDAnalyzer('Analysis',

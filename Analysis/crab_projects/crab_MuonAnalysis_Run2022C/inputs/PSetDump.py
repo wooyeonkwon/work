@@ -47,7 +47,10 @@ process.options = cms.untracked.PSet(
 )
 
 process.Analysis = cms.EDAnalyzer("Analysis",
-    muons = cms.InputTag("muons")
+    hltPath = cms.string('HLT_IsoMu24_v'),
+    muons = cms.InputTag("muons"),
+    triggerResults = cms.InputTag("TriggerResults","","HLT"),
+    vertices = cms.InputTag("offlinePrimaryVertices")
 )
 
 

@@ -39,7 +39,7 @@ process.options = cms.untracked.PSet(
     numberOfConcurrentLuminosityBlocks = cms.untracked.uint32(0),
     numberOfConcurrentRuns = cms.untracked.uint32(1),
     numberOfStreams = cms.untracked.uint32(0),
-    numberOfThreads = cms.untracked.uint32(1),
+    numberOfThreads = cms.untracked.uint32(4),
     printDependencies = cms.untracked.bool(False),
     sizeOfStackForThreadsInKB = cms.optional.untracked.uint32,
     throwIfIllegalParameter = cms.untracked.bool(True),
@@ -47,7 +47,10 @@ process.options = cms.untracked.PSet(
 )
 
 process.Analysis = cms.EDAnalyzer("Analysis",
-    muons = cms.InputTag("muons")
+    hltPath = cms.string('HLT_IsoMu24_v'),
+    muons = cms.InputTag("muons"),
+    triggerResults = cms.InputTag("TriggerResults","","HLT"),
+    vertices = cms.InputTag("offlinePrimaryVertices")
 )
 
 
@@ -147,7 +150,7 @@ process.MessageLogger = cms.Service("MessageLogger",
 
 
 process.TFileService = cms.Service("TFileService",
-    fileName = cms.string('data_F.root')
+    fileName = cms.string('data.root')
 )
 
 
