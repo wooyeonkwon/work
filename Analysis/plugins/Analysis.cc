@@ -35,7 +35,6 @@ private:
   edm::EDGetTokenT<reco::VertexCollection> vertexToken_;
   std::string hltPath_;
 
-  TFile* outputFile;
   TTree* treeGlobal;
   TTree* treeTracker;
   TTree* treeStandAlone;
@@ -78,6 +77,15 @@ Analysis::Analysis(const edm::ParameterSet& iConfig)
 }
 
 Analysis::~Analysis() {
+  // 트리 객체 삭제
+  delete treeGlobal;
+  delete treeTracker;
+  delete treeStandAlone;
+  delete treeCalo;
+  delete treePF;
+  delete treeRPC;
+  delete treeGEM;
+  delete treeME0;
 }
 
 void Analysis::beginJob() {
@@ -158,22 +166,7 @@ void Analysis::beginJob() {
 
 void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm::EventSetup& iSetup) const {
   edm::Handle<reco::MuonCollection> muons;
-  int retryCount = 0;
-  const int maxRetries = 3;
-  bool success = false;
-
-  while (retryCount < maxRetries && !success) {
-    try {
-      iEvent.getByToken(muonToken_, muons);
-      success = true;
-    } catch (const cms::Exception& e) {
-      ++retryCount;
-      if (retryCount == maxRetries) {
-        throw;
-      }
-      edm::LogWarning("Analysis") << "Failed to get muon collection, retrying... (" << retryCount << "/" << maxRetries << ")";
-    }
-  }
+  iEvent.getByToken(muonToken_, muons);
 
   edm::Handle<reco::VertexCollection> vertices;
   iEvent.getByToken(vertexToken_, vertices);
@@ -214,7 +207,10 @@ void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm:
   runNumber = iEvent.id().run();
   lumiSection = iEvent.luminosityBlock();
 
-//muon selection
+  // 디버깅 출력 추가
+  std::cout << "Processing event: " << eventNumber << ", run: " << runNumber << ", lumi: " << lumiSection << std::endl;
+
+  //muon selection
   for (const auto& muon : *muons) {
     if (muon.pt() > 24 && fabs(muon.eta()) < 2.4 && muon::isTightMuon(muon, primaryVertex)) {
       float isolation = (muon.pfIsolationR04().sumChargedHadronPt + 
@@ -244,14 +240,12 @@ void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm:
           if (muon.isME0Muon()) {
             me0Muons.push_back(muon);
           }
-          }
+        }
       }
     }
   }
 
-
-
-//Z reconstruction  
+  //Z reconstruction  
   auto reconstructZBoson = [](const std::vector<reco::Muon>& muons) -> double {
     if (muons.size() < 2) return 0.0;
 
@@ -279,7 +273,6 @@ void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm:
     }
   };
 
-
   zBosonMassGlobal = reconstructZBoson(globalMuons);
   zBosonMassTracker = reconstructZBoson(trackerMuons);
   zBosonMassStandAlone = reconstructZBoson(standAloneMuons);
@@ -297,7 +290,6 @@ void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm:
   muonSizeRPC = rpcMuons.size();
   muonSizeGEM = gemMuons.size();
   muonSizeME0 = me0Muons.size();
-
 
   if (zBosonMassGlobal > 0.0) {
     treeGlobal->Fill();
@@ -324,9 +316,8 @@ void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm:
   }
   if (zBosonMassGEM > 0.0) {
     treeGEM->Fill();
-
   }
-  
+
   if (zBosonMassME0 > 0.0) {
     treeME0->Fill();
   }
@@ -334,13 +325,6 @@ void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm:
 
 void Analysis::endJob() {
   std::lock_guard<std::mutex> lock(mtx_);
-  if (outputFile) {
-    outputFile->Write();
-    outputFile->Close();
-    delete outputFile;
-    outputFile = nullptr;
-  }
-
   // TFileService를 사용하므로 트리 삭제 코드 제거
   // delete treeGlobal;
   // delete treeTracker;

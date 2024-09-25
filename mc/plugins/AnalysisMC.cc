@@ -130,7 +130,7 @@ void AnalysisMC::analyze(const edm::StreamID, const edm::Event& iEvent, const ed
   // Store reco muons
   std::vector<reco::Muon> recoMuons;
   for (const auto& muon : *muons) {
-    if (muon.pt() > 24 && fabs(muon.eta()) < 2.4 &&  muon::isTightMuon(muon, primaryVertex)) {
+    if (muon.pt() > 24 && fabs(muon.eta()) < 2.4 && muon::isTightMuon(muon, primaryVertex)) {
       float isolation = (muon.pfIsolationR04().sumChargedHadronPt + 
                          ((muon.pfIsolationR04().sumNeutralHadronEt + muon.pfIsolationR04().sumPhotonEt - 0.5 * muon.pfIsolationR04().sumPUPt) > 0 ? 
                           (muon.pfIsolationR04().sumNeutralHadronEt + muon.pfIsolationR04().sumPhotonEt - 0.5 * muon.pfIsolationR04().sumPUPt) : 0)) / muon.pt();
@@ -282,3 +282,4 @@ criptions.addDefault(desc);
 }
 
 DEFINE_FWK_MODULE(AnalysisMC);
+isMC);
