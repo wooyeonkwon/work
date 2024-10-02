@@ -228,3 +228,41 @@ INFO 2024-09-23 08:36:59.279 UTC: 	 Task URL to use for HELP:	https://cmsweb.cer
 INFO 2024-09-23 08:36:59.287 UTC: 	 Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=wkwon&var-task=240923_083541%3Awkwon_crab_MuonAnalysis_Run2022B0&from=1727076941000&to=now
 DEBUG 2024-09-23 08:36:59.287 UTC: 	 The task has not been submitted to the Grid scheduler yet. Not printing job information.
 INFO 2024-09-23 08:36:59.292 UTC: 	 Log file is /eos/home-w/wkwon/CMSSW_14_0_12/src/work/Analysis/crab_projects/crab_MuonAnalysis_Run2022B0/crab.log
+DEBUG 2024-09-26 04:02:37.156 UTC: 	 CRAB Client version: v3.240621
+DEBUG 2024-09-26 04:02:37.157 UTC: 	 Running on: Linux lxplus937.cern.ch 5.14.0-427.33.1.el9_4.x86_64 #1 SMP PREEMPT_DYNAMIC Fri Aug 16 10:56:24 EDT 2024 x86_64 x86_64 x86_64 GNU/Linux - Red Hat Enterprise Linux 9.4 (Plow)
+DEBUG 2024-09-26 04:02:37.157 UTC: 	 Executing command: 'status'
+DEBUG 2024-09-26 04:02:37.157 UTC: 	 Found CRAB cache file /afs/cern.ch/user/w/wkwon/.crab3
+WARNING 2024-09-26 04:02:37.223 UTC: 	 Warning: 'crab status' command takes no arguments, 11 given. Ignoring arguments ['crab_projects/crab_MuonAnalysis_Run2022C', 'crab_projects/crab_MuonAnalysis_Run2022D', 'crab_projects/crab_MuonAnalysis_Run2022E', 'crab_projects/crab_MuonAnalysis_Run2022F', 'crab_projects/crab_MuonAnalysis_Run2022G', 'crab_projects/crab_MuonAnalysis_Run2023B0', 'crab_projects/crab_MuonAnalysis_Run2023B1', 'crab_projects/crab_MuonAnalysis_Run2023C0', 'crab_projects/crab_MuonAnalysis_Run2023C1', 'crab_projects/crab_MuonAnalysis_Run2023D0', 'crab_projects/crab_MuonAnalysis_Run2023D1'].
+DEBUG 2024-09-26 04:02:37.227 UTC: 	 Checking credentials
+DEBUG 2024-09-26 04:02:37.228 UTC: 	 Proxy file /tmp/x509up_u168090 not found
+DEBUG 2024-09-26 04:02:37.228 UTC: 	 Creating new proxy for 172:00 hours
+DEBUG 2024-09-26 04:02:37.228 UTC: 	 Executing command :
+ voms-proxy-init --rfc --cert ~/.globus/usercert.pem --key ~/.globus/userkey.pem --out /tmp/x509up_u168090 --valid 192:00 --voms cms:/cms
+DEBUG 2024-09-26 04:02:44.668 UTC: 	 output : 
+ error: 
+ retcode : 1
+ERROR 2024-09-26 04:02:44.668 UTC: 	 
+
+ERROR 2024-09-26 04:02:44.668 UTC: 	 Error executing voms-proxy-init --rfc --cert ~/.globus/usercert.pem --key ~/.globus/userkey.pem --out /tmp/x509up_u168090 --valid 192:00 --voms cms:/cms:
+
+
+ERROR 2024-09-26 04:02:44.668 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.240621.01/bin/crab.py", line 152, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.240621.01/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.240621.01/lib/CRABClient/Commands/status.py", line 48, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.240621.01/lib/CRABClient/Commands/SubCommand.py", line 364, in __init__
+    self.handleVomsProxy(proxyOptsSetPlace)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.240621.01/lib/CRABClient/Commands/SubCommand.py", line 482, in handleVomsProxy
+    proxyInfo = self.credentialHandler.createNewVomsProxy(timeLeftThreshold=720, \
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.240621.01/lib/CRABClient/CredentialInteractions.py", line 103, in createNewVomsProxy
+    proxy.create()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.240621.01/lib/CRABClient/ProxyInteractions.py", line 52, in create
+    raise ProxyCreationException(msg)
+CRABClient.ClientExceptions.ProxyCreationException: Error executing voms-proxy-init --rfc --cert ~/.globus/usercert.pem --key ~/.globus/userkey.pem --out /tmp/x509up_u168090 --valid 192:00 --voms cms:/cms:
+
+
+INFO 2024-09-26 04:02:44.679 UTC: 	 Log file is /eos/home-w/wkwon/CMSSW_14_0_12/src/work/Analysis/crab_projects/crab_MuonAnalysis_Run2022B0/crab.log

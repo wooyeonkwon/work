@@ -17,8 +17,10 @@ process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(-1))
 
 directory_path = '/eos/cms/store/mc/Run3Summer22DRPremix/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/AODSIM/124X_mcRun3_2022_realistic_v12_ext1-v1/70000/'
 file_list = os.listdir(directory_path)
-file_paths = [f'file://{directory_path}{filename}' for filename in file_list]
-#file_paths =  ['file:///eos/cms/store/mc/Run3Summer22DRPremix/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/AODSIM/124X_mcRun3_2022_realistic_v12_ext1-v1/70000/00775a3b-7386-44ac-8ade-e3aafbdc0261.root']
+#file_paths = [f'file://{directory_path}{filename}' for filename in file_list]
+file_paths =  ['file:///eos/cms/store/mc/Run3Summer22DRPremix/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/AODSIM/124X_mcRun3_2022_realistic_v12_ext1-v1/70000/00775a3b-7386-44ac-8ade-e3aafbdc0261.root',
+               'file:///eos/cms/store/mc/Run3Summer22DRPremix/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/AODSIM/124X_mcRun3_2022_realistic_v12_ext1-v1/70000/00656c16-fb80-415d-b50b-15fbe6824f22.root',
+               'file:///eos/cms/store/mc/Run3Summer22DRPremix/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/AODSIM/124X_mcRun3_2022_realistic_v12_ext1-v1/70000/0066b911-997b-4e7a-b322-442102f0a30e.root']
 
 
 process.source = cms.Source("PoolSource",
@@ -27,7 +29,7 @@ process.source = cms.Source("PoolSource",
 
 # Enable multithreading
 process.options = cms.untracked.PSet(
-    numberOfThreads = cms.untracked.uint32(1),  # Number of threads
+    numberOfThreads = cms.untracked.uint32(8),  # Number of threads
     numberOfStreams = cms.untracked.uint32(0),  # Number of streams
 #    sizeOfStackForThreadsInKB = cms.untracked.uint32(10*1024)  # Stack size per thread in KB
 )
