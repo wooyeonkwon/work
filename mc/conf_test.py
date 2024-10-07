@@ -18,10 +18,11 @@ process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(-1))
 directory_path = '/eos/cms/store/mc/Run3Summer22DRPremix/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/AODSIM/124X_mcRun3_2022_realistic_v12_ext1-v1/70000/'
 file_list = os.listdir(directory_path)
 #file_paths = [f'file://{directory_path}{filename}' for filename in file_list]
-file_paths =  ['file:///eos/cms/store/mc/Run3Summer22DRPremix/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/AODSIM/124X_mcRun3_2022_realistic_v12_ext1-v1/70000/00775a3b-7386-44ac-8ade-e3aafbdc0261.root',
-               'file:///eos/cms/store/mc/Run3Summer22DRPremix/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/AODSIM/124X_mcRun3_2022_realistic_v12_ext1-v1/70000/00656c16-fb80-415d-b50b-15fbe6824f22.root',
-               'file:///eos/cms/store/mc/Run3Summer22DRPremix/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/AODSIM/124X_mcRun3_2022_realistic_v12_ext1-v1/70000/0066b911-997b-4e7a-b322-442102f0a30e.root']
-
+#file_paths =  ['file:///eos/cms/store/mc/Run3Summer22DRPremix/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/AODSIM/124X_mcRun3_2022_realistic_v12_ext1-v1/70000/00775a3b-7386-44ac-8ade-e3aafbdc0261.root',
+#               'file:///eos/cms/store/mc/Run3Summer22DRPremix/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/AODSIM/124X_mcRun3_2022_realistic_v12_ext1-v1/70000/00656c16-fb80-415d-b50b-15fbe6824f22.root',
+#               'file:///eos/cms/store/mc/Run3Summer22DRPremix/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/AODSIM/124X_mcRun3_2022_realistic_v12_ext1-v1/70000/0066b911-997b-4e7a-b322-442102f0a30e.root']
+#file_paths for QCD
+file_paths = ['file:///eos/cms/store/mc/Run3Summer22DRPremix/QCD_PT-15to7000_TuneCP5_Flat2022_13p6TeV_pythia8/AODSIM/124X_mcRun3_2022_realistic_v12-v3/2520001/c104f412-5fe8-487b-83b3-3cc4667f7f1e.root']
 
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(*file_paths)
@@ -36,7 +37,7 @@ process.options = cms.untracked.PSet(
 
 # Use TFileService to manage output file
 process.TFileService = cms.Service("TFileService",
-    fileName = cms.string("mc_data.root")
+    fileName = cms.string("mc_qcd_data.root")
 )
 
 process.Analysis = cms.EDAnalyzer('AnalysisMC',

@@ -32,6 +32,37 @@ public:
 
   static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
 
+  // Mutable variables for tree branches
+  mutable double zBosonMassReco;
+  mutable double zBosonMassGlobal;
+  mutable double zBosonMassTracker;
+  mutable double zBosonMassStandAlone;
+  mutable double zBosonMassCalo;
+  mutable double zBosonMassPF;
+  mutable double zBosonMassRPC;
+  mutable double zBosonMassGEM;
+  mutable double zBosonMassME0;
+
+  mutable double efficiencyReco;
+  mutable double efficiencyGlobal;
+  mutable double efficiencyTracker;
+  mutable double efficiencyStandAlone;
+  mutable double efficiencyCalo;
+  mutable double efficiencyPF;
+  mutable double efficiencyRPC;
+  mutable double efficiencyGEM;
+  mutable double efficiencyME0;
+
+  mutable double zBosonMassGen;
+  mutable int genMuonSize;
+  mutable double mcWeight;
+  mutable double pdfWeight;
+
+  mutable double scaleFactor;
+
+  mutable double isZBosonMatched;
+  mutable int muonSize;
+  
 private:
   void beginJob() override;
   void analyze(const edm::StreamID, const edm::Event&, const edm::EventSetup&) const override;
@@ -51,57 +82,14 @@ private:
   TFile* outputFile = nullptr;
   TTree* treeReco = nullptr;
   TTree* treeGen = nullptr;
-
-  // Variables for tree branches
-  mutable double zBosonMassReco;
-  mutable double zBosonMassGen;
-  mutable double zBosonMassGlobal;
-  mutable double zBosonMassTracker;
-  mutable double zBosonMassStandAlone;
-  mutable double zBosonMassCalo;
-  mutable double zBosonMassPF;
-  mutable double zBosonMassRPC;
-  mutable double zBosonMassGEM;
-  mutable double zBosonMassME0;
-
-  mutable int eventNumber;
-  mutable int runNumber;
-  mutable int lumiSection;
-  mutable double mcWeight;
-  mutable double pdfWeight;
-
-  mutable int recoMuonSize;
-  mutable int genMuonSize;
-  mutable double scaleFactor;
-
-  mutable int globalMuonSize;
-  mutable int trackerMuonSize;
-  mutable int standAloneMuonSize;
-  mutable int caloMuonSize;
-  mutable int pfMuonSize;
-  mutable int rpcMuonSize;
-  mutable int gemMuonSize;
-  mutable int me0MuonSize;
-
-  mutable double efficiencyReco;
-  mutable double efficiencyGlobal;
-  mutable double efficiencyTracker;
-  mutable double efficiencyStandAlone;
-  mutable double efficiencyCalo;
-  mutable double efficiencyPF;
-  mutable double efficiencyRPC;
-  mutable double efficiencyGEM;
-  mutable double efficiencyME0;
-
-  mutable bool isZBosonRecoMatched;
-  mutable bool isZBosonGlobalMatched;
-  mutable bool isZBosonTrackerMatched;
-  mutable bool isZBosonStandAloneMatched;
-  mutable bool isZBosonCaloMatched;
-  mutable bool isZBosonPFMatched;
-  mutable bool isZBosonRPCMatched;
-  mutable bool isZBosonGEMMatched;
-  mutable bool isZBosonME0Matched;
+  TTree* treeGlobal = nullptr;
+  TTree* treeTracker = nullptr;
+  TTree* treeStandAlone = nullptr;
+  TTree* treeCalo = nullptr;
+  TTree* treePF = nullptr;
+  TTree* treeRPC = nullptr;
+  TTree* treeGEM = nullptr;
+  TTree* treeME0 = nullptr;
 
   // Mutex for thread safety
   mutable std::mutex mtx_;
@@ -215,15 +203,7 @@ void AnalysisMC::analyze(const edm::StreamID, const edm::Event& iEvent, const ed
     }
   }
 
-  recoMuonSize = recoMuons.size();
-  globalMuonSize = globalMuons.size();
-  trackerMuonSize = trackerMuons.size();
-  standAloneMuonSize = standAloneMuons.size();
-  caloMuonSize = caloMuons.size();
-  pfMuonSize = pfMuons.size();
-  rpcMuonSize = rpcMuons.size();
-  gemMuonSize = gemMuons.size();
-  me0MuonSize = me0Muons.size();
+  muonSize = recoMuons.size();
 
   // Store gen-level muons
   std::vector<reco::GenParticle> genMuonCandidates;
@@ -263,7 +243,7 @@ void AnalysisMC::analyze(const edm::StreamID, const edm::Event& iEvent, const ed
 
     return matchedCount;
   };
-
+  int matchedReco = matchMuons(recoMuons, genMuonCandidates);
   int matchedGlobal = matchMuons(globalMuons, genMuonCandidates);
   int matchedTracker = matchMuons(trackerMuons, genMuonCandidates);
   int matchedStandAlone = matchMuons(standAloneMuons, genMuonCandidates);
@@ -273,8 +253,7 @@ void AnalysisMC::analyze(const edm::StreamID, const edm::Event& iEvent, const ed
   int matchedGEM = matchMuons(gemMuons, genMuonCandidates);
   int matchedME0 = matchMuons(me0Muons, genMuonCandidates);
 
-  
-  efficiencyReco = genMuonSize > 0 ? static_cast<double>(matchedGlobal) / genMuonSize : 0.0;
+  efficiencyReco = genMuonSize > 0 ? static_cast<double>(matchedReco) / genMuonSize : 0.0;
   efficiencyGlobal = genMuonSize > 0 ? static_cast<double>(matchedGlobal) / genMuonSize : 0.0;
   efficiencyTracker = genMuonSize > 0 ? static_cast<double>(matchedTracker) / genMuonSize : 0.0;
   efficiencyStandAlone = genMuonSize > 0 ? static_cast<double>(matchedStandAlone) / genMuonSize : 0.0;
@@ -306,7 +285,7 @@ void AnalysisMC::analyze(const edm::StreamID, const edm::Event& iEvent, const ed
     return goodMass;  
   };
 
-  zBosonMassReco = recoMuons.size() >= 2 ? reconstructZBoson(recoMuons) : -1  ;
+  zBosonMassReco = recoMuons.size() >= 2 ? reconstructZBoson(recoMuons) : -1;
   zBosonMassGlobal = globalMuons.size() >= 2 ? reconstructZBoson(globalMuons) : -1;
   zBosonMassTracker = trackerMuons.size() >= 2 ? reconstructZBoson(trackerMuons) : -1;
   zBosonMassStandAlone = standAloneMuons.size() >= 2 ? reconstructZBoson(standAloneMuons) : -1;
@@ -341,22 +320,40 @@ void AnalysisMC::analyze(const edm::StreamID, const edm::Event& iEvent, const ed
   zBosonMassGen = genMuonCandidates.size() >= 2 ? reconstructGenZBoson(genMuonCandidates) : -1;
 
   // Composite object matching for Z boson
- 
-  auto matchZBoson = [&](double zMassReco, double zMassGen) -> bool {
-    if (recoMuons.empty() || genMuonCandidates.empty()) return false;
-    return reco::deltaR(recoMuons[0].eta(), recoMuons[0].phi(), genMuonCandidates[0].eta(), genMuonCandidates[0].phi()) < deltaRCut;
+  auto matchZBoson = [&](const std::vector<reco::Muon>& recoMuons, const std::vector<reco::GenParticle>& genMuons) -> bool {
+    if (recoMuons.empty() || genMuons.empty()) return false;
+    return reco::deltaR(recoMuons[0].eta(), recoMuons[0].phi(), genMuons[0].eta(), genMuons[0].phi()) < deltaRCut;
   };
 
-  isZBosonRecoMatched = matchZBoson(zBosonMassReco, zBosonMassGen);
-  isZBosonGlobalMatched = matchZBoson(zBosonMassGlobal, zBosonMassGen);
-  isZBosonTrackerMatched = matchZBoson(zBosonMassTracker, zBosonMassGen);
-  isZBosonStandAloneMatched = matchZBoson(zBosonMassStandAlone, zBosonMassGen);
-  isZBosonCaloMatched = matchZBoson(zBosonMassCalo, zBosonMassGen);
-  isZBosonPFMatched = matchZBoson(zBosonMassPF, zBosonMassGen);
-  isZBosonRPCMatched = matchZBoson(zBosonMassRPC, zBosonMassGen);
-  isZBosonGEMMatched = matchZBoson(zBosonMassGEM, zBosonMassGen);
-  isZBosonME0Matched = matchZBoson(zBosonMassME0, zBosonMassGen);
+  {
+    std::lock_guard<std::mutex> lock(mtx_);
+    isZBosonMatched = matchZBoson(recoMuons, genMuonCandidates);
+    treeReco->Fill();
 
+    isZBosonMatched = matchZBoson(globalMuons, genMuonCandidates);
+    treeGlobal->Fill();
+
+    isZBosonMatched = matchZBoson(trackerMuons, genMuonCandidates);
+    treeTracker->Fill();
+
+    isZBosonMatched = matchZBoson(standAloneMuons, genMuonCandidates);
+    treeStandAlone->Fill();
+
+    isZBosonMatched = matchZBoson(caloMuons, genMuonCandidates);
+    treeCalo->Fill();
+
+    isZBosonMatched = matchZBoson(pfMuons, genMuonCandidates);
+    treePF->Fill();
+
+    isZBosonMatched = matchZBoson(rpcMuons, genMuonCandidates);
+    treeRPC->Fill();
+
+    isZBosonMatched = matchZBoson(gemMuons, genMuonCandidates);
+    treeGEM->Fill();
+
+    isZBosonMatched = matchZBoson(me0Muons, genMuonCandidates);
+    treeME0->Fill();
+  }
 
   // Store weights
   mcWeight = genEventInfo->weight();
@@ -366,45 +363,77 @@ void AnalysisMC::analyze(const edm::StreamID, const edm::Event& iEvent, const ed
     std::lock_guard<std::mutex> lock(mtx_);
     treeReco->Fill();
     treeGen->Fill();
+    treeGlobal->Fill();
+    treeTracker->Fill();
+    treeStandAlone->Fill();
+    treeCalo->Fill();
+    treePF->Fill();
+    treeRPC->Fill();
+    treeGEM->Fill();
+    treeME0->Fill();
   }
 }
 
 void AnalysisMC::beginJob() {
   std::lock_guard<std::mutex> lock(mtx_);
-  treeReco = new TTree("treeReco", "Reconstructed objects");
-  treeReco->Branch("zBosonMassReco", &zBosonMassReco, "zBosonMassReco/D");
-  treeReco->Branch("zBosonMassGlobal", &zBosonMassGlobal, "zBosonMassGlobal/D");
-  treeReco->Branch("zBosonMassTracker", &zBosonMassTracker, "zBosonMassTracker/D");
-  treeReco->Branch("zBosonMassStandAlone", &zBosonMassStandAlone, "zBosonMassStandAlone/D");
-  treeReco->Branch("zBosonMassCalo", &zBosonMassCalo, "zBosonMassCalo/D");
-  treeReco->Branch("zBosonMassPF", &zBosonMassPF, "zBosonMassPF/D");
-  treeReco->Branch("zBosonMassRPC", &zBosonMassRPC, "zBosonMassRPC/D");
-  treeReco->Branch("zBosonMassGEM", &zBosonMassGEM, "zBosonMassGEM/D");
-  treeReco->Branch("zBosonMassME0", &zBosonMassME0, "zBosonMassME0/D");
 
-  treeReco->Branch("isZBosonRecoMatched", &isZBosonRecoMatched, "isZBosonRecoMatched/O");
-  treeReco->Branch("isZBosonGlobalMatched", &isZBosonGlobalMatched, "isZBosonGlobalMatched/O");
-  treeReco->Branch("isZBosonTrackerMatched", &isZBosonTrackerMatched, "isZBosonTrackerMatched/O");
-  treeReco->Branch("isZBosonStandAloneMatched", &isZBosonStandAloneMatched, "isZBosonStandAloneMatched/O");
-  treeReco->Branch("isZBosonCaloMatched", &isZBosonCaloMatched, "isZBosonCaloMatched/O");
-  treeReco->Branch("isZBosonPFMatched", &isZBosonPFMatched, "isZBosonPFMatched/O");
-  treeReco->Branch("isZBosonRPCMatched", &isZBosonRPCMatched, "isZBosonRPCMatched/O");
-  treeReco->Branch("isZBosonGEMMatched", &isZBosonGEMMatched, "isZBosonGEMMatched/O");
-  treeReco->Branch("isZBosonME0Matched", &isZBosonME0Matched, "isZBosonME0Matched/O");
+  treeGen = new TTree("GenMuons", "Generated Muons");
+  treeGen->Branch("zBosonMass", &zBosonMassGen, "zBosonMass/D");
+  treeGen->Branch("muonSize", &genMuonSize, "muonSize/I");
 
-  treeReco->Branch("efficiencyReco", &efficiencyReco, "efficiencyReco/D");
-  treeReco->Branch("efficiencyGlobal", &efficiencyGlobal, "efficiencyGlobal/D");
-  treeReco->Branch("efficiencyTracker", &efficiencyTracker, "efficiencyTracker/D");
-  treeReco->Branch("efficiencyStandAlone", &efficiencyStandAlone, "efficiencyStandAlone/D");
-  treeReco->Branch("efficiencyCalo", &efficiencyCalo, "efficiencyCalo/D");
-  treeReco->Branch("efficiencyPF", &efficiencyPF, "efficiencyPF/D");
-  treeReco->Branch("efficiencyRPC", &efficiencyRPC, "efficiencyRPC/D");
-  treeReco->Branch("efficiencyGEM", &efficiencyGEM, "efficiencyGEM/D");
-  treeReco->Branch("efficiencyME0", &efficiencyME0, "efficiencyME0/D");
+  treeReco = new TTree("RecoMuons", "Reconstructed Muons");
+  treeReco->Branch("zBosonMass", &zBosonMassReco, "zBosonMass/D");
+  treeReco->Branch("isZBosonMatched", &isZBosonMatched, "isZBosonMatched/O");
+  treeReco->Branch("efficiency", &efficiencyReco, "efficiency/D");
+  treeReco->Branch("muonSize", &muonSize, "muonSize/I");
 
-  treeGen = new TTree("treeGen", "Generated objects");
-  treeGen->Branch("zBosonMassGen", &zBosonMassGen, "zBosonMassGen/D");
-  treeGen->Branch("genMuonSize", &genMuonSize, "genMuonSize/I");
+  treeGlobal = new TTree("GlobalMuons", "Global Muons");
+  treeGlobal->Branch("zBosonMass", &zBosonMassGlobal, "zBosonMass/D");
+  treeGlobal->Branch("isZBosonMatched", &isZBosonMatched, "isZBosonMatched/O");
+  treeGlobal->Branch("efficiency", &efficiencyGlobal, "efficiency/D");
+  treeGlobal->Branch("muonSize", &muonSize, "muonSize/I");
+
+  treeTracker = new TTree("TrackerMuons", "Tracker Muons");
+  treeTracker->Branch("zBosonMass", &zBosonMassTracker, "zBosonMass/D");
+  treeTracker->Branch("isZBosonMatched", &isZBosonMatched, "isZBosonMatched/O");
+  treeTracker->Branch("efficiency", &efficiencyTracker, "efficiency/D");
+  treeTracker->Branch("muonSize", &muonSize, "muonSize/I");
+
+  treeStandAlone = new TTree("StandAloneMuons", "StandAlone Muons");
+  treeStandAlone->Branch("zBosonMass", &zBosonMassStandAlone, "zBosonMass/D");
+  treeStandAlone->Branch("isZBosonMatched", &isZBosonMatched, "isZBosonMatched/O");
+  treeStandAlone->Branch("efficiency", &efficiencyStandAlone, "efficiency/D");
+  treeStandAlone->Branch("muonSize", &muonSize, "muonSize/I");
+
+  treeCalo = new TTree("CaloMuons", "Calo Muons");
+  treeCalo->Branch("zBosonMass", &zBosonMassCalo, "zBosonMass/D");
+  treeCalo->Branch("isZBosonMatched", &isZBosonMatched, "isZBosonMatched/O");
+  treeCalo->Branch("efficiency", &efficiencyCalo, "efficiency/D");
+  treeCalo->Branch("muonSize", &muonSize, "muonSize/I");
+
+  treePF = new TTree("PFMuons", "PF Muons");
+  treePF->Branch("zBosonMass", &zBosonMassPF, "zBosonMass/D");
+  treePF->Branch("isZBosonMatched", &isZBosonMatched, "isZBosonMatched/O");
+  treePF->Branch("efficiency", &efficiencyPF, "efficiency/D");
+  treePF->Branch("muonSize", &muonSize, "muonSize/I");
+
+  treeRPC = new TTree("RPCMuons", "RPC Muons");
+  treeRPC->Branch("zBosonMass", &zBosonMassRPC, "zBosonMass/D");
+  treeRPC->Branch("isZBosonMatched", &isZBosonMatched, "isZBosonMatched/O");
+  treeRPC->Branch("efficiency", &efficiencyRPC, "efficiency/D");
+  treeRPC->Branch("muonSize", &muonSize, "muonSize/I");
+
+  treeGEM = new TTree("GEMMuons", "GEM Muons");
+  treeGEM->Branch("zBosonMass", &zBosonMassGEM, "zBosonMass/D");
+  treeGEM->Branch("isZBosonMatched", &isZBosonMatched, "isZBosonMatched/O");
+  treeGEM->Branch("efficiency", &efficiencyGEM, "efficiency/D");
+  treeGEM->Branch("muonSize", &muonSize, "muonSize/I");
+
+  treeME0 = new TTree("ME0Muons", "ME0 Muons");
+  treeME0->Branch("zBosonMass", &zBosonMassME0, "zBosonMass/D");
+  treeME0->Branch("isZBosonMatched", &isZBosonMatched, "isZBosonMatched/O");
+  treeME0->Branch("efficiency", &efficiencyME0, "efficiency/D");
+  treeME0->Branch("muonSize", &muonSize, "muonSize/I");
 }
 
 void AnalysisMC::endJob() {
