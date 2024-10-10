@@ -77,15 +77,7 @@ Analysis::Analysis(const edm::ParameterSet& iConfig)
 }
 
 Analysis::~Analysis() {
-  // 트리 객체 삭제
-  delete treeGlobal;
-  delete treeTracker;
-  delete treeStandAlone;
-  delete treeCalo;
-  delete treePF;
-  delete treeRPC;
-  delete treeGEM;
-  delete treeME0;
+  std::lock_guard<std::mutex> lock(mtx_);
 }
 
 void Analysis::beginJob() {
@@ -207,8 +199,6 @@ void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm:
   runNumber = iEvent.id().run();
   lumiSection = iEvent.luminosityBlock();
 
-  // 디버깅 출력 추가
-  std::cout << "Processing event: " << eventNumber << ", run: " << runNumber << ", lumi: " << lumiSection << std::endl;
 
   //muon selection
   for (const auto& muon : *muons) {

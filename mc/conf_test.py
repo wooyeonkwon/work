@@ -22,7 +22,9 @@ file_list = os.listdir(directory_path)
 #               'file:///eos/cms/store/mc/Run3Summer22DRPremix/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/AODSIM/124X_mcRun3_2022_realistic_v12_ext1-v1/70000/00656c16-fb80-415d-b50b-15fbe6824f22.root',
 #               'file:///eos/cms/store/mc/Run3Summer22DRPremix/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/AODSIM/124X_mcRun3_2022_realistic_v12_ext1-v1/70000/0066b911-997b-4e7a-b322-442102f0a30e.root']
 #file_paths for QCD
-file_paths = ['file:///eos/cms/store/mc/Run3Summer22DRPremix/QCD_PT-15to7000_TuneCP5_Flat2022_13p6TeV_pythia8/AODSIM/124X_mcRun3_2022_realistic_v12-v3/2520001/c104f412-5fe8-487b-83b3-3cc4667f7f1e.root']
+file_paths = ['file:///eos/cms/store/mc/Run3Winter24Reco/QCD_PT-15to7000_TuneCP5_Flat2022_13p6TeV_pythia8/AODSIM/EpsilonPU_133X_mcRun3_2024_realistic_v9-v2/2550000/fe84c63e-1bf1-44bb-b647-68c0fa9c89c4.root',
+              'file:///eos/cms/store/mc/Run3Winter24Reco/QCD_PT-15to7000_TuneCP5_Flat2022_13p6TeV_pythia8/AODSIM/EpsilonPU_133X_mcRun3_2024_realistic_v9-v2/2550000/fc55c85e-8a47-4161-84ff-6504088cd3e7.root',
+              'file:///eos/cms/store/mc/Run3Winter24Reco/QCD_PT-15to7000_TuneCP5_Flat2022_13p6TeV_pythia8/AODSIM/EpsilonPU_133X_mcRun3_2024_realistic_v9-v2/2550000/f93c98ae-51de-49d3-8b94-be36d0438a96.root']
 
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(*file_paths)

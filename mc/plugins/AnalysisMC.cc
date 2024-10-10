@@ -9,7 +9,6 @@
 #include "DataFormats/MuonReco/interface/MuonFwd.h"
 #include "DataFormats/Math/interface/LorentzVector.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
-#include "SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h"    
 #include "DataFormats/Common/interface/TriggerResults.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
@@ -21,9 +20,7 @@
 #include <cstdlib>
 #include "DataFormats/Math/interface/deltaR.h"
 #include <mutex>
-
-
-
+#include <iostream>
 
 class AnalysisMC : public edm::global::EDAnalyzer<> {
 public:
@@ -32,7 +29,32 @@ public:
 
   static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
 
-  // Mutable variables for tree branches
+private:
+  void beginJob() override;
+  void analyze(const edm::StreamID, const edm::Event&, const edm::EventSetup&) const override;
+  void endJob() override;
+
+  // Tokens for the event data
+  edm::EDGetTokenT<reco::MuonCollection> muonToken_;
+  edm::EDGetTokenT<edm::TriggerResults> triggerToken_;
+  edm::EDGetTokenT<reco::VertexCollection> vertexToken_;
+  edm::EDGetTokenT<GenEventInfoProduct> genEventToken_;       
+  edm::EDGetTokenT<edm::View<reco::GenParticle>> genMuonToken_; 
+
+  std::string hltPath_;
+
+  // Output ROOT file and trees
+  TTree* treeReco;
+  TTree* treeGen;
+  TTree* treeGlobal;
+  TTree* treeTracker;
+  TTree* treeStandAlone;
+  TTree* treeCalo; 
+  TTree* treePF;
+  TTree* treeRPC;
+  TTree* treeGEM;
+  TTree* treeME0;
+
   mutable double zBosonMassReco;
   mutable double zBosonMassGlobal;
   mutable double zBosonMassTracker;
@@ -62,38 +84,11 @@ public:
 
   mutable double isZBosonMatched;
   mutable int muonSize;
-  
-private:
-  void beginJob() override;
-  void analyze(const edm::StreamID, const edm::Event&, const edm::EventSetup&) const override;
-  void endJob() override;
-
-  // Tokens for the event data
-  edm::EDGetTokenT<reco::MuonCollection> muonToken_;
-  edm::EDGetTokenT<edm::TriggerResults> triggerToken_;
-  edm::EDGetTokenT<reco::VertexCollection> vertexToken_;
-  edm::EDGetTokenT<GenEventInfoProduct> genEventToken_;       
-  edm::EDGetTokenT<edm::View<reco::GenParticle>> genMuonToken_; 
-  edm::EDGetTokenT<LHEEventProduct> lheEventToken_;           
-  
-  std::string hltPath_;
-
-  // Output ROOT file and trees
-  TFile* outputFile = nullptr;
-  TTree* treeReco = nullptr;
-  TTree* treeGen = nullptr;
-  TTree* treeGlobal = nullptr;
-  TTree* treeTracker = nullptr;
-  TTree* treeStandAlone = nullptr;
-  TTree* treeCalo = nullptr;
-  TTree* treePF = nullptr;
-  TTree* treeRPC = nullptr;
-  TTree* treeGEM = nullptr;
-  TTree* treeME0 = nullptr;
 
   // Mutex for thread safety
   mutable std::mutex mtx_;
 };
+
 
 AnalysisMC::AnalysisMC(const edm::ParameterSet& iConfig)
     : muonToken_(consumes<reco::MuonCollection>(iConfig.getParameter<edm::InputTag>("muons"))),
@@ -101,16 +96,12 @@ AnalysisMC::AnalysisMC(const edm::ParameterSet& iConfig)
       vertexToken_(consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("vertices"))),
       genEventToken_(consumes<GenEventInfoProduct>(iConfig.getParameter<edm::InputTag>("genEventInfo"))),
       genMuonToken_(consumes<edm::View<reco::GenParticle>>(iConfig.getParameter<edm::InputTag>("genMuons"))),
-      lheEventToken_(consumes<LHEEventProduct>(iConfig.getParameter<edm::InputTag>("lheEvent"))),
       hltPath_(iConfig.getParameter<std::string>("hltPath")) {
 }
 
+
 AnalysisMC::~AnalysisMC() {
   std::lock_guard<std::mutex> lock(mtx_);
-  if (outputFile) {
-    outputFile->Close();
-    delete outputFile;
-  }
 }
 
 void AnalysisMC::analyze(const edm::StreamID, const edm::Event& iEvent, const edm::EventSetup& iSetup) const {
@@ -130,10 +121,8 @@ void AnalysisMC::analyze(const edm::StreamID, const edm::Event& iEvent, const ed
   edm::Handle<edm::View<reco::GenParticle>> genMuons;
   iEvent.getByToken(genMuonToken_, genMuons);
 
-  edm::Handle<LHEEventProduct> lheEventInfo;
-  iEvent.getByToken(lheEventToken_, lheEventInfo);
-
-  if (!muons.isValid() || !vertices.isValid() || !triggerResults.isValid() || !genEventInfo.isValid() || !genMuons.isValid() || !lheEventInfo.isValid()) {
+  if (!muons.isValid() || !vertices.isValid() || !triggerResults.isValid() || !genEventInfo.isValid() || !genMuons.isValid()) {
+//    std::cout << "One or more handles are invalid. Exiting analyze." << std::endl;
     return;
   }
 
@@ -203,6 +192,8 @@ void AnalysisMC::analyze(const edm::StreamID, const edm::Event& iEvent, const ed
     }
   }
 
+//  std::cout << "Reconstructed muons: " << recoMuons.size() << " muons found." << std::endl;
+
   muonSize = recoMuons.size();
 
   // Store gen-level muons
@@ -212,6 +203,8 @@ void AnalysisMC::analyze(const edm::StreamID, const edm::Event& iEvent, const ed
       genMuonCandidates.push_back(genMuon);
     }
   }
+
+//  std::cout << "Gen-level muons: " << genMuonCandidates.size() << " gen muons found." << std::endl;
 
   genMuonSize = genMuonCandidates.size();
 
@@ -284,6 +277,7 @@ void AnalysisMC::analyze(const edm::StreamID, const edm::Event& iEvent, const ed
     }
     return goodMass;  
   };
+
 
   zBosonMassReco = recoMuons.size() >= 2 ? reconstructZBoson(recoMuons) : -1;
   zBosonMassGlobal = globalMuons.size() >= 2 ? reconstructZBoson(globalMuons) : -1;
@@ -435,6 +429,7 @@ void AnalysisMC::beginJob() {
   treeME0->Branch("efficiency", &efficiencyME0, "efficiency/D");
   treeME0->Branch("muonSize", &muonSize, "muonSize/I");
 }
+
 
 void AnalysisMC::endJob() {
   std::lock_guard<std::mutex> lock(mtx_);

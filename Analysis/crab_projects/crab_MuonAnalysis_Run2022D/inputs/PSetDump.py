@@ -150,7 +150,7 @@ process.MessageLogger = cms.Service("MessageLogger",
 
 
 process.TFileService = cms.Service("TFileService",
-    fileName = cms.string('data_D.root')
+    fileName = cms.string('data.root')
 )
 
 
