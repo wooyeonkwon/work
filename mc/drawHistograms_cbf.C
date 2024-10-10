@@ -43,7 +43,15 @@ double dscbf(double *x, double *par)
 void drawHistogramAndFit(TTree* tree, const char* branchName, const char* histTitle, const char* histFileName, const char* canvasTitle, const char* logFileName, double xMin = 60, double xMax = 120) {
     double zBosonMass;
     tree->SetBranchAddress(branchName, &zBosonMass);
-    TH1F* hist = new TH1F(histTitle, Form("%s;Mass (GeV);Events", histTitle), 1800, 0, 180);
+    TH1F* hist = new TH1F(histTitle, Form("%s;M_{\\mu\\mu} (GeV);Counts /0.1 GeV", histTitle), 1800, 0, 180);
+    TLatex latex;
+    latex.SetNDC();
+    latex.SetTextSize(0.035);
+    latex.SetTextFont(62); // bold font for "CMS"
+    latex.DrawLatex(0.15, 0.95, "CMS");
+    latex.SetTextFont(42); // normal font for "Preliminary"
+    latex.DrawLatex(0.15 + 0.05, 0.95, " Preliminary");
+    latex.DrawLatex(0.70, 0.95, "L = 120.57/fb");
 
 
     Long64_t nEntries = tree->GetEntries();
@@ -61,11 +69,9 @@ void drawHistogramAndFit(TTree* tree, const char* branchName, const char* histTi
     fitFunc->SetParameters(1.25, 1.44, 1.59, 1.8, 91.2, 2.0, nEntries);
     hist->Fit(fitFunc, "R");
 
-
-    TLatex latex;
     latex.SetNDC();
     latex.SetTextSize(0.035);
-    latex.DrawLatex(0.70, 0.85, Form("Nevents: %d", (int)nEntries));
+    latex.DrawLatex(0.70, 0.85, Form("nEntries: %d", (int)nEntries));
     latex.DrawLatex(0.70, 0.80, Form("Mean: %.2f", fitFunc->GetParameter(4)));
     latex.DrawLatex(0.70, 0.75, Form("Sigma: %.2f", fitFunc->GetParameter(5)));
 
