@@ -56,8 +56,8 @@ void drawHistogramsForAllMuonTypes(const char* dataFilename, const char* mcFilen
         return;
     }
 
-    TH1F* dataHist = new TH1F("dataHist", Form("%s;M_{\\mu\\mu} (GeV);Counts /0.5GeV", histTitle), 360, 0, 180);
-    TH1F* mcHist = new TH1F("mcHist", Form("%s;M_{\\mu\\mu} (GeV);Counts /0.5GeV", histTitle), 360, 0, 180);
+    TH1F* dataHist = new TH1F("dataHist", Form("%s;M_{\\mu\\mu} (GeV);Counts /0.5GeV", histTitle), 120, 60, 120);
+    TH1F* mcHist = new TH1F("mcHist", Form("%s;M_{\\mu\\mu} (GeV);Counts /0.5GeV", histTitle), 120, 60, 120);
 
     double zBosonMass;
     dataTree->SetBranchAddress(dataBranchName, &zBosonMass);
@@ -88,20 +88,18 @@ void drawHistogramsForAllMuonTypes(const char* dataFilename, const char* mcFilen
     dataHist->SetMarkerStyle(20);
     dataHist->SetMarkerColor(kBlack);
     dataHist->SetLineColor(kBlack);
-    mcHist->SetFillColor(kBlue);
-    mcHist->SetLineColor(kBlue);
-    mcHist->SetFillStyle(1001); // MC 히스토그램 색 채우기
+    mcHist->SetFillColor(kBlue);       
+    mcHist->SetLineColor(kBlue);        
 
-    THStack* stack = new THStack("stack", Form("%s;M_{\\mu\\mu} (GeV);Counts /0.5GeV", histTitle));
-    stack->Add(mcHist);
-    stack->Add(dataHist);
 
     TPad* pad1 = new TPad("pad1", "pad1", 0, 0.3, 1, 1.0);
     pad1->SetBottomMargin(0);
     pad1->Draw();
     pad1->cd();
-    stack->Draw("nostack");
-    dataHist->Draw("E same");
+
+    
+    mcHist->Draw("HIST");               
+    dataHist->Draw("E same");           
 
     TLatex latex;
     latex.SetNDC();
@@ -111,11 +109,12 @@ void drawHistogramsForAllMuonTypes(const char* dataFilename, const char* mcFilen
     latex.SetTextFont(42); // normal font for "Preliminary"
     latex.DrawLatex(0.20, 0.91, "#it{Preliminary}");
     latex.DrawLatex(0.75, 0.91, "#sqrt{s} = 13.6 TeV, L = 120.57/fb");
-
+    
     TLegend* legend = new TLegend(0.7, 0.7, 0.9, 0.9);
     legend->AddEntry(dataHist, "Data", "lep");
     legend->AddEntry(mcHist, "MC", "f");
     legend->Draw();
+
 
     canvas->cd();
     TPad* pad2 = new TPad("pad2", "pad2", 0, 0.05, 1, 0.3);
@@ -123,6 +122,7 @@ void drawHistogramsForAllMuonTypes(const char* dataFilename, const char* mcFilen
     pad2->SetBottomMargin(0.2);
     pad2->Draw();
     pad2->cd();
+
     
     TH1F* ratioHist = (TH1F*)dataHist->Clone("ratioHist");
     ratioHist->Divide(mcHist);
@@ -140,7 +140,9 @@ void drawHistogramsForAllMuonTypes(const char* dataFilename, const char* mcFilen
     ratioHist->GetXaxis()->SetLabelFont(43);
     ratioHist->GetXaxis()->SetLabelSize(15);
     ratioHist->Draw("ep");
-    TLine* line = new TLine(0, 1, 180, 1);
+
+    
+    TLine *line = new TLine(60, 1, 120, 1);
     line->SetLineColor(kRed);
     line->SetLineStyle(2);
     line->Draw();
@@ -149,11 +151,9 @@ void drawHistogramsForAllMuonTypes(const char* dataFilename, const char* mcFilen
 
     delete dataHist;
     delete mcHist;
-    delete stack;
     delete legend;
     delete pad1;
     delete pad2;
-    delete line;
     delete canvas;
 
     dataFile->Close();
