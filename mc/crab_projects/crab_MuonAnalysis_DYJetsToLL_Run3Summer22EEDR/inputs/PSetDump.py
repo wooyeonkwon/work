@@ -46,7 +46,7 @@ process.options = cms.untracked.PSet(
     wantSummary = cms.untracked.bool(False)
 )
 
-process.Analysis = cms.EDAnalyzer("Analysis",
+process.AnalysisMC = cms.EDAnalyzer("AnalysisMC",
     hltPath = cms.string('HLT_IsoMu24_v'),
     muons = cms.InputTag("muons"),
     triggerResults = cms.InputTag("TriggerResults","","HLT"),
@@ -154,6 +154,6 @@ process.TFileService = cms.Service("TFileService",
 )
 
 
-process.p = cms.Path(process.Analysis)
+process.p = cms.Path(process.AnalysisMC)
 
 

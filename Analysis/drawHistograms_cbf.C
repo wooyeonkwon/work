@@ -1,4 +1,4 @@
-#include <iostream>
+ #include <iostream>
 #include <fstream>
 #include "TFile.h"
 #include "TTree.h"
@@ -6,6 +6,8 @@
 #include "TF1.h"
 #include "TCanvas.h"
 #include "TLatex.h"
+#include <TMath.h>
+
 
 double dscbf(double *x, double *par)
 { 
@@ -65,9 +67,9 @@ void drawHistogramAndFit(TTree* tree, const char* branchName, const char* histTi
     latex.SetNDC();
     latex.SetTextSize(0.035);
     latex.SetTextFont(62); // bold font for "CMS"
-    latex.DrawLatex(0.15, 0.95, "CMS");
+    latex.DrawLatex(0.10, 0.92, "CMS");
     latex.SetTextFont(42); // normal font for "Preliminary"
-    latex.DrawLatex(0.15, 0.92, "#it{Preliminary}");
+    latex.DrawLatex(0.16, 0.92, "#it{Preliminary}");
     latex.DrawLatex(0.60, 0.92, "#sqrt{s} = 13.6 TeV, L = 120.57/fb");
     latex.DrawLatex(0.70, 0.85, Form("nEntries: %d", (int)nEntries));
     latex.DrawLatex(0.70, 0.80, Form("Mean: %.2f", fitFunc->GetParameter(4)));
@@ -95,6 +97,71 @@ void drawHistogramAndFit(TTree* tree, const char* branchName, const char* histTi
     delete canvas;
 }
 
+// Efficiency drawing function
+void drawEfficiency(TTree* tree, const char* treeName, TH1F* histPt, TH1F* histEta, TH1F* histIso, int color) {
+    double probePt, probeEta, probeIso;
+    Bool_t passingProbe;
+
+    tree->SetBranchAddress("probePt", &probePt);
+    tree->SetBranchAddress("probeEta", &probeEta);
+    tree->SetBranchAddress("probeIso", &probeIso);
+    tree->SetBranchAddress("passingProbe", &passingProbe);
+
+    // Temporary histograms to store total and passing events
+    TH1F* histPtAll = (TH1F*)histPt->Clone(Form("%s_PtAll", treeName));
+    TH1F* histPtPass = (TH1F*)histPt->Clone(Form("%s_PtPass", treeName));
+    TH1F* histEtaAll = (TH1F*)histEta->Clone(Form("%s_EtaAll", treeName));
+    TH1F* histEtaPass = (TH1F*)histEta->Clone(Form("%s_EtaPass", treeName));
+    TH1F* histIsoAll = (TH1F*)histIso->Clone(Form("%s_IsoAll", treeName));
+    TH1F* histIsoPass = (TH1F*)histIso->Clone(Form("%s_IsoPass", treeName));
+
+    Long64_t nEntries = tree->GetEntries();
+    for (Long64_t i = 0; i < nEntries; ++i) {
+        tree->GetEntry(i);
+
+        // Fill the histograms with all events
+        histPtAll->Fill(probePt);
+        histEtaAll->Fill(probeEta);
+        histIsoAll->Fill(probeIso);
+
+        // Fill the passing histograms only if the probe passed
+        if (passingProbe) {
+            histPtPass->Fill(probePt);
+            histEtaPass->Fill(probeEta);
+            histIsoPass->Fill(probeIso);
+        }
+    }
+
+    // Calculate efficiency
+    TGraphAsymmErrors* grPt = new TGraphAsymmErrors(histPtPass, histPtAll);
+    TGraphAsymmErrors* grEta = new TGraphAsymmErrors(histEtaPass, histEtaAll);
+    TGraphAsymmErrors* grIso = new TGraphAsymmErrors(histIsoPass, histIsoAll);
+
+    // Set graph properties
+    grPt->SetLineColor(color);
+    grPt->SetMarkerColor(color);
+    grPt->SetMarkerStyle(20);
+    grEta->SetLineColor(color);
+    grEta->SetMarkerColor(color);
+    grEta->SetMarkerStyle(20);
+    grIso->SetLineColor(color);
+    grIso->SetMarkerColor(color);
+    grIso->SetMarkerStyle(20);
+
+    // Add graphs to the main histograms
+    histPt->GetListOfFunctions()->Add(grPt);
+    histEta->GetListOfFunctions()->Add(grEta);
+    histIso->GetListOfFunctions()->Add(grIso);
+
+    // Clean up temporary histograms
+    delete histPtAll;
+    delete histPtPass;
+    delete histEtaAll;
+    delete histEtaPass;
+    delete histIsoAll;
+    delete histIsoPass;
+}
+
 void drawHistograms_cbf(const char* filename) {
     TFile* file = new TFile(filename, "READ");
     if (!file || file->IsZombie()) {
@@ -102,42 +169,132 @@ void drawHistograms_cbf(const char* filename) {
         return;
     }
 
-    // define trees and get objects
+    // Declare tree pointers
     TTree *treeGlobal = nullptr;
     TTree *treeTracker = nullptr;
     TTree *treeStandAlone = nullptr;
-    TTree *treeCalo = nullptr;
     TTree *treePF = nullptr;
     TTree *treeRPC = nullptr;
     TTree *treeGEM = nullptr;
-    TTree *treeME0 = nullptr;
-    file->GetObject("GlobalMuons", treeGlobal);
-    file->GetObject("TrackerMuons", treeTracker);
-    file->GetObject("StandAloneMuons", treeStandAlone);
-    file->GetObject("CaloMuons", treeCalo);
-    file->GetObject("PFMuons", treePF);
-    file->GetObject("RPCMuons", treeRPC);
-    file->GetObject("GEMMuons", treeGEM);
-    file->GetObject("ME0Muons", treeME0);
 
-    // draw hist for exist trees
-    if (!treeGlobal) std::cerr << "GlobalMuons tree not found." << std::endl;
-    else drawHistogramAndFit(treeGlobal, "zBosonMass", "Z (Global)", "zBosonsGlobal.png", "Global Z mass", "fit_results.txt");
-    if (!treeTracker) std::cerr << "TrackerMuons tree not found." << std::endl;
-    else drawHistogramAndFit(treeTracker, "zBosonMass", "Z (Global&Tracker)", "zBosonsTracker.png", "Tracker Z mass", "fit_results.txt");
-    if (!treeStandAlone) std::cerr << "StandAloneMuons tree not found." << std::endl;
-    else drawHistogramAndFit(treeStandAlone, "zBosonMass", "Z (Global&StandAlone)", "zBosonsStandAlone.png", "StandAlone Z mass", "fit_results.txt");
-    if (!treeCalo) std::cerr << "CaloMuons tree not found." << std::endl;
-    else drawHistogramAndFit(treeCalo, "zBosonMass", "Z (Global&Calo)", "zBosonsCalo.png", "Calo Z mass", "fit_results.txt");
-    if (!treePF) std::cerr << "PFMuons tree not found." << std::endl;
-    else drawHistogramAndFit(treePF, "zBosonMass", "Z (Global&PF)", "zBosonsPF.png", "PF Z mass", "fit_results.txt");
-    if (!treeRPC) std::cerr << "RPCMuons tree not found." << std::endl;
-    else drawHistogramAndFit(treeRPC, "zBosonMass", "Z (Global&RPC)", "zBosonsRPC.png", "RPC Z mass", "fit_results.txt");
-    if (!treeGEM) std::cerr << "GEMMuons tree not found." << std::endl;
-    else drawHistogramAndFit(treeGEM, "zBosonMass", "Z (Global&GEM)", "zBosonsGEM.png", "GEM Z mass", "fit_results.txt");
-    if (!treeME0) std::cerr << "ME0Muons tree not found." << std::endl;
-    else drawHistogramAndFit(treeME0, "zBosonMass", "Z (Global&ME0)", "zBosonsME0.png", "ME0 Z mass", "fit_results.txt");
+    // Define trees and get objects
+    std::vector<std::tuple<TTree**, const char*, const char*, const char*, const char*>> trees = {
+        {&treeGlobal, "GlobalMuons", "Z (Global)", "zBosonsGlobal.png", "Global Z mass"},
+        {&treeTracker, "TrackerMuons", "Z (Global&Tracker)", "zBosonsTracker.png", "Tracker Z mass"},
+        {&treeStandAlone, "StandAloneMuons", "Z (Global&StandAlone)", "zBosonsStandAlone.png", "StandAlone Z mass"},
+        {&treePF, "PFMuons", "Z (Global&PF)", "zBosonsPF.png", "PF Z mass"},
+        {&treeRPC, "RPCMuons", "Z (Global&RPC)", "zBosonsRPC.png", "RPC Z mass"},
+        {&treeGEM, "GEMMuons", "Z (Global&GEM)", "zBosonsGEM.png", "GEM Z mass"}
+    };
 
+    for (auto& tree : trees) {
+        file->GetObject(std::get<1>(tree), *std::get<0>(tree));
+        if (!*std::get<0>(tree)) std::cerr << std::get<1>(tree) << " tree not found." << std::endl;
+    }
+
+    // Create histograms for each variable
+    TH1F* histPt = new TH1F("histPt", ";muon p_{T} (GeV);Efficiency", 40, 0, 80);
+    TH1F* histEta = new TH1F("histEta", ";muon #eta;Efficiency", 50, -2.5, 2.5);
+    TH1F* histIso = new TH1F("histIso", ";muon Iso;Efficiency", 50, 0, 0.5);
+
+    // Set histogram style
+    std::vector<TH1F*> histograms = {histPt, histEta, histIso};
+    for (auto hist : histograms) {
+        hist->SetStats(0);
+        hist->GetXaxis()->SetTitleSize(0.05);
+        hist->GetXaxis()->SetTitleOffset(0.9);
+        hist->GetXaxis()->SetLabelSize(0.04);
+        hist->GetYaxis()->SetTitleSize(0.05);
+        hist->GetYaxis()->SetTitleOffset(0.9);
+        hist->GetYaxis()->SetLabelSize(0.04);
+        hist->SetMinimum(0);
+        hist->SetMaximum(1.1);
+    }
+
+    // Create canvases
+    TCanvas* canvasPt = new TCanvas("canvas_pt", "Muon Efficiency vs pT", 800, 600);
+    TCanvas* canvasEta = new TCanvas("canvas_eta", "Muon Efficiency vs eta", 800, 600);
+    TCanvas* canvasIso = new TCanvas("canvas_iso", "Muon Efficiency vs Iso", 800, 600);
+
+    // Create legends
+    TLegend* legendPt = new TLegend(0.7, 0.2, 0.9, 0.4);
+    TLegend* legendEta = new TLegend(0.7, 0.2, 0.9, 0.4);
+    TLegend* legendIso = new TLegend(0.7, 0.2, 0.9, 0.4);
+
+    std::vector<TLegend*> legends = {legendPt, legendEta, legendIso};
+    for (auto legend : legends) {
+        legend->SetBorderSize(0);
+        legend->SetFillStyle(0);
+    }
+
+    // Colors for different muon types
+    int colors[] = {kRed, kBlue, kGreen+2, kMagenta, kOrange-3, kCyan+2};
+
+    // Draw efficiency and histograms for each tree
+    for (size_t i = 0; i < trees.size(); ++i) {
+        if (*std::get<0>(trees[i])) {
+            // Draw efficiency
+            drawEfficiency(*std::get<0>(trees[i]), std::get<1>(trees[i]), histPt, histEta, histIso, colors[i]);
+            
+            // Add entry to legends (only muon type, no "Muons" suffix)
+            std::string legendLabel = std::get<1>(trees[i]);
+            legendLabel = legendLabel.substr(0, legendLabel.find("Muons"));
+            legendPt->AddEntry(histPt->GetListOfFunctions()->Last(), legendLabel.c_str(), "lp");
+            legendEta->AddEntry(histEta->GetListOfFunctions()->Last(), legendLabel.c_str(), "lp");
+            legendIso->AddEntry(histIso->GetListOfFunctions()->Last(), legendLabel.c_str(), "lp");
+
+            // Draw histogram and fit
+            //drawHistogramAndFit(*std::get<0>(trees[i]), "zBosonMass", std::get<2>(trees[i]), std::get<3>(trees[i]), std::get<4>(trees[i]), "fit_results.txt");
+        }
+    }
+    // Function to draw CMS labels
+    auto drawCMSLabel = [](TCanvas* canvas) {
+        canvas->cd();
+        TLatex latex;
+        latex.SetNDC();
+        latex.SetTextSize(0.05);
+        latex.SetTextFont(62);
+        latex.DrawLatex(0.10, 0.91, "CMS");
+        latex.SetTextFont(52);
+        latex.SetTextSize(0.04);
+        latex.DrawLatex(0.18, 0.91, "Preliminary");
+        latex.SetTextFont(42);
+        latex.SetTextSize(0.035);
+        latex.DrawLatex(0.60, 0.91, "#sqrt{s} = 13.6 TeV, L = 120.57/fb");
+    };
+    
+    // Draw and save efficiency histograms
+    std::vector<std::pair<TCanvas*, TH1F*>> canvasHistPairs = {
+        {canvasPt, histPt}, {canvasEta, histEta}, {canvasIso, histIso}
+    };
+
+    for (auto& pair : canvasHistPairs) {
+        pair.first->cd();
+        pair.second->Draw();  // "HIST"로 변경하여 히스토그램 스타일로 그리기
+        gPad->SetTicks(1, 1);       // 눈금 표시
+        if (pair.second == histPt) {
+            pair.second->GetXaxis()->SetTitle("pT (GeV)");
+            legendPt->Draw();
+        } else if (pair.second == histEta) {
+            pair.second->GetXaxis()->SetTitle("#eta");
+            legendEta->Draw();
+        } else {
+            pair.second->GetXaxis()->SetTitle("Isolation");
+            legendIso->Draw();
+        }
+        drawCMSLabel(pair.first);
+        pair.first->SaveAs((std::string("efficiency_") + pair.second->GetName() + "_comparison.png").c_str());
+    }
+    // Cleanup
+    delete canvasPt;
+    delete canvasEta;
+    delete canvasIso;
+    delete histPt;
+    delete histEta;
+    delete histIso;
+    delete legendPt;
+    delete legendEta;
+    delete legendIso;
 
     file->Close();
     delete file;

@@ -9,11 +9,19 @@
 #include "TLegend.h"
 #include "THStack.h"
 #include "TStyle.h"
+#include "TLatex.h"
+#include "TLine.h"  // 추가
 
 void drawHistogramsForAllMuonTypes(const char* dataFilename, const char* mcFilename, const char* muonType) {
     const char* dataBranchName = "zBosonMass";
     const char* mcBranchName = "zBosonMass";
-    const char* histTitle = Form("Z Bosons (%s)", muonType);
+    
+    const char* histTitle;
+    if (strcmp(muonType, "GlobalMuons") == 0) {
+        histTitle = "Z (GlobalMuons)";
+    } else {
+        histTitle = Form("Z (Global & %s)", muonType);
+    }
     const char* histFileName = Form("zBosons%s.png", muonType);
     const char* canvasTitle = Form("%s Z mass", muonType);
     const char* logFileName = "fit_results.txt";
@@ -48,8 +56,8 @@ void drawHistogramsForAllMuonTypes(const char* dataFilename, const char* mcFilen
         return;
     }
 
-    TH1F* dataHist = new TH1F("dataHist", Form("%s;Mass (GeV);Events", histTitle), 360, 0, 180);
-    TH1F* mcHist = new TH1F("mcHist", Form("%s;Mass (GeV);Events", histTitle), 360, 0, 180);
+    TH1F* dataHist = new TH1F("dataHist", Form("%s;M_{\\mu\\mu} (GeV);Counts /0.5GeV", histTitle), 360, 0, 180);
+    TH1F* mcHist = new TH1F("mcHist", Form("%s;M_{\\mu\\mu} (GeV);Counts /0.5GeV", histTitle), 360, 0, 180);
 
     double zBosonMass;
     dataTree->SetBranchAddress(dataBranchName, &zBosonMass);
@@ -82,8 +90,9 @@ void drawHistogramsForAllMuonTypes(const char* dataFilename, const char* mcFilen
     dataHist->SetLineColor(kBlack);
     mcHist->SetFillColor(kBlue);
     mcHist->SetLineColor(kBlue);
+    mcHist->SetFillStyle(1001); // MC 히스토그램 색 채우기
 
-    THStack* stack = new THStack("stack", Form("%s;Mass (GeV);Events", histTitle));
+    THStack* stack = new THStack("stack", Form("%s;M_{\\mu\\mu} (GeV);Counts /0.5GeV", histTitle));
     stack->Add(mcHist);
     stack->Add(dataHist);
 
@@ -93,6 +102,15 @@ void drawHistogramsForAllMuonTypes(const char* dataFilename, const char* mcFilen
     pad1->cd();
     stack->Draw("nostack");
     dataHist->Draw("E same");
+
+    TLatex latex;
+    latex.SetNDC();
+    latex.SetTextSize(0.035);
+    latex.SetTextFont(62); // bold font for "CMS"
+    latex.DrawLatex(0.14, 0.91, "CMS");
+    latex.SetTextFont(42); // normal font for "Preliminary"
+    latex.DrawLatex(0.20, 0.91, "#it{Preliminary}");
+    latex.DrawLatex(0.75, 0.91, "#sqrt{s} = 13.6 TeV, L = 120.57/fb");
 
     TLegend* legend = new TLegend(0.7, 0.7, 0.9, 0.9);
     legend->AddEntry(dataHist, "Data", "lep");
@@ -105,7 +123,7 @@ void drawHistogramsForAllMuonTypes(const char* dataFilename, const char* mcFilen
     pad2->SetBottomMargin(0.2);
     pad2->Draw();
     pad2->cd();
-
+    
     TH1F* ratioHist = (TH1F*)dataHist->Clone("ratioHist");
     ratioHist->Divide(mcHist);
     ratioHist->SetTitle("");
@@ -122,6 +140,10 @@ void drawHistogramsForAllMuonTypes(const char* dataFilename, const char* mcFilen
     ratioHist->GetXaxis()->SetLabelFont(43);
     ratioHist->GetXaxis()->SetLabelSize(15);
     ratioHist->Draw("ep");
+    TLine* line = new TLine(0, 1, 180, 1);
+    line->SetLineColor(kRed);
+    line->SetLineStyle(2);
+    line->Draw();
 
     canvas->SaveAs(histFileName);
 
@@ -131,6 +153,7 @@ void drawHistogramsForAllMuonTypes(const char* dataFilename, const char* mcFilen
     delete legend;
     delete pad1;
     delete pad2;
+    delete line;
     delete canvas;
 
     dataFile->Close();
@@ -138,6 +161,7 @@ void drawHistogramsForAllMuonTypes(const char* dataFilename, const char* mcFilen
     delete dataFile;
     delete mcFile;
 }
+
 
 void drawDataMCHistograms(const char* dataFilename, const char* mcFilename) {
     const char* muonTypes[] = {

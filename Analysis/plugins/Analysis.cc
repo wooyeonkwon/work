@@ -53,6 +53,13 @@ private:
   mutable double zBosonMassGEM;  
   mutable double zBosonMassME0;
 
+  mutable double tagPt;
+  mutable double tagEta;
+  mutable double tagIso;
+  mutable double probePt;
+  mutable double probeEta;
+  mutable double probeIso;
+  mutable bool passingProbe;
   mutable int eventNumber;
   mutable int runNumber;
   mutable int lumiSection;
@@ -82,18 +89,7 @@ Analysis::~Analysis() {
 
 void Analysis::beginJob() {
   std::lock_guard<std::mutex> lock(mtx_);
-  // TFileService를 사용하므로 파일 생성 코드 제거
-  // const char* crabId = std::getenv("CRAB_Id");
-  // std::string filename = "data";
-  // if (crabId != nullptr) {
-  //   filename += "_" + std::string(crabId);
-  // }
-  // filename += ".root";
 
-  // outputFile = new TFile(filename.c_str(), "RECREATE");
-  // if (!outputFile || outputFile->IsZombie()) {
-  //   throw std::runtime_error("Failed to open output file");
-  // }
 
   treeGlobal = new TTree("GlobalMuons", "Global Muons");
   if (!treeGlobal) {
@@ -107,53 +103,29 @@ void Analysis::beginJob() {
   treeGEM = new TTree("GEMMuons", "GEM Muons");
   treeME0 = new TTree("ME0Muons", "ME0 Muons");
 
-  treeGlobal->Branch("zBosonMass", &zBosonMassGlobal, "zBosonMass/D");
-  treeGlobal->Branch("eventNumber", &eventNumber, "eventNumber/I");
-  treeGlobal->Branch("runNumber", &runNumber, "runNumber/I");
-  treeGlobal->Branch("lumiSection", &lumiSection, "lumiSection/I");
-  treeGlobal->Branch("muonSize", &muonSizeGlobal, "muonSize/I");
+  auto initializeTree = [this](TTree* tree) {
+    tree->Branch("zBosonMass", &zBosonMassGlobal, "zBosonMass/D");
+    tree->Branch("tagPt", &tagPt, "tagPt/D");
+    tree->Branch("tagEta", &tagEta, "tagEta/D");
+    tree->Branch("tagIso", &tagIso, "tagIso/D");
+    tree->Branch("probePt", &probePt, "probePt/D");
+    tree->Branch("probeEta", &probeEta, "probeEta/D");
+    tree->Branch("probeIso", &probeIso, "probeIso/D");
+    tree->Branch("passingProbe", &passingProbe, "passingProbe/O");
+    tree->Branch("eventNumber", &eventNumber, "eventNumber/I");
+    tree->Branch("runNumber", &runNumber, "runNumber/I");
+    tree->Branch("lumiSection", &lumiSection, "lumiSection/I");
+    tree->Branch("muonSize", &muonSizeGlobal, "muonSize/I");
+  };
 
-  treeTracker->Branch("zBosonMass", &zBosonMassTracker, "zBosonMass/D");
-  treeTracker->Branch("eventNumber", &eventNumber, "eventNumber/I");
-  treeTracker->Branch("runNumber", &runNumber, "runNumber/I");
-  treeTracker->Branch("lumiSection", &lumiSection, "lumiSection/I");
-  treeTracker->Branch("muonSize", &muonSizeTracker, "muonSize/I");
-
-  treeStandAlone->Branch("zBosonMass", &zBosonMassStandAlone, "zBosonMass/D");
-  treeStandAlone->Branch("eventNumber", &eventNumber, "eventNumber/I");
-  treeStandAlone->Branch("runNumber", &runNumber, "runNumber/I");
-  treeStandAlone->Branch("lumiSection", &lumiSection, "lumiSection/I");
-  treeStandAlone->Branch("muonSize", &muonSizeStandAlone, "muonSize/I");
-
-  treeCalo->Branch("zBosonMass", &zBosonMassCalo, "zBosonMass/D");
-  treeCalo->Branch("eventNumber", &eventNumber, "eventNumber/I");
-  treeCalo->Branch("runNumber", &runNumber, "runNumber/I");
-  treeCalo->Branch("lumiSection", &lumiSection, "lumiSection/I");
-  treeCalo->Branch("muonSize", &muonSizeCalo, "muonSize/I");
-
-  treePF->Branch("zBosonMass", &zBosonMassPF, "zBosonMass/D");
-  treePF->Branch("eventNumber", &eventNumber, "eventNumber/I");
-  treePF->Branch("runNumber", &runNumber, "runNumber/I");
-  treePF->Branch("lumiSection", &lumiSection, "lumiSection/I");
-  treePF->Branch("muonSize", &muonSizePF, "muonSize/I");
-
-  treeRPC->Branch("zBosonMass", &zBosonMassRPC, "zBosonMass/D");
-  treeRPC->Branch("eventNumber", &eventNumber, "eventNumber/I");
-  treeRPC->Branch("runNumber", &runNumber, "runNumber/I");
-  treeRPC->Branch("lumiSection", &lumiSection, "lumiSection/I");
-  treeRPC->Branch("muonSize", &muonSizeRPC, "muonSize/I");
-
-  treeGEM->Branch("zBosonMass", &zBosonMassGEM, "zBosonMass/D");
-  treeGEM->Branch("eventNumber", &eventNumber, "eventNumber/I");
-  treeGEM->Branch("runNumber", &runNumber, "runNumber/I");
-  treeGEM->Branch("lumiSection", &lumiSection, "lumiSection/I");
-  treeGEM->Branch("muonSize", &muonSizeGEM, "muonSize/I");
-
-  treeME0->Branch("zBosonMass", &zBosonMassME0, "zBosonMass/D");
-  treeME0->Branch("eventNumber", &eventNumber, "eventNumber/I");
-  treeME0->Branch("runNumber", &runNumber, "runNumber/I");
-  treeME0->Branch("lumiSection", &lumiSection, "lumiSection/I");
-  treeME0->Branch("muonSize", &muonSizeME0, "muonSize/I");
+  initializeTree(treeGlobal);
+  initializeTree(treeTracker);
+  initializeTree(treeStandAlone);
+  initializeTree(treeCalo);
+  initializeTree(treePF);
+  initializeTree(treeRPC);
+  initializeTree(treeGEM);
+  initializeTree(treeME0);
 }
 
 void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm::EventSetup& iSetup) const {
@@ -185,7 +157,8 @@ void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm:
   if (!vertices->empty()) {
     primaryVertex = vertices->front();  // get first good vertex
   }
-  
+  std::vector<reco::Muon> tagMuons;
+  // muons below are probe muons
   std::vector<reco::Muon> globalMuons;
   std::vector<reco::Muon> trackerMuons;
   std::vector<reco::Muon> standAloneMuons;
@@ -207,70 +180,83 @@ void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm:
                          ((muon.pfIsolationR04().sumNeutralHadronEt + muon.pfIsolationR04().sumPhotonEt - 0.5 * muon.pfIsolationR04().sumPUPt) > 0 ? 
                           (muon.pfIsolationR04().sumNeutralHadronEt + muon.pfIsolationR04().sumPhotonEt - 0.5 * muon.pfIsolationR04().sumPUPt) : 0)) / muon.pt();
       if (isolation < 0.15) {
-        if (muon.isGlobalMuon()) {
-          globalMuons.push_back(muon);
-          if (muon.isTrackerMuon()) {
-            trackerMuons.push_back(muon);
-          }
-          if (muon.isStandAloneMuon()) {
-            standAloneMuons.push_back(muon);
-          }
-          if (muon.isCaloMuon()) {
-            caloMuons.push_back(muon);
-          }
-          if (muon.isPFMuon()) {
-            pfMuons.push_back(muon);
-          }
-          if (muon.isRPCMuon()) {
-            rpcMuons.push_back(muon); 
-          }
-          if (muon.isGEMMuon()) {
-            gemMuons.push_back(muon);
-          }
-          if (muon.isME0Muon()) {
-            me0Muons.push_back(muon);
-          }
-        }
+        tagMuons.push_back(muon);
       }
+    }
+    if (muon.pt() > 15 && fabs(muon.eta()) < 2.4){
+      if (muon.isGlobalMuon()){
+        globalMuons.push_back(muon);
+        if (muon.isTrackerMuon()) {
+          trackerMuons.push_back(muon);
+        }
+        if (muon.isStandAloneMuon()) {
+          standAloneMuons.push_back(muon);
+          }
+        if (muon.isCaloMuon()) {
+          caloMuons.push_back(muon);
+          }
+        if (muon.isPFMuon()) {
+          pfMuons.push_back(muon);
+          }
+        if (muon.isRPCMuon()) {
+          rpcMuons.push_back(muon); 
+          }
+        if (muon.isGEMMuon()) {
+          gemMuons.push_back(muon);
+          }
+        if (muon.isME0Muon()) {
+          me0Muons.push_back(muon);  
+        }
+      }            
     }
   }
 
-  //Z reconstruction  
-  auto reconstructZBoson = [](const std::vector<reco::Muon>& muons) -> double {
-    if (muons.size() < 2) return 0.0;
 
+
+
+  auto reconstructZBoson = [&](const std::vector<reco::Muon>& tagMuons, const std::vector<reco::Muon>& probeMuons) -> double {
+    if (tagMuons.empty() || probeMuons.empty()) return 0.0;
     math::XYZTLorentzVector goodZBoson;
     double goodMass = 0.0;
     
-    for (size_t i = 0; i < muons.size() - 1; ++i) {
-      for (size_t j = i + 1; j < muons.size(); ++j) {
-        if ((muons[i].charge() + muons[j].charge() == 0) && (fabs(muons[i].vz()-muons[j].vz()) < 0.5)) {
-          math::XYZTLorentzVector zBoson = muons[i].p4() + muons[j].p4();
+    for (const auto& tagMuon : tagMuons) {
+      for (const auto& probeMuon : probeMuons) {
+        if ((tagMuon.charge() != probeMuon.charge()) && (fabs(tagMuon.vz() - probeMuon.vz()) < 0.5)) {
+          math::XYZTLorentzVector zBoson = tagMuon.p4() + probeMuon.p4();
           double mass = zBoson.M();
           if (fabs(mass - 91.1876) < fabs(goodMass - 91.1876)) {
             goodMass = mass;
             goodZBoson = zBoson;
+            tagPt = tagMuon.pt();
+            tagEta = tagMuon.eta();
+            tagIso = (tagMuon.pfIsolationR04().sumChargedHadronPt + 
+                      ((tagMuon.pfIsolationR04().sumNeutralHadronEt + tagMuon.pfIsolationR04().sumPhotonEt - 0.5 * tagMuon.pfIsolationR04().sumPUPt) > 0 ? 
+                       (tagMuon.pfIsolationR04().sumNeutralHadronEt + tagMuon.pfIsolationR04().sumPhotonEt - 0.5 * tagMuon.pfIsolationR04().sumPUPt) : 0)) / tagMuon.pt();
+            probePt = probeMuon.pt();
+            probeEta = probeMuon.eta();
+            probeIso = (probeMuon.pfIsolationR04().sumChargedHadronPt + 
+                        ((probeMuon.pfIsolationR04().sumNeutralHadronEt + probeMuon.pfIsolationR04().sumPhotonEt - 0.5 * probeMuon.pfIsolationR04().sumPUPt) > 0 ? 
+                         (probeMuon.pfIsolationR04().sumNeutralHadronEt + probeMuon.pfIsolationR04().sumPhotonEt - 0.5 * probeMuon.pfIsolationR04().sumPUPt) : 0)) / probeMuon.pt();
+            passingProbe = (mass > 60.0 && mass < 120.0) ? 1 : 0;
+            
           }
         }
       }
     }
-    
-    if (goodMass > 1) {   
-      return goodMass;
+    if (goodMass < 60.0 || goodMass > 120.0) {
+      passingProbe = 0;
     }
-    else {
-      return 0;
-    }
+    return goodMass;
   };
 
-  zBosonMassGlobal = reconstructZBoson(globalMuons);
-  zBosonMassTracker = reconstructZBoson(trackerMuons);
-  zBosonMassStandAlone = reconstructZBoson(standAloneMuons);
-  zBosonMassCalo = reconstructZBoson(caloMuons);
-  zBosonMassPF = reconstructZBoson(pfMuons);
-  zBosonMassRPC = reconstructZBoson(rpcMuons);
-  zBosonMassGEM = reconstructZBoson(gemMuons);
-  zBosonMassME0 = reconstructZBoson(me0Muons);
+  zBosonMassGlobal = reconstructZBoson(tagMuons,globalMuons);
+  zBosonMassTracker = reconstructZBoson(tagMuons,trackerMuons);
+  zBosonMassStandAlone = reconstructZBoson(tagMuons,standAloneMuons);
+  zBosonMassCalo = reconstructZBoson(tagMuons,caloMuons); 
+  zBosonMassPF = reconstructZBoson(tagMuons,pfMuons);
+  zBosonMassRPC = reconstructZBoson(tagMuons,rpcMuons);
+  zBosonMassGEM = reconstructZBoson(tagMuons,gemMuons);
+  zBosonMassME0 = reconstructZBoson(tagMuons,me0Muons);
 
   muonSizeGlobal = globalMuons.size();
   muonSizeTracker = trackerMuons.size();
@@ -315,16 +301,6 @@ void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm:
 
 void Analysis::endJob() {
   std::lock_guard<std::mutex> lock(mtx_);
-  // TFileService를 사용하므로 트리 삭제 코드 제거
-  // delete treeGlobal;
-  // delete treeTracker;
-  // delete treeStandAlone;
-  // delete treeCalo;
-  // delete treePF;
-  // delete treeRPC;
-  // delete treeGEM;
-  // delete treeME0;
-
   std::cout << "endJob" << std::endl;
 }
 

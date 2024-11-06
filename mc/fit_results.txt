@@ -106,3 +106,147 @@ Mean: 91.2
 Sigma: 2
 Amplitude: 0
 
+Global Z mass Fit Parameters:
+AlphaL: 1.07281
+AlphaH: 1.42887
+nL: 2.50893
+nH: 2.0775
+Mean: 91.096
+Sigma: 1.91658
+Amplitude: 390.174
+
+Tracker Z mass Fit Parameters:
+AlphaL: 1.07281
+AlphaH: 1.42887
+nL: 2.50893
+nH: 2.0775
+Mean: 91.096
+Sigma: 1.91658
+Amplitude: 390.174
+
+StandAlone Z mass Fit Parameters:
+AlphaL: 1.07281
+AlphaH: 1.42887
+nL: 2.50893
+nH: 2.0775
+Mean: 91.096
+Sigma: 1.91658
+Amplitude: 390.174
+
+Calo Z mass Fit Parameters:
+AlphaL: 1.25
+AlphaH: 1.44
+nL: 1.59
+nH: 1.8
+Mean: 91.2
+Sigma: 2
+Amplitude: 10384
+
+PF Z mass Fit Parameters:
+AlphaL: 1.07281
+AlphaH: 1.42887
+nL: 2.50893
+nH: 2.0775
+Mean: 91.096
+Sigma: 1.91658
+Amplitude: 390.174
+
+RPC Z mass Fit Parameters:
+AlphaL: 1.16729
+AlphaH: 1.55495
+nL: 1.97221
+nH: 1.56323
+Mean: 91.0597
+Sigma: 1.79506
+Amplitude: 274.777
+
+GEM Z mass Fit Parameters:
+AlphaL: 0.00679592
+AlphaH: 0.00415746
+nL: 0.677064
+nH: 0.917316
+Mean: 90.3522
+Sigma: -0.00285969
+Amplitude: 28.2099
+
+ME0 Z mass Fit Parameters:
+AlphaL: 1.25
+AlphaH: 1.44
+nL: 1.59
+nH: 1.8
+Mean: 91.2
+Sigma: 2
+Amplitude: 10384
+
+Global Z mass Fit Parameters:
+AlphaL: 1.15561
+AlphaH: 1.35009
+nL: 1.98882
+nH: 2.10133
+Mean: 90.8842
+Sigma: 1.96466
+Amplitude: 366365
+
+Tracker Z mass Fit Parameters:
+AlphaL: 1.15503
+AlphaH: 1.34976
+nL: 1.99289
+nH: 2.1037
+Mean: 90.8838
+Sigma: 1.96484
+Amplitude: 364360
+
+StandAlone Z mass Fit Parameters:
+AlphaL: 1.15561
+AlphaH: 1.35009
+nL: 1.98882
+nH: 2.10133
+Mean: 90.8842
+Sigma: 1.96466
+Amplitude: 366365
+
+Calo Z mass Fit Parameters:
+AlphaL: 1.25
+AlphaH: 1.44
+nL: 1.59
+nH: 1.8
+Mean: 91.2
+Sigma: 2
+Amplitude: 0
+
+PF Z mass Fit Parameters:
+AlphaL: 1.15529
+AlphaH: 1.34974
+nL: 1.99141
+nH: 2.10227
+Mean: 90.8847
+Sigma: 1.96384
+Amplitude: 365317
+
+RPC Z mass Fit Parameters:
+AlphaL: 1.16073
+AlphaH: 1.36413
+nL: 1.87723
+nH: 2.00341
+Mean: 90.9139
+Sigma: 1.80957
+Amplitude: 229025
+
+GEM Z mass Fit Parameters:
+AlphaL: 1.34892
+AlphaH: 1.54081
+nL: 1.59418
+nH: 2.09072
+Mean: 90.729
+Sigma: 2.50779
+Amplitude: 3924.01
+
+ME0 Z mass Fit Parameters:
+AlphaL: 1.25
+AlphaH: 1.44
+nL: 1.59
+nH: 1.8
+Mean: 91.2
+Sigma: 2
+Amplitude: 0
+

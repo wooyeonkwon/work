@@ -23,11 +23,11 @@ process.TFileService = cms.Service("TFileService",
     fileName = cms.string("mc.root")
 )
 
-process.Analysis = cms.EDAnalyzer('Analysis',
+process.AnalysisMC = cms.EDAnalyzer('AnalysisMC',
     muons = cms.InputTag("muons"),
     triggerResults = cms.InputTag("TriggerResults", "", "HLT"),
     vertices = cms.InputTag("offlinePrimaryVertices"),  
     hltPath = cms.string("HLT_IsoMu24_v")
 )
 
-process.p = cms.Path(process.Analysis)
+process.p = cms.Path(process.AnalysisMC)
