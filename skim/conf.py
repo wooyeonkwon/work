@@ -35,7 +35,7 @@ process.out = cms.OutputModule("PoolOutputModule",
         #'keep recoTracks_standAloneMuons_*_*',
         'keep triggerTriggerEvent_hltTriggerSummaryAOD__*'
         # comment out, if real data
-        ,'keep recoGenParticles_genParticles__*'
+        #,'keep recoGenParticles_genParticles__*'
     )
 )
 

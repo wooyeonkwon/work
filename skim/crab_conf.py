@@ -4,7 +4,7 @@ config = config()
 
 #config.Site.blacklist = ['T2_US_MIT']
 
-config.General.requestName = 'Run3Summer22EEDRPremix-124X_mcRun3'
+config.General.requestName = 'Run3Summer22EEDRPremix-124X_mcRun3_2022_realistic_postEE_v1-v4'
 config.General.workArea = 'crab_projects' 
 
 config.JobType.pluginName = 'Analysis'
