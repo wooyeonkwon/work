@@ -29,9 +29,10 @@ void drawHistogram(TTree* tree, const char* leafName, int bins, double xMin, dou
     hist->GetXaxis()->SetTitleSize(0.05);
     hist->GetXaxis()->SetTitleOffset(0.9);
     hist->GetXaxis()->SetLabelSize(0.04);
-    hist->GetYaxis()->SetTitleSize(0.05);
-    hist->GetYaxis()->SetTitleOffset(0.9);
-    hist->GetYaxis()->SetLabelSize(0.04);
+    hist->GetYaxis()->SetTitleSize(0.04);
+    hist->GetYaxis()->SetTitleOffset(0.8);
+    hist->GetYaxis()->SetLabelSize(0.03);
+    hist->GetYaxis()->SetMaxDigits(2);
     hist->Draw();
 
     canvas->cd();
@@ -77,9 +78,9 @@ void drawHistograms_BasicInfo(const char* filename) {
 
             // 히스토그램을 그릴 leaf 이름과 범위 설정
             const char* leaves[] = {"muonSize", "muonPt", "muonEta", "muonPhi", "muonIso"};
-            int bins[] = {200, 1000, 60, 70, 300};
+            int bins[] = {50, 1000, 60, 70, 300};
             double xMin[] = {0, 0.0, -3.0, -3.5, 0.0};
-            double xMax[] = {200, 100.0, 3.0, 3.5, 3.0};
+            double xMax[] = {50, 100.0, 3.0, 3.5, 3.0};
             const char* histTitle[] = {"Muon Mutiplicity","Muon Pt", "Muon Eta", "Muon Phi", "Muon Iso(dR = 0.4)"};
             const char* xUnit[] = {"","GeV","","",""};
 

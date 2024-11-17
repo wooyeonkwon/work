@@ -12,7 +12,7 @@ process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(-1))
 #file_paths =  ['file:///eos/cms/store/mc/Run3Summer22DRPremix/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/AODSIM/124X_mcRun3_2022_realistic_v12_ext1-v1/70000/00775a3b-7386-44ac-8ade-e3aafbdc0261.root',
 #               'file:///eos/cms/store/mc/Run3Summer22DRPremix/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/AODSIM/124X_mcRun3_2022_realistic_v12_ext1-v1/70000/00656c16-fb80-415d-b50b-15fbe6824f22.root',
 #               'file:///eos/cms/store/mc/Run3Summer22DRPremix/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/AODSIM/124X_mcRun3_2022_realistic_v12_ext1-v1/70000/0066b911-997b-4e7a-b322-442102f0a30e.root']
-file_paths = ['file:///eos/home-w/wkwon/CMSSW_14_0_12/src/work/skim/skimmed_data.root']
+file_paths = ['file:///pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/combined_data/skimmed_data_22EEmc.root']
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(*file_paths)
 )
@@ -24,7 +24,7 @@ process.options = cms.untracked.PSet(
 )
 
 process.TFileService = cms.Service("TFileService",
-    fileName = cms.string("data_test_mc.root")
+    fileName = cms.string("data_22EEmc.root")
 )
 
 process.Analysis = cms.EDAnalyzer('Analysis',
