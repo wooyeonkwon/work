@@ -46,10 +46,10 @@ void drawHistogram(TTree* tree, const char* leafName, int bins, double xMin, dou
     latex.DrawLatex(0.25, 0.91, "In progress");
     latex.SetTextFont(42);
     latex.SetTextSize(0.035);
-    latex.DrawLatex(0.60, 0.91, "#sqrt{s} = 13.6 TeV, L = 2.97/fb");  //full data : L = 120.56)
+    latex.DrawLatex(0.60, 0.91, "#sqrt{s} = 13.6 TeV, Nevent : 72909628");  //full data : L = 120.56 / 11.06/fb
 
 
-    canvas->SaveAs(Form("%s_histogram.png", leafName));
+    canvas->SaveAs(Form("mc_%s_histogram.png", leafName));
 
     // 리소스 정리
     delete canvas;

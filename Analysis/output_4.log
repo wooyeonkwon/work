@@ -1,0 +1,408 @@
+19-Nov-2024 20:18:56 KST  Initiating request to open file file:///pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/crab_Run3Summer22DRPremix-124X_mcRun3_2022_realistic_v12-v4/241117_152227/0000/mc_skimmed_data_74.root
+19-Nov-2024 20:18:57 KST  Successfully opened file file:///pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/crab_Run3Summer22DRPremix-124X_mcRun3_2022_realistic_v12-v4/241117_152227/0000/mc_skimmed_data_74.root
+Begin processing the 1st record. Run 1, Event 47147269, LumiSection 25066 on stream 0 at 19-Nov-2024 20:19:04.826 KST
+Begin processing the 10001st record. Run 1, Event 48206253, LumiSection 25628 on stream 0 at 19-Nov-2024 20:19:19.229 KST
+Begin processing the 20001st record. Run 1, Event 47369342, LumiSection 25184 on stream 0 at 19-Nov-2024 20:19:29.209 KST
+Begin processing the 30001st record. Run 1, Event 47156809, LumiSection 25071 on stream 0 at 19-Nov-2024 20:19:39.235 KST
+Begin processing the 40001st record. Run 1, Event 54426797, LumiSection 28936 on stream 0 at 19-Nov-2024 20:19:49.730 KST
+Begin processing the 50001st record. Run 1, Event 53678017, LumiSection 28537 on stream 0 at 19-Nov-2024 20:20:00.746 KST
+Begin processing the 60001st record. Run 1, Event 48486202, LumiSection 25777 on stream 0 at 19-Nov-2024 20:20:11.001 KST
+Begin processing the 70001st record. Run 1, Event 48030812, LumiSection 25535 on stream 0 at 19-Nov-2024 20:20:20.475 KST
+Begin processing the 80001st record. Run 1, Event 48152914, LumiSection 25600 on stream 0 at 19-Nov-2024 20:20:30.221 KST
+Begin processing the 90001st record. Run 1, Event 47693814, LumiSection 25356 on stream 0 at 19-Nov-2024 20:20:39.768 KST
+Begin processing the 100001st record. Run 1, Event 52986786, LumiSection 28170 on stream 0 at 19-Nov-2024 20:20:49.350 KST
+Begin processing the 110001st record. Run 1, Event 48037564, LumiSection 25539 on stream 0 at 19-Nov-2024 20:20:59.099 KST
+Begin processing the 120001st record. Run 1, Event 131743984, LumiSection 70040 on stream 0 at 19-Nov-2024 20:21:10.048 KST
+Begin processing the 130001st record. Run 1, Event 60822493, LumiSection 32336 on stream 0 at 19-Nov-2024 20:21:19.807 KST
+Begin processing the 140001st record. Run 1, Event 54455513, LumiSection 28951 on stream 0 at 19-Nov-2024 20:21:29.364 KST
+Begin processing the 150001st record. Run 1, Event 60639765, LumiSection 32239 on stream 0 at 19-Nov-2024 20:21:39.089 KST
+Begin processing the 160001st record. Run 1, Event 56478659, LumiSection 30026 on stream 0 at 19-Nov-2024 20:21:48.691 KST
+Begin processing the 170001st record. Run 1, Event 191033511, LumiSection 101560 on stream 0 at 19-Nov-2024 20:21:58.660 KST
+Begin processing the 180001st record. Run 1, Event 47884976, LumiSection 25458 on stream 0 at 19-Nov-2024 20:22:10.280 KST
+Begin processing the 190001st record. Run 1, Event 209065649, LumiSection 111147 on stream 0 at 19-Nov-2024 20:22:20.051 KST
+Begin processing the 200001st record. Run 1, Event 48194793, LumiSection 25622 on stream 0 at 19-Nov-2024 20:22:30.021 KST
+Begin processing the 210001st record. Run 1, Event 47569953, LumiSection 25290 on stream 0 at 19-Nov-2024 20:22:40.243 KST
+Begin processing the 220001st record. Run 1, Event 98078442, LumiSection 52142 on stream 0 at 19-Nov-2024 20:22:50.990 KST
+Begin processing the 230001st record. Run 1, Event 242524209, LumiSection 128934 on stream 0 at 19-Nov-2024 20:23:01.889 KST
+Begin processing the 240001st record. Run 1, Event 47294941, LumiSection 25144 on stream 0 at 19-Nov-2024 20:23:12.037 KST
+Begin processing the 250001st record. Run 1, Event 95295773, LumiSection 50663 on stream 0 at 19-Nov-2024 20:23:22.876 KST
+Begin processing the 260001st record. Run 1, Event 214827456, LumiSection 114210 on stream 0 at 19-Nov-2024 20:23:32.764 KST
+19-Nov-2024 20:23:39 KST  Closed file file:///pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/crab_Run3Summer22DRPremix-124X_mcRun3_2022_realistic_v12-v4/241117_152227/0000/mc_skimmed_data_74.root
+19-Nov-2024 20:23:39 KST  Initiating request to open file file:///pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/crab_Run3Summer22DRPremix-124X_mcRun3_2022_realistic_v12-v4/241117_152227/0000/mc_skimmed_data_174.root
+19-Nov-2024 20:23:40 KST  Successfully opened file file:///pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/crab_Run3Summer22DRPremix-124X_mcRun3_2022_realistic_v12-v4/241117_152227/0000/mc_skimmed_data_174.root
+Begin processing the 270001st record. Run 1, Event 133513567, LumiSection 70981 on stream 0 at 19-Nov-2024 20:23:50.179 KST
+Begin processing the 280001st record. Run 1, Event 235206184, LumiSection 125044 on stream 0 at 19-Nov-2024 20:23:59.540 KST
+Begin processing the 290001st record. Run 1, Event 132341356, LumiSection 70357 on stream 0 at 19-Nov-2024 20:24:09.194 KST
+Begin processing the 300001st record. Run 1, Event 132399494, LumiSection 70388 on stream 0 at 19-Nov-2024 20:24:18.640 KST
+Begin processing the 310001st record. Run 1, Event 132269687, LumiSection 70319 on stream 0 at 19-Nov-2024 20:24:28.372 KST
+Begin processing the 320001st record. Run 1, Event 132499264, LumiSection 70441 on stream 0 at 19-Nov-2024 20:24:37.646 KST
+Begin processing the 330001st record. Run 1, Event 132253004, LumiSection 70310 on stream 0 at 19-Nov-2024 20:24:47.170 KST
+Begin processing the 340001st record. Run 1, Event 142284454, LumiSection 75643 on stream 0 at 19-Nov-2024 20:24:57.165 KST
+Begin processing the 350001st record. Run 1, Event 141157551, LumiSection 75044 on stream 0 at 19-Nov-2024 20:25:07.146 KST
+Begin processing the 360001st record. Run 1, Event 141774436, LumiSection 75372 on stream 0 at 19-Nov-2024 20:25:17.032 KST
+Begin processing the 370001st record. Run 1, Event 132724916, LumiSection 70561 on stream 0 at 19-Nov-2024 20:25:26.979 KST
+Begin processing the 380001st record. Run 1, Event 132794447, LumiSection 70598 on stream 0 at 19-Nov-2024 20:25:37.038 KST
+Begin processing the 390001st record. Run 1, Event 141254845, LumiSection 75096 on stream 0 at 19-Nov-2024 20:25:47.418 KST
+Begin processing the 400001st record. Run 1, Event 141790443, LumiSection 75381 on stream 0 at 19-Nov-2024 20:25:57.213 KST
+Begin processing the 410001st record. Run 1, Event 132575251, LumiSection 70482 on stream 0 at 19-Nov-2024 20:26:07.279 KST
+Begin processing the 420001st record. Run 1, Event 132552718, LumiSection 70470 on stream 0 at 19-Nov-2024 20:26:17.884 KST
+Begin processing the 430001st record. Run 1, Event 133237140, LumiSection 70834 on stream 0 at 19-Nov-2024 20:26:27.589 KST
+Begin processing the 440001st record. Run 1, Event 145457712, LumiSection 77330 on stream 0 at 19-Nov-2024 20:26:37.262 KST
+Begin processing the 450001st record. Run 1, Event 133432529, LumiSection 70938 on stream 0 at 19-Nov-2024 20:26:47.484 KST
+Begin processing the 460001st record. Run 1, Event 188275392, LumiSection 100094 on stream 0 at 19-Nov-2024 20:26:57.840 KST
+Begin processing the 470001st record. Run 1, Event 133077258, LumiSection 70749 on stream 0 at 19-Nov-2024 20:27:07.734 KST
+Begin processing the 480001st record. Run 1, Event 189194749, LumiSection 100583 on stream 0 at 19-Nov-2024 20:27:17.749 KST
+Begin processing the 490001st record. Run 1, Event 142305435, LumiSection 75655 on stream 0 at 19-Nov-2024 20:27:27.311 KST
+Begin processing the 500001st record. Run 1, Event 165573610, LumiSection 88025 on stream 0 at 19-Nov-2024 20:27:37.500 KST
+Begin processing the 510001st record. Run 1, Event 133133873, LumiSection 70779 on stream 0 at 19-Nov-2024 20:27:47.448 KST
+Begin processing the 520001st record. Run 1, Event 146128185, LumiSection 77687 on stream 0 at 19-Nov-2024 20:27:57.310 KST
+Begin processing the 530001st record. Run 1, Event 133338870, LumiSection 70888 on stream 0 at 19-Nov-2024 20:28:07.223 KST
+19-Nov-2024 20:28:11 KST  Closed file file:///pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/crab_Run3Summer22DRPremix-124X_mcRun3_2022_realistic_v12-v4/241117_152227/0000/mc_skimmed_data_174.root
+19-Nov-2024 20:28:11 KST  Initiating request to open file file:///pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/crab_Run3Summer22DRPremix-124X_mcRun3_2022_realistic_v12-v4/241117_152227/0000/mc_skimmed_data_206.root
+19-Nov-2024 20:28:11 KST  Successfully opened file file:///pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/crab_Run3Summer22DRPremix-124X_mcRun3_2022_realistic_v12-v4/241117_152227/0000/mc_skimmed_data_206.root
+Begin processing the 540001st record. Run 1, Event 210894131, LumiSection 112119 on stream 0 at 19-Nov-2024 20:28:26.401 KST
+Begin processing the 550001st record. Run 1, Event 171815973, LumiSection 91343 on stream 0 at 19-Nov-2024 20:28:36.039 KST
+Begin processing the 560001st record. Run 1, Event 171737167, LumiSection 91301 on stream 0 at 19-Nov-2024 20:28:46.036 KST
+Begin processing the 570001st record. Run 1, Event 171827183, LumiSection 91349 on stream 0 at 19-Nov-2024 20:28:56.060 KST
+Begin processing the 580001st record. Run 1, Event 172013563, LumiSection 91448 on stream 0 at 19-Nov-2024 20:29:06.223 KST
+Begin processing the 590001st record. Run 1, Event 172496603, LumiSection 91705 on stream 0 at 19-Nov-2024 20:29:15.980 KST
+Begin processing the 600001st record. Run 1, Event 172251657, LumiSection 91575 on stream 0 at 19-Nov-2024 20:29:25.542 KST
+Begin processing the 610001st record. Run 1, Event 172268331, LumiSection 91584 on stream 0 at 19-Nov-2024 20:29:35.073 KST
+Begin processing the 620001st record. Run 1, Event 172687647, LumiSection 91807 on stream 0 at 19-Nov-2024 20:29:44.697 KST
+Begin processing the 630001st record. Run 1, Event 172296356, LumiSection 91599 on stream 0 at 19-Nov-2024 20:29:54.497 KST
+Begin processing the 640001st record. Run 1, Event 185184848, LumiSection 98451 on stream 0 at 19-Nov-2024 20:30:04.271 KST
+Begin processing the 650001st record. Run 1, Event 186565512, LumiSection 99185 on stream 0 at 19-Nov-2024 20:30:13.860 KST
+Begin processing the 660001st record. Run 1, Event 172604821, LumiSection 91763 on stream 0 at 19-Nov-2024 20:30:23.853 KST
+Begin processing the 670001st record. Run 1, Event 181374065, LumiSection 96425 on stream 0 at 19-Nov-2024 20:30:33.463 KST
+Begin processing the 680001st record. Run 1, Event 172382624, LumiSection 91645 on stream 0 at 19-Nov-2024 20:30:43.242 KST
+Begin processing the 690001st record. Run 1, Event 172464897, LumiSection 91688 on stream 0 at 19-Nov-2024 20:30:53.188 KST
+Begin processing the 700001st record. Run 1, Event 172461178, LumiSection 91686 on stream 0 at 19-Nov-2024 20:31:02.932 KST
+Begin processing the 710001st record. Run 1, Event 172513747, LumiSection 91714 on stream 0 at 19-Nov-2024 20:31:12.743 KST
+Begin processing the 720001st record. Run 1, Event 180993199, LumiSection 96222 on stream 0 at 19-Nov-2024 20:31:22.552 KST
+Begin processing the 730001st record. Run 1, Event 180757900, LumiSection 96097 on stream 0 at 19-Nov-2024 20:31:32.432 KST
+Begin processing the 740001st record. Run 1, Event 172738870, LumiSection 91834 on stream 0 at 19-Nov-2024 20:31:42.354 KST
+Begin processing the 750001st record. Run 1, Event 181227836, LumiSection 96347 on stream 0 at 19-Nov-2024 20:31:52.202 KST
+Begin processing the 760001st record. Run 1, Event 172995040, LumiSection 91970 on stream 0 at 19-Nov-2024 20:32:01.734 KST
+Begin processing the 770001st record. Run 1, Event 172859841, LumiSection 91898 on stream 0 at 19-Nov-2024 20:32:11.527 KST
+Begin processing the 780001st record. Run 1, Event 180959796, LumiSection 96205 on stream 0 at 19-Nov-2024 20:32:21.718 KST
+Begin processing the 790001st record. Run 1, Event 172982750, LumiSection 91964 on stream 0 at 19-Nov-2024 20:32:31.470 KST
+Begin processing the 800001st record. Run 1, Event 186245732, LumiSection 99015 on stream 0 at 19-Nov-2024 20:32:41.064 KST
+19-Nov-2024 20:32:42 KST  Closed file file:///pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/crab_Run3Summer22DRPremix-124X_mcRun3_2022_realistic_v12-v4/241117_152227/0000/mc_skimmed_data_206.root
+19-Nov-2024 20:32:42 KST  Initiating request to open file file:///pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/crab_Run3Summer22DRPremix-124X_mcRun3_2022_realistic_v12-v4/241117_152227/0000/mc_skimmed_data_162.root
+19-Nov-2024 20:32:42 KST  Successfully opened file file:///pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/crab_Run3Summer22DRPremix-124X_mcRun3_2022_realistic_v12-v4/241117_152227/0000/mc_skimmed_data_162.root
+Begin processing the 810001st record. Run 1, Event 136623123, LumiSection 72634 on stream 0 at 19-Nov-2024 20:33:01.169 KST
+Begin processing the 820001st record. Run 1, Event 119897333, LumiSection 63742 on stream 0 at 19-Nov-2024 20:33:11.225 KST
+Begin processing the 830001st record. Run 1, Event 119807122, LumiSection 63694 on stream 0 at 19-Nov-2024 20:33:21.369 KST
+Begin processing the 840001st record. Run 1, Event 120849230, LumiSection 64248 on stream 0 at 19-Nov-2024 20:33:30.970 KST
+Begin processing the 850001st record. Run 1, Event 120600774, LumiSection 64116 on stream 0 at 19-Nov-2024 20:33:40.775 KST
+Begin processing the 860001st record. Run 1, Event 120143676, LumiSection 63873 on stream 0 at 19-Nov-2024 20:33:50.749 KST
+Begin processing the 870001st record. Run 1, Event 120079637, LumiSection 63839 on stream 0 at 19-Nov-2024 20:34:01.325 KST
+Begin processing the 880001st record. Run 1, Event 259968953, LumiSection 138208 on stream 0 at 19-Nov-2024 20:34:12.052 KST
+Begin processing the 890001st record. Run 1, Event 122177720, LumiSection 64954 on stream 0 at 19-Nov-2024 20:34:21.692 KST
+Begin processing the 900001st record. Run 1, Event 228901767, LumiSection 121692 on stream 0 at 19-Nov-2024 20:34:31.335 KST
+Begin processing the 910001st record. Run 1, Event 148996429, LumiSection 79212 on stream 0 at 19-Nov-2024 20:34:41.097 KST
+Begin processing the 920001st record. Run 1, Event 121294616, LumiSection 64485 on stream 0 at 19-Nov-2024 20:34:50.904 KST
+Begin processing the 930001st record. Run 1, Event 120634486, LumiSection 64134 on stream 0 at 19-Nov-2024 20:35:00.555 KST
+Begin processing the 940001st record. Run 1, Event 121465968, LumiSection 64576 on stream 0 at 19-Nov-2024 20:35:10.418 KST
+Begin processing the 950001st record. Run 1, Event 120726477, LumiSection 64183 on stream 0 at 19-Nov-2024 20:35:20.134 KST
+Begin processing the 960001st record. Run 1, Event 120555569, LumiSection 64092 on stream 0 at 19-Nov-2024 20:35:29.848 KST
+Begin processing the 970001st record. Run 1, Event 120331169, LumiSection 63972 on stream 0 at 19-Nov-2024 20:35:39.225 KST
+Begin processing the 980001st record. Run 1, Event 121916585, LumiSection 64815 on stream 0 at 19-Nov-2024 20:35:48.472 KST
+Begin processing the 990001st record. Run 1, Event 122631135, LumiSection 65195 on stream 0 at 19-Nov-2024 20:35:58.183 KST
+Begin processing the 1000001st record. Run 1, Event 120774894, LumiSection 64208 on stream 0 at 19-Nov-2024 20:36:07.469 KST
+Begin processing the 1010001st record. Run 1, Event 120915830, LumiSection 64283 on stream 0 at 19-Nov-2024 20:36:18.185 KST
+Begin processing the 1020001st record. Run 1, Event 121101991, LumiSection 64382 on stream 0 at 19-Nov-2024 20:36:27.746 KST
+Begin processing the 1030001st record. Run 1, Event 122484173, LumiSection 65117 on stream 0 at 19-Nov-2024 20:36:37.224 KST
+Begin processing the 1040001st record. Run 1, Event 123674511, LumiSection 65750 on stream 0 at 19-Nov-2024 20:36:46.563 KST
+Begin processing the 1050001st record. Run 1, Event 120563053, LumiSection 64096 on stream 0 at 19-Nov-2024 20:36:56.501 KST
+Begin processing the 1060001st record. Run 1, Event 120647704, LumiSection 64141 on stream 0 at 19-Nov-2024 20:37:05.975 KST
+19-Nov-2024 20:37:13 KST  Closed file file:///pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/crab_Run3Summer22DRPremix-124X_mcRun3_2022_realistic_v12-v4/241117_152227/0000/mc_skimmed_data_162.root
+19-Nov-2024 20:37:13 KST  Initiating request to open file file:///pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/crab_Run3Summer22DRPremix-124X_mcRun3_2022_realistic_v12-v4/241117_152227/0000/mc_skimmed_data_233.root
+19-Nov-2024 20:37:13 KST  Successfully opened file file:///pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/crab_Run3Summer22DRPremix-124X_mcRun3_2022_realistic_v12-v4/241117_152227/0000/mc_skimmed_data_233.root
+Begin processing the 1070001st record. Run 1, Event 202700652, LumiSection 107763 on stream 0 at 19-Nov-2024 20:37:23.316 KST
+Begin processing the 1080001st record. Run 1, Event 202691065, LumiSection 107758 on stream 0 at 19-Nov-2024 20:37:32.929 KST
+Begin processing the 1090001st record. Run 1, Event 203102999, LumiSection 107977 on stream 0 at 19-Nov-2024 20:37:42.322 KST
+Begin processing the 1100001st record. Run 1, Event 203812202, LumiSection 108354 on stream 0 at 19-Nov-2024 20:37:51.744 KST
+Begin processing the 1110001st record. Run 1, Event 202903666, LumiSection 107871 on stream 0 at 19-Nov-2024 20:38:01.829 KST
+Begin processing the 1120001st record. Run 1, Event 203003267, LumiSection 107924 on stream 0 at 19-Nov-2024 20:38:11.923 KST
+Begin processing the 1130001st record. Run 1, Event 203131022, LumiSection 107991 on stream 0 at 19-Nov-2024 20:38:23.690 KST
+Begin processing the 1140001st record. Run 1, Event 205382615, LumiSection 109188 on stream 0 at 19-Nov-2024 20:38:33.412 KST
+Begin processing the 1150001st record. Run 1, Event 204012721, LumiSection 108460 on stream 0 at 19-Nov-2024 20:38:43.453 KST
+Begin processing the 1160001st record. Run 1, Event 203553955, LumiSection 108216 on stream 0 at 19-Nov-2024 20:38:53.315 KST
+Begin processing the 1170001st record. Run 1, Event 203179583, LumiSection 108017 on stream 0 at 19-Nov-2024 20:39:03.369 KST
+Begin processing the 1180001st record. Run 1, Event 226942274, LumiSection 120650 on stream 0 at 19-Nov-2024 20:39:12.982 KST
+Begin processing the 1190001st record. Run 1, Event 204389101, LumiSection 108660 on stream 0 at 19-Nov-2024 20:39:23.054 KST
+Begin processing the 1200001st record. Run 1, Event 203256444, LumiSection 108058 on stream 0 at 19-Nov-2024 20:39:33.107 KST
+Begin processing the 1210001st record. Run 1, Event 254775061, LumiSection 135447 on stream 0 at 19-Nov-2024 20:39:43.008 KST
+Begin processing the 1220001st record. Run 1, Event 203711078, LumiSection 108300 on stream 0 at 19-Nov-2024 20:39:53.034 KST
+Begin processing the 1230001st record. Run 1, Event 231730525, LumiSection 123196 on stream 0 at 19-Nov-2024 20:40:02.826 KST
+Begin processing the 1240001st record. Run 1, Event 226140254, LumiSection 120224 on stream 0 at 19-Nov-2024 20:40:12.643 KST
+Begin processing the 1250001st record. Run 1, Event 252094264, LumiSection 134022 on stream 0 at 19-Nov-2024 20:40:22.741 KST
+Begin processing the 1260001st record. Run 1, Event 227547085, LumiSection 120972 on stream 0 at 19-Nov-2024 20:40:32.583 KST
+Begin processing the 1270001st record. Run 1, Event 204762489, LumiSection 108859 on stream 0 at 19-Nov-2024 20:40:42.476 KST
+Begin processing the 1280001st record. Run 1, Event 204566608, LumiSection 108755 on stream 0 at 19-Nov-2024 20:40:52.710 KST
+Begin processing the 1290001st record. Run 1, Event 203526558, LumiSection 108202 on stream 0 at 19-Nov-2024 20:41:02.729 KST
+Begin processing the 1300001st record. Run 1, Event 204506498, LumiSection 108723 on stream 0 at 19-Nov-2024 20:41:13.426 KST
+Begin processing the 1310001st record. Run 1, Event 204380567, LumiSection 108656 on stream 0 at 19-Nov-2024 20:41:23.726 KST
+Begin processing the 1320001st record. Run 1, Event 204807254, LumiSection 108883 on stream 0 at 19-Nov-2024 20:41:33.387 KST
+Begin processing the 1330001st record. Run 1, Event 219540859, LumiSection 116715 on stream 0 at 19-Nov-2024 20:41:43.293 KST
+19-Nov-2024 20:41:48 KST  Closed file file:///pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/crab_Run3Summer22DRPremix-124X_mcRun3_2022_realistic_v12-v4/241117_152227/0000/mc_skimmed_data_233.root
+19-Nov-2024 20:41:48 KST  Initiating request to open file file:///pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/crab_Run3Summer22DRPremix-124X_mcRun3_2022_realistic_v12-v4/241117_152227/0000/mc_skimmed_data_70.root
+19-Nov-2024 20:41:48 KST  Successfully opened file file:///pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/crab_Run3Summer22DRPremix-124X_mcRun3_2022_realistic_v12-v4/241117_152227/0000/mc_skimmed_data_70.root
+Begin processing the 1340001st record. Run 1, Event 44765764, LumiSection 23799 on stream 0 at 19-Nov-2024 20:41:58.735 KST
+Begin processing the 1350001st record. Run 1, Event 45542756, LumiSection 24212 on stream 0 at 19-Nov-2024 20:42:08.422 KST
+Begin processing the 1360001st record. Run 1, Event 44465054, LumiSection 23640 on stream 0 at 19-Nov-2024 20:42:18.110 KST
+Begin processing the 1370001st record. Run 1, Event 45953247, LumiSection 24431 on stream 0 at 19-Nov-2024 20:42:27.970 KST
+Begin processing the 1380001st record. Run 1, Event 94362329, LumiSection 50167 on stream 0 at 19-Nov-2024 20:42:38.256 KST
+Begin processing the 1390001st record. Run 1, Event 43923074, LumiSection 23351 on stream 0 at 19-Nov-2024 20:42:48.545 KST
+Begin processing the 1400001st record. Run 1, Event 43930113, LumiSection 23355 on stream 0 at 19-Nov-2024 20:42:58.279 KST
+Begin processing the 1410001st record. Run 1, Event 48988256, LumiSection 26044 on stream 0 at 19-Nov-2024 20:43:08.461 KST
+Begin processing the 1420001st record. Run 1, Event 44229074, LumiSection 23514 on stream 0 at 19-Nov-2024 20:43:18.329 KST
+Begin processing the 1430001st record. Run 1, Event 46950640, LumiSection 24961 on stream 0 at 19-Nov-2024 20:43:28.203 KST
+Begin processing the 1440001st record. Run 1, Event 50742576, LumiSection 26977 on stream 0 at 19-Nov-2024 20:43:37.504 KST
+Begin processing the 1450001st record. Run 1, Event 44623776, LumiSection 23724 on stream 0 at 19-Nov-2024 20:43:47.226 KST
+Begin processing the 1460001st record. Run 1, Event 51669862, LumiSection 27470 on stream 0 at 19-Nov-2024 20:43:56.756 KST
+Begin processing the 1470001st record. Run 1, Event 44285191, LumiSection 23544 on stream 0 at 19-Nov-2024 20:44:06.651 KST
+Begin processing the 1480001st record. Run 1, Event 45449656, LumiSection 24163 on stream 0 at 19-Nov-2024 20:44:16.487 KST
+Begin processing the 1490001st record. Run 1, Event 44362393, LumiSection 23585 on stream 0 at 19-Nov-2024 20:44:26.182 KST
+Begin processing the 1500001st record. Run 1, Event 44719582, LumiSection 23775 on stream 0 at 19-Nov-2024 20:44:35.891 KST
+Begin processing the 1510001st record. Run 1, Event 44634735, LumiSection 23730 on stream 0 at 19-Nov-2024 20:44:45.441 KST
+Begin processing the 1520001st record. Run 1, Event 44952291, LumiSection 23899 on stream 0 at 19-Nov-2024 20:44:54.929 KST
+Begin processing the 1530001st record. Run 1, Event 44984186, LumiSection 23916 on stream 0 at 19-Nov-2024 20:45:04.301 KST
+Begin processing the 1540001st record. Run 1, Event 45026890, LumiSection 23938 on stream 0 at 19-Nov-2024 20:45:14.042 KST
+Begin processing the 1550001st record. Run 1, Event 49290890, LumiSection 26205 on stream 0 at 19-Nov-2024 20:45:23.815 KST
+Begin processing the 1560001st record. Run 1, Event 45570296, LumiSection 24227 on stream 0 at 19-Nov-2024 20:45:34.318 KST
+Begin processing the 1570001st record. Run 1, Event 45502582, LumiSection 24191 on stream 0 at 19-Nov-2024 20:45:43.865 KST
+Begin processing the 1580001st record. Run 1, Event 49016418, LumiSection 26059 on stream 0 at 19-Nov-2024 20:45:53.525 KST
+Begin processing the 1590001st record. Run 1, Event 44846061, LumiSection 23842 on stream 0 at 19-Nov-2024 20:46:02.863 KST
+Begin processing the 1600001st record. Run 1, Event 45399131, LumiSection 24136 on stream 0 at 19-Nov-2024 20:46:12.350 KST
+19-Nov-2024 20:46:14 KST  Closed file file:///pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/crab_Run3Summer22DRPremix-124X_mcRun3_2022_realistic_v12-v4/241117_152227/0000/mc_skimmed_data_70.root
+19-Nov-2024 20:46:14 KST  Initiating request to open file file:///pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/crab_Run3Summer22DRPremix-124X_mcRun3_2022_realistic_v12-v4/241117_152227/0000/mc_skimmed_data_168.root
+19-Nov-2024 20:46:14 KST  Successfully opened file file:///pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/crab_Run3Summer22DRPremix-124X_mcRun3_2022_realistic_v12-v4/241117_152227/0000/mc_skimmed_data_168.root
+Begin processing the 1610001st record. Run 1, Event 126394703, LumiSection 67196 on stream 0 at 19-Nov-2024 20:46:31.255 KST
+Begin processing the 1620001st record. Run 1, Event 127111594, LumiSection 67577 on stream 0 at 19-Nov-2024 20:46:40.904 KST
+Begin processing the 1630001st record. Run 1, Event 126517100, LumiSection 67261 on stream 0 at 19-Nov-2024 20:46:50.324 KST
+Begin processing the 1640001st record. Run 1, Event 126489082, LumiSection 67246 on stream 0 at 19-Nov-2024 20:46:59.996 KST
+Begin processing the 1650001st record. Run 1, Event 126304600, LumiSection 67148 on stream 0 at 19-Nov-2024 20:47:09.431 KST
+Begin processing the 1660001st record. Run 1, Event 126665780, LumiSection 67340 on stream 0 at 19-Nov-2024 20:47:18.480 KST
+Begin processing the 1670001st record. Run 1, Event 155969700, LumiSection 82919 on stream 0 at 19-Nov-2024 20:47:27.938 KST
+Begin processing the 1680001st record. Run 1, Event 135019053, LumiSection 71781 on stream 0 at 19-Nov-2024 20:47:37.128 KST
+Begin processing the 1690001st record. Run 1, Event 199834170, LumiSection 106239 on stream 0 at 19-Nov-2024 20:47:47.135 KST
+Begin processing the 1700001st record. Run 1, Event 165524591, LumiSection 87999 on stream 0 at 19-Nov-2024 20:47:56.633 KST
+Begin processing the 1710001st record. Run 1, Event 126723246, LumiSection 67371 on stream 0 at 19-Nov-2024 20:48:05.985 KST
+Begin processing the 1720001st record. Run 1, Event 126693232, LumiSection 67355 on stream 0 at 19-Nov-2024 20:48:15.605 KST
+Begin processing the 1730001st record. Run 1, Event 126836041, LumiSection 67431 on stream 0 at 19-Nov-2024 20:48:25.027 KST
+Begin processing the 1740001st record. Run 1, Event 160024089, LumiSection 85074 on stream 0 at 19-Nov-2024 20:48:34.512 KST
+Begin processing the 1750001st record. Run 1, Event 164869482, LumiSection 87650 on stream 0 at 19-Nov-2024 20:48:44.443 KST
+Begin processing the 1760001st record. Run 1, Event 127191103, LumiSection 67619 on stream 0 at 19-Nov-2024 20:48:53.902 KST
+Begin processing the 1770001st record. Run 1, Event 127236248, LumiSection 67643 on stream 0 at 19-Nov-2024 20:49:03.298 KST
+Begin processing the 1780001st record. Run 1, Event 127149500, LumiSection 67597 on stream 0 at 19-Nov-2024 20:49:13.233 KST
+Begin processing the 1790001st record. Run 1, Event 134340044, LumiSection 71420 on stream 0 at 19-Nov-2024 20:49:22.749 KST
+Begin processing the 1800001st record. Run 1, Event 134746138, LumiSection 71636 on stream 0 at 19-Nov-2024 20:49:32.313 KST
+Begin processing the 1810001st record. Run 1, Event 127350239, LumiSection 67704 on stream 0 at 19-Nov-2024 20:49:41.753 KST
+Begin processing the 1820001st record. Run 1, Event 127331371, LumiSection 67694 on stream 0 at 19-Nov-2024 20:49:51.160 KST
+Begin processing the 1830001st record. Run 1, Event 128862453, LumiSection 68508 on stream 0 at 19-Nov-2024 20:50:00.846 KST
+Begin processing the 1840001st record. Run 1, Event 127087155, LumiSection 67564 on stream 0 at 19-Nov-2024 20:50:10.525 KST
+Begin processing the 1850001st record. Run 1, Event 127294317, LumiSection 67674 on stream 0 at 19-Nov-2024 20:50:21.038 KST
+Begin processing the 1860001st record. Run 1, Event 127160471, LumiSection 67603 on stream 0 at 19-Nov-2024 20:50:30.656 KST
+19-Nov-2024 20:50:39 KST  Closed file file:///pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/crab_Run3Summer22DRPremix-124X_mcRun3_2022_realistic_v12-v4/241117_152227/0000/mc_skimmed_data_168.root
+19-Nov-2024 20:50:39 KST  Initiating request to open file file:///pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/crab_Run3Summer22DRPremix-124X_mcRun3_2022_realistic_v12-v4/241117_152227/0000/mc_skimmed_data_39.root
+19-Nov-2024 20:50:39 KST  Successfully opened file file:///pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/crab_Run3Summer22DRPremix-124X_mcRun3_2022_realistic_v12-v4/241117_152227/0000/mc_skimmed_data_39.root
+Begin processing the 1870001st record. Run 1, Event 32047617, LumiSection 17038 on stream 0 at 19-Nov-2024 20:50:50.125 KST
+Begin processing the 1880001st record. Run 1, Event 46446707, LumiSection 24693 on stream 0 at 19-Nov-2024 20:50:59.983 KST
+Begin processing the 1890001st record. Run 1, Event 18314097, LumiSection 9737 on stream 0 at 19-Nov-2024 20:51:09.648 KST
+Begin processing the 1900001st record. Run 1, Event 18170929, LumiSection 9661 on stream 0 at 19-Nov-2024 20:51:19.830 KST
+Begin processing the 1910001st record. Run 1, Event 24440443, LumiSection 12994 on stream 0 at 19-Nov-2024 20:51:29.251 KST
+Begin processing the 1920001st record. Run 1, Event 27846830, LumiSection 14805 on stream 0 at 19-Nov-2024 20:51:38.877 KST
+Begin processing the 1930001st record. Run 1, Event 18101313, LumiSection 9624 on stream 0 at 19-Nov-2024 20:51:48.343 KST
+Begin processing the 1940001st record. Run 1, Event 18050362, LumiSection 9597 on stream 0 at 19-Nov-2024 20:51:58.014 KST
+Begin processing the 1950001st record. Run 1, Event 18072770, LumiSection 9609 on stream 0 at 19-Nov-2024 20:52:08.500 KST
+Begin processing the 1960001st record. Run 1, Event 20141744, LumiSection 10708 on stream 0 at 19-Nov-2024 20:52:18.275 KST
+Begin processing the 1970001st record. Run 1, Event 26213538, LumiSection 13936 on stream 0 at 19-Nov-2024 20:52:27.988 KST
+Begin processing the 1980001st record. Run 1, Event 18219105, LumiSection 9686 on stream 0 at 19-Nov-2024 20:52:37.334 KST
+Begin processing the 1990001st record. Run 1, Event 18189465, LumiSection 9671 on stream 0 at 19-Nov-2024 20:52:46.865 KST
+Begin processing the 2000001st record. Run 1, Event 24456558, LumiSection 13002 on stream 0 at 19-Nov-2024 20:52:56.382 KST
+Begin processing the 2010001st record. Run 1, Event 18262339, LumiSection 9709 on stream 0 at 19-Nov-2024 20:53:05.939 KST
+Begin processing the 2020001st record. Run 1, Event 47127835, LumiSection 25055 on stream 0 at 19-Nov-2024 20:53:15.473 KST
+Begin processing the 2030001st record. Run 1, Event 51550134, LumiSection 27406 on stream 0 at 19-Nov-2024 20:53:24.838 KST
+Begin processing the 2040001st record. Run 1, Event 33684128, LumiSection 17908 on stream 0 at 19-Nov-2024 20:53:34.654 KST
+Begin processing the 2050001st record. Run 1, Event 51818640, LumiSection 27549 on stream 0 at 19-Nov-2024 20:53:44.513 KST
+Begin processing the 2060001st record. Run 1, Event 61752022, LumiSection 32830 on stream 0 at 19-Nov-2024 20:53:55.098 KST
+Begin processing the 2070001st record. Run 1, Event 31146252, LumiSection 16559 on stream 0 at 19-Nov-2024 20:54:04.858 KST
+Begin processing the 2080001st record. Run 1, Event 51451202, LumiSection 27354 on stream 0 at 19-Nov-2024 20:54:14.742 KST
+Begin processing the 2090001st record. Run 1, Event 32892562, LumiSection 17487 on stream 0 at 19-Nov-2024 20:54:25.103 KST
+Begin processing the 2100001st record. Run 1, Event 18670336, LumiSection 9926 on stream 0 at 19-Nov-2024 20:54:34.883 KST
+Begin processing the 2110001st record. Run 1, Event 18673695, LumiSection 9928 on stream 0 at 19-Nov-2024 20:54:44.244 KST
+Begin processing the 2120001st record. Run 1, Event 19441593, LumiSection 10336 on stream 0 at 19-Nov-2024 20:54:53.531 KST
+Begin processing the 2130001st record. Run 1, Event 18775538, LumiSection 9982 on stream 0 at 19-Nov-2024 20:55:03.299 KST
+19-Nov-2024 20:55:08 KST  Closed file file:///pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/crab_Run3Summer22DRPremix-124X_mcRun3_2022_realistic_v12-v4/241117_152227/0000/mc_skimmed_data_39.root
+19-Nov-2024 20:55:08 KST  Initiating request to open file file:///pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/crab_Run3Summer22DRPremix-124X_mcRun3_2022_realistic_v12-v4/241117_152227/0000/mc_skimmed_data_202.root
+19-Nov-2024 20:55:08 KST  Successfully opened file file:///pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/crab_Run3Summer22DRPremix-124X_mcRun3_2022_realistic_v12-v4/241117_152227/0000/mc_skimmed_data_202.root
+Begin processing the 2140001st record. Run 1, Event 166213917, LumiSection 88365 on stream 0 at 19-Nov-2024 20:55:22.817 KST
+Begin processing the 2150001st record. Run 1, Event 216115378, LumiSection 114894 on stream 0 at 19-Nov-2024 20:55:32.035 KST
+Begin processing the 2160001st record. Run 1, Event 166152397, LumiSection 88332 on stream 0 at 19-Nov-2024 20:55:42.925 KST
+Begin processing the 2170001st record. Run 1, Event 166784174, LumiSection 88668 on stream 0 at 19-Nov-2024 20:55:52.675 KST
+Begin processing the 2180001st record. Run 1, Event 189241200, LumiSection 100607 on stream 0 at 19-Nov-2024 20:56:02.430 KST
+Begin processing the 2190001st record. Run 1, Event 166135162, LumiSection 88323 on stream 0 at 19-Nov-2024 20:56:11.911 KST
+Begin processing the 2200001st record. Run 1, Event 166818117, LumiSection 88686 on stream 0 at 19-Nov-2024 20:56:22.220 KST
+Begin processing the 2210001st record. Run 1, Event 207253574, LumiSection 110183 on stream 0 at 19-Nov-2024 20:56:31.748 KST
+Begin processing the 2220001st record. Run 1, Event 167144965, LumiSection 88860 on stream 0 at 19-Nov-2024 20:56:41.850 KST
+Begin processing the 2230001st record. Run 1, Event 190726884, LumiSection 101397 on stream 0 at 19-Nov-2024 20:56:51.301 KST
+Begin processing the 2240001st record. Run 1, Event 190433336, LumiSection 101241 on stream 0 at 19-Nov-2024 20:57:00.947 KST
+Begin processing the 2250001st record. Run 1, Event 188672542, LumiSection 100305 on stream 0 at 19-Nov-2024 20:57:12.041 KST
+Begin processing the 2260001st record. Run 1, Event 215753258, LumiSection 114702 on stream 0 at 19-Nov-2024 20:57:22.121 KST
+Begin processing the 2270001st record. Run 1, Event 188549895, LumiSection 100240 on stream 0 at 19-Nov-2024 20:57:32.361 KST
+Begin processing the 2280001st record. Run 1, Event 166719039, LumiSection 88634 on stream 0 at 19-Nov-2024 20:57:42.921 KST
+Begin processing the 2290001st record. Run 1, Event 166574447, LumiSection 88557 on stream 0 at 19-Nov-2024 20:57:53.505 KST
+Begin processing the 2300001st record. Run 1, Event 167050179, LumiSection 88810 on stream 0 at 19-Nov-2024 20:58:03.638 KST
+Begin processing the 2310001st record. Run 1, Event 190191832, LumiSection 101113 on stream 0 at 19-Nov-2024 20:58:14.166 KST
+Begin processing the 2320001st record. Run 1, Event 191436672, LumiSection 101774 on stream 0 at 19-Nov-2024 20:58:24.165 KST
+Begin processing the 2330001st record. Run 1, Event 167030886, LumiSection 88799 on stream 0 at 19-Nov-2024 20:58:33.959 KST
+Begin processing the 2340001st record. Run 1, Event 167224126, LumiSection 88902 on stream 0 at 19-Nov-2024 20:58:43.998 KST
+Begin processing the 2350001st record. Run 1, Event 215484956, LumiSection 114559 on stream 0 at 19-Nov-2024 20:58:55.049 KST
+Begin processing the 2360001st record. Run 1, Event 166862773, LumiSection 88710 on stream 0 at 19-Nov-2024 20:59:04.626 KST
+Begin processing the 2370001st record. Run 1, Event 166903980, LumiSection 88732 on stream 0 at 19-Nov-2024 20:59:15.177 KST
+Begin processing the 2380001st record. Run 1, Event 166788877, LumiSection 88671 on stream 0 at 19-Nov-2024 20:59:24.853 KST
+Begin processing the 2390001st record. Run 1, Event 210153102, LumiSection 111725 on stream 0 at 19-Nov-2024 20:59:34.437 KST
+Begin processing the 2400001st record. Run 1, Event 166822148, LumiSection 88689 on stream 0 at 19-Nov-2024 20:59:43.971 KST
+19-Nov-2024 20:59:46 KST  Closed file file:///pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/crab_Run3Summer22DRPremix-124X_mcRun3_2022_realistic_v12-v4/241117_152227/0000/mc_skimmed_data_202.root
+19-Nov-2024 20:59:46 KST  Initiating request to open file file:///pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/crab_Run3Summer22DRPremix-124X_mcRun3_2022_realistic_v12-v4/241117_152227/0000/mc_skimmed_data_173.root
+19-Nov-2024 20:59:46 KST  Successfully opened file file:///pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/crab_Run3Summer22DRPremix-124X_mcRun3_2022_realistic_v12-v4/241117_152227/0000/mc_skimmed_data_173.root
+Begin processing the 2410001st record. Run 1, Event 208322488, LumiSection 110751 on stream 0 at 19-Nov-2024 21:00:03.102 KST
+Begin processing the 2420001st record. Run 1, Event 131854209, LumiSection 70098 on stream 0 at 19-Nov-2024 21:00:12.543 KST
+Begin processing the 2430001st record. Run 1, Event 131111384, LumiSection 69704 on stream 0 at 19-Nov-2024 21:00:21.976 KST
+Begin processing the 2440001st record. Run 1, Event 144039306, LumiSection 76576 on stream 0 at 19-Nov-2024 21:00:32.155 KST
+Begin processing the 2450001st record. Run 1, Event 147665754, LumiSection 78504 on stream 0 at 19-Nov-2024 21:00:41.687 KST
+Begin processing the 2460001st record. Run 1, Event 131188000, LumiSection 69744 on stream 0 at 19-Nov-2024 21:00:51.282 KST
+Begin processing the 2470001st record. Run 1, Event 131208680, LumiSection 69755 on stream 0 at 19-Nov-2024 21:01:01.433 KST
+Begin processing the 2480001st record. Run 1, Event 131146391, LumiSection 69722 on stream 0 at 19-Nov-2024 21:01:11.058 KST
+Begin processing the 2490001st record. Run 1, Event 145516708, LumiSection 77362 on stream 0 at 19-Nov-2024 21:01:20.448 KST
+Begin processing the 2500001st record. Run 1, Event 131758717, LumiSection 70048 on stream 0 at 19-Nov-2024 21:01:29.972 KST
+Begin processing the 2510001st record. Run 1, Event 131211181, LumiSection 69757 on stream 0 at 19-Nov-2024 21:01:39.761 KST
+Begin processing the 2520001st record. Run 1, Event 143189293, LumiSection 76125 on stream 0 at 19-Nov-2024 21:01:49.681 KST
+Begin processing the 2530001st record. Run 1, Event 133381624, LumiSection 70910 on stream 0 at 19-Nov-2024 21:01:59.316 KST
+Begin processing the 2540001st record. Run 1, Event 146407453, LumiSection 77835 on stream 0 at 19-Nov-2024 21:02:09.370 KST
+Begin processing the 2550001st record. Run 1, Event 132562965, LumiSection 70475 on stream 0 at 19-Nov-2024 21:02:19.326 KST
+Begin processing the 2560001st record. Run 1, Event 133109841, LumiSection 70766 on stream 0 at 19-Nov-2024 21:02:29.125 KST
+Begin processing the 2570001st record. Run 1, Event 133209344, LumiSection 70819 on stream 0 at 19-Nov-2024 21:02:38.846 KST
+Begin processing the 2580001st record. Run 1, Event 131760651, LumiSection 70049 on stream 0 at 19-Nov-2024 21:02:48.692 KST
+Begin processing the 2590001st record. Run 1, Event 131541026, LumiSection 69932 on stream 0 at 19-Nov-2024 21:02:58.432 KST
+Begin processing the 2600001st record. Run 1, Event 141660379, LumiSection 75312 on stream 0 at 19-Nov-2024 21:03:09.411 KST
+Begin processing the 2610001st record. Run 1, Event 131659514, LumiSection 69995 on stream 0 at 19-Nov-2024 21:03:18.851 KST
+Begin processing the 2620001st record. Run 1, Event 132014789, LumiSection 70184 on stream 0 at 19-Nov-2024 21:03:28.642 KST
+Begin processing the 2630001st record. Run 1, Event 145578429, LumiSection 77395 on stream 0 at 19-Nov-2024 21:03:38.307 KST
+Begin processing the 2640001st record. Run 1, Event 141473920, LumiSection 75213 on stream 0 at 19-Nov-2024 21:03:47.848 KST
+Begin processing the 2650001st record. Run 1, Event 132000883, LumiSection 70176 on stream 0 at 19-Nov-2024 21:03:57.448 KST
+Begin processing the 2660001st record. Run 1, Event 132136213, LumiSection 70248 on stream 0 at 19-Nov-2024 21:04:10.055 KST
+19-Nov-2024 21:04:19 KST  Closed file file:///pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/crab_Run3Summer22DRPremix-124X_mcRun3_2022_realistic_v12-v4/241117_152227/0000/mc_skimmed_data_173.root
+19-Nov-2024 21:04:19 KST  Initiating request to open file file:///pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/crab_Run3Summer22DRPremix-124X_mcRun3_2022_realistic_v12-v4/241117_152227/0000/mc_skimmed_data_241.root
+19-Nov-2024 21:04:20 KST  Successfully opened file file:///pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/crab_Run3Summer22DRPremix-124X_mcRun3_2022_realistic_v12-v4/241117_152227/0000/mc_skimmed_data_241.root
+Begin processing the 2670001st record. Run 1, Event 213628650, LumiSection 113572 on stream 0 at 19-Nov-2024 21:04:26.301 KST
+Begin processing the 2680001st record. Run 1, Event 220234518, LumiSection 117084 on stream 0 at 19-Nov-2024 21:04:36.402 KST
+Begin processing the 2690001st record. Run 1, Event 214040277, LumiSection 113791 on stream 0 at 19-Nov-2024 21:04:46.186 KST
+Begin processing the 2700001st record. Run 1, Event 214032463, LumiSection 113787 on stream 0 at 19-Nov-2024 21:04:56.530 KST
+Begin processing the 2710001st record. Run 1, Event 213897127, LumiSection 113715 on stream 0 at 19-Nov-2024 21:05:06.094 KST
+Begin processing the 2720001st record. Run 1, Event 214378873, LumiSection 113971 on stream 0 at 19-Nov-2024 21:05:15.793 KST
+Begin processing the 2730001st record. Run 1, Event 214250886, LumiSection 113903 on stream 0 at 19-Nov-2024 21:05:25.968 KST
+Begin processing the 2740001st record. Run 1, Event 214015622, LumiSection 113778 on stream 0 at 19-Nov-2024 21:05:37.064 KST
+Begin processing the 2750001st record. Run 1, Event 220600671, LumiSection 117279 on stream 0 at 19-Nov-2024 21:05:48.038 KST
+Begin processing the 2760001st record. Run 1, Event 220295922, LumiSection 117117 on stream 0 at 19-Nov-2024 21:05:58.096 KST
+Begin processing the 2770001st record. Run 1, Event 222820225, LumiSection 118459 on stream 0 at 19-Nov-2024 21:06:08.300 KST
+Begin processing the 2780001st record. Run 1, Event 223113315, LumiSection 118615 on stream 0 at 19-Nov-2024 21:06:18.042 KST
+Begin processing the 2790001st record. Run 1, Event 220240588, LumiSection 117087 on stream 0 at 19-Nov-2024 21:06:28.042 KST
+Begin processing the 2800001st record. Run 1, Event 220328827, LumiSection 117134 on stream 0 at 19-Nov-2024 21:06:37.478 KST
+Begin processing the 2810001st record. Run 1, Event 215538055, LumiSection 114587 on stream 0 at 19-Nov-2024 21:06:47.160 KST
+Begin processing the 2820001st record. Run 1, Event 214958584, LumiSection 114279 on stream 0 at 19-Nov-2024 21:06:57.218 KST
+Begin processing the 2830001st record. Run 1, Event 237793958, LumiSection 126419 on stream 0 at 19-Nov-2024 21:07:06.827 KST
+Begin processing the 2840001st record. Run 1, Event 214623497, LumiSection 114101 on stream 0 at 19-Nov-2024 21:07:16.655 KST
+Begin processing the 2850001st record. Run 1, Event 214483963, LumiSection 114027 on stream 0 at 19-Nov-2024 21:07:26.560 KST
+Begin processing the 2860001st record. Run 1, Event 216844470, LumiSection 115282 on stream 0 at 19-Nov-2024 21:07:36.289 KST
+Begin processing the 2870001st record. Run 1, Event 216209068, LumiSection 114944 on stream 0 at 19-Nov-2024 21:07:46.399 KST
+Begin processing the 2880001st record. Run 1, Event 215733518, LumiSection 114691 on stream 0 at 19-Nov-2024 21:07:56.423 KST
+Begin processing the 2890001st record. Run 1, Event 215195237, LumiSection 114405 on stream 0 at 19-Nov-2024 21:08:06.614 KST
+Begin processing the 2900001st record. Run 1, Event 241064380, LumiSection 128158 on stream 0 at 19-Nov-2024 21:08:17.249 KST
+Begin processing the 2910001st record. Run 1, Event 216507958, LumiSection 115103 on stream 0 at 19-Nov-2024 21:08:27.004 KST
+Begin processing the 2920001st record. Run 1, Event 239783288, LumiSection 127477 on stream 0 at 19-Nov-2024 21:08:36.439 KST
+Begin processing the 2930001st record. Run 1, Event 216381662, LumiSection 115036 on stream 0 at 19-Nov-2024 21:08:46.598 KST
+19-Nov-2024 21:08:52 KST  Closed file file:///pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/crab_Run3Summer22DRPremix-124X_mcRun3_2022_realistic_v12-v4/241117_152227/0000/mc_skimmed_data_241.root
+19-Nov-2024 21:08:52 KST  Initiating request to open file file:///pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/crab_Run3Summer22DRPremix-124X_mcRun3_2022_realistic_v12-v4/241117_152227/0000/mc_skimmed_data_252.root
+19-Nov-2024 21:08:52 KST  Successfully opened file file:///pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/crab_Run3Summer22DRPremix-124X_mcRun3_2022_realistic_v12-v4/241117_152227/0000/mc_skimmed_data_252.root
+Begin processing the 2940001st record. Run 1, Event 228470719, LumiSection 121463 on stream 0 at 19-Nov-2024 21:09:09.684 KST
+Begin processing the 2950001st record. Run 1, Event 228805220, LumiSection 121641 on stream 0 at 19-Nov-2024 21:09:19.607 KST
+Begin processing the 2960001st record. Run 1, Event 228746902, LumiSection 121610 on stream 0 at 19-Nov-2024 21:09:30.441 KST
+Begin processing the 2970001st record. Run 1, Event 228626273, LumiSection 121546 on stream 0 at 19-Nov-2024 21:09:43.021 KST
+Begin processing the 2980001st record. Run 1, Event 228893103, LumiSection 121687 on stream 0 at 19-Nov-2024 21:09:53.998 KST
+Begin processing the 2990001st record. Run 1, Event 230263860, LumiSection 122416 on stream 0 at 19-Nov-2024 21:10:04.394 KST
+Begin processing the 3000001st record. Run 1, Event 245463726, LumiSection 130497 on stream 0 at 19-Nov-2024 21:10:15.592 KST
+Begin processing the 3010001st record. Run 1, Event 229300092, LumiSection 121904 on stream 0 at 19-Nov-2024 21:10:26.512 KST
+Begin processing the 3020001st record. Run 1, Event 229104322, LumiSection 121800 on stream 0 at 19-Nov-2024 21:10:38.253 KST
+Begin processing the 3030001st record. Run 1, Event 229081494, LumiSection 121788 on stream 0 at 19-Nov-2024 21:10:49.159 KST
+Begin processing the 3040001st record. Run 1, Event 230505344, LumiSection 122545 on stream 0 at 19-Nov-2024 21:10:59.337 KST
+Begin processing the 3050001st record. Run 1, Event 229542132, LumiSection 122032 on stream 0 at 19-Nov-2024 21:11:09.958 KST
+Begin processing the 3060001st record. Run 1, Event 229305181, LumiSection 121906 on stream 0 at 19-Nov-2024 21:11:20.634 KST
+Begin processing the 3070001st record. Run 1, Event 242733501, LumiSection 129045 on stream 0 at 19-Nov-2024 21:11:31.160 KST
+Begin processing the 3080001st record. Run 1, Event 246780979, LumiSection 131197 on stream 0 at 19-Nov-2024 21:11:42.123 KST
+Begin processing the 3090001st record. Run 1, Event 230993222, LumiSection 122804 on stream 0 at 19-Nov-2024 21:11:52.108 KST
+Begin processing the 3100001st record. Run 1, Event 229548274, LumiSection 122036 on stream 0 at 19-Nov-2024 21:12:02.867 KST
+Begin processing the 3110001st record. Run 1, Event 231011462, LumiSection 122814 on stream 0 at 19-Nov-2024 21:12:13.278 KST
+Begin processing the 3120001st record. Run 1, Event 230870392, LumiSection 122739 on stream 0 at 19-Nov-2024 21:12:23.802 KST
+Begin processing the 3130001st record. Run 1, Event 230597588, LumiSection 122594 on stream 0 at 19-Nov-2024 21:12:34.614 KST
+Begin processing the 3140001st record. Run 1, Event 229916186, LumiSection 122231 on stream 0 at 19-Nov-2024 21:12:46.576 KST
+Begin processing the 3150001st record. Run 1, Event 231202663, LumiSection 122915 on stream 0 at 19-Nov-2024 21:12:57.674 KST
+Begin processing the 3160001st record. Run 1, Event 229825425, LumiSection 122183 on stream 0 at 19-Nov-2024 21:13:09.343 KST
+Begin processing the 3170001st record. Run 1, Event 230081128, LumiSection 122319 on stream 0 at 19-Nov-2024 21:13:20.754 KST
+Begin processing the 3180001st record. Run 1, Event 230502443, LumiSection 122543 on stream 0 at 19-Nov-2024 21:13:31.760 KST
+Begin processing the 3190001st record. Run 1, Event 231124872, LumiSection 122874 on stream 0 at 19-Nov-2024 21:13:43.054 KST
+Begin processing the 3200001st record. Run 1, Event 229704389, LumiSection 122119 on stream 0 at 19-Nov-2024 21:13:56.463 KST
+19-Nov-2024 21:14:00 KST  Closed file file:///pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/crab_Run3Summer22DRPremix-124X_mcRun3_2022_realistic_v12-v4/241117_152227/0000/mc_skimmed_data_252.root
+19-Nov-2024 21:14:00 KST  Initiating request to open file file:///pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/crab_Run3Summer22DRPremix-124X_mcRun3_2022_realistic_v12-v4/241117_152227/0000/mc_skimmed_data_93.root
+19-Nov-2024 21:14:00 KST  Successfully opened file file:///pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/crab_Run3Summer22DRPremix-124X_mcRun3_2022_realistic_v12-v4/241117_152227/0000/mc_skimmed_data_93.root
+Begin processing the 3210001st record. Run 1, Event 62607536, LumiSection 33285 on stream 0 at 19-Nov-2024 21:14:12.739 KST
+Begin processing the 3220001st record. Run 1, Event 62291302, LumiSection 33117 on stream 0 at 19-Nov-2024 21:14:22.639 KST
+Begin processing the 3230001st record. Run 1, Event 63203620, LumiSection 33602 on stream 0 at 19-Nov-2024 21:14:32.261 KST
+Begin processing the 3240001st record. Run 1, Event 65387162, LumiSection 34762 on stream 0 at 19-Nov-2024 21:14:41.460 KST
+Begin processing the 3250001st record. Run 1, Event 67717438, LumiSection 36001 on stream 0 at 19-Nov-2024 21:14:50.961 KST
+Begin processing the 3260001st record. Run 1, Event 65855531, LumiSection 35011 on stream 0 at 19-Nov-2024 21:15:00.579 KST
+Begin processing the 3270001st record. Run 1, Event 91751327, LumiSection 48778 on stream 0 at 19-Nov-2024 21:15:09.668 KST
+Begin processing the 3280001st record. Run 1, Event 63739176, LumiSection 33886 on stream 0 at 19-Nov-2024 21:15:19.037 KST
+Begin processing the 3290001st record. Run 1, Event 62450484, LumiSection 33201 on stream 0 at 19-Nov-2024 21:15:28.491 KST
+Begin processing the 3300001st record. Run 1, Event 62619660, LumiSection 33291 on stream 0 at 19-Nov-2024 21:15:37.637 KST
+Begin processing the 3310001st record. Run 1, Event 62427881, LumiSection 33189 on stream 0 at 19-Nov-2024 21:15:47.006 KST
+Begin processing the 3320001st record. Run 1, Event 75376574, LumiSection 40073 on stream 0 at 19-Nov-2024 21:15:56.284 KST
+Begin processing the 3330001st record. Run 1, Event 66902612, LumiSection 35568 on stream 0 at 19-Nov-2024 21:16:05.579 KST
+Begin processing the 3340001st record. Run 1, Event 180270214, LumiSection 95838 on stream 0 at 19-Nov-2024 21:16:15.195 KST
+Begin processing the 3350001st record. Run 1, Event 74958250, LumiSection 39851 on stream 0 at 19-Nov-2024 21:16:24.749 KST
+Begin processing the 3360001st record. Run 1, Event 62787903, LumiSection 33381 on stream 0 at 19-Nov-2024 21:16:34.175 KST
+Begin processing the 3370001st record. Run 1, Event 62640902, LumiSection 33302 on stream 0 at 19-Nov-2024 21:16:43.881 KST
+Begin processing the 3380001st record. Run 1, Event 63197845, LumiSection 33599 on stream 0 at 19-Nov-2024 21:16:53.567 KST
+Begin processing the 3390001st record. Run 1, Event 66365396, LumiSection 35282 on stream 0 at 19-Nov-2024 21:17:03.449 KST
+Begin processing the 3400001st record. Run 1, Event 161626597, LumiSection 85926 on stream 0 at 19-Nov-2024 21:17:12.980 KST
+Begin processing the 3410001st record. Run 1, Event 64809230, LumiSection 34455 on stream 0 at 19-Nov-2024 21:17:22.772 KST
+Begin processing the 3420001st record. Run 1, Event 63123502, LumiSection 33559 on stream 0 at 19-Nov-2024 21:17:31.901 KST
+Begin processing the 3430001st record. Run 1, Event 63507134, LumiSection 33763 on stream 0 at 19-Nov-2024 21:17:41.116 KST
+Begin processing the 3440001st record. Run 1, Event 62839122, LumiSection 33408 on stream 0 at 19-Nov-2024 21:17:50.536 KST
+Begin processing the 3450001st record. Run 1, Event 74700272, LumiSection 39714 on stream 0 at 19-Nov-2024 21:18:00.269 KST
+Begin processing the 3460001st record. Run 1, Event 76500427, LumiSection 40671 on stream 0 at 19-Nov-2024 21:18:10.507 KST
+Begin processing the 3470001st record. Run 1, Event 64127172, LumiSection 34093 on stream 0 at 19-Nov-2024 21:18:20.319 KST
+19-Nov-2024 21:18:20 KST  Closed file file:///pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/crab_Run3Summer22DRPremix-124X_mcRun3_2022_realistic_v12-v4/241117_152227/0000/mc_skimmed_data_93.root
+19-Nov-2024 21:18:20 KST  Initiating request to open file file:///pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/crab_Run3Summer22DRPremix-124X_mcRun3_2022_realistic_v12-v4/241117_152227/0000/mc_skimmed_data_159.root
+19-Nov-2024 21:18:21 KST  Successfully opened file file:///pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/crab_Run3Summer22DRPremix-124X_mcRun3_2022_realistic_v12-v4/241117_152227/0000/mc_skimmed_data_159.root
+Begin processing the 3480001st record. Run 1, Event 220331023, LumiSection 117136 on stream 0 at 19-Nov-2024 21:18:49.756 KST
+Begin processing the 3490001st record. Run 1, Event 119729458, LumiSection 63653 on stream 0 at 19-Nov-2024 21:19:00.590 KST
+Begin processing the 3500001st record. Run 1, Event 116521905, LumiSection 61947 on stream 0 at 19-Nov-2024 21:19:13.475 KST
+Begin processing the 3510001st record. Run 1, Event 196569757, LumiSection 104503 on stream 0 at 19-Nov-2024 21:19:24.230 KST
+Begin processing the 3520001st record. Run 1, Event 117953197, LumiSection 62708 on stream 0 at 19-Nov-2024 21:19:35.231 KST
+Begin processing the 3530001st record. Run 1, Event 118569718, LumiSection 63036 on stream 0 at 19-Nov-2024 21:19:44.966 KST
+Begin processing the 3540001st record. Run 1, Event 120044196, LumiSection 63820 on stream 0 at 19-Nov-2024 21:19:55.395 KST
+Begin processing the 3550001st record. Run 1, Event 244327064, LumiSection 129893 on stream 0 at 19-Nov-2024 21:20:05.586 KST
+Begin processing the 3560001st record. Run 1, Event 116545173, LumiSection 61960 on stream 0 at 19-Nov-2024 21:20:16.215 KST
+Begin processing the 3570001st record. Run 1, Event 138537209, LumiSection 73651 on stream 0 at 19-Nov-2024 21:20:26.436 KST
+Begin processing the 3580001st record. Run 1, Event 118807195, LumiSection 63162 on stream 0 at 19-Nov-2024 21:20:36.692 KST
+Begin processing the 3590001st record. Run 1, Event 121090879, LumiSection 64376 on stream 0 at 19-Nov-2024 21:20:47.305 KST
+Begin processing the 3600001st record. Run 1, Event 117483486, LumiSection 62458 on stream 0 at 19-Nov-2024 21:20:58.919 KST
+Begin processing the 3610001st record. Run 1, Event 120335282, LumiSection 63975 on stream 0 at 19-Nov-2024 21:21:09.917 KST
+Begin processing the 3620001st record. Run 1, Event 117425160, LumiSection 62427 on stream 0 at 19-Nov-2024 21:21:20.988 KST
+Begin processing the 3630001st record. Run 1, Event 120681128, LumiSection 64158 on stream 0 at 19-Nov-2024 21:21:31.604 KST
+Begin processing the 3640001st record. Run 1, Event 117219516, LumiSection 62318 on stream 0 at 19-Nov-2024 21:21:42.003 KST
+Begin processing the 3650001st record. Run 1, Event 123056230, LumiSection 65421 on stream 0 at 19-Nov-2024 21:21:52.351 KST
+Begin processing the 3660001st record. Run 1, Event 117510699, LumiSection 62473 on stream 0 at 19-Nov-2024 21:22:02.923 KST

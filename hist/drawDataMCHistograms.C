@@ -17,11 +17,9 @@ void drawHistogramsForAllMuonTypes(const char* dataFilename, const char* mcFilen
     const char* mcBranchName = "zBosonMass";
     
     const char* histTitle;
-    if (strcmp(muonType, "GlobalMuons") == 0) {
-        histTitle = "Z (GlobalMuons)";
-    } else {
-        histTitle = Form("Z (Global & %s)", muonType);
-    }
+
+    //histTitle = Form("Z (%s)", muonType);
+    histTitle = Form("M(mumu)");
     const char* histFileName = Form("zBosons%s.png", muonType);
     const char* canvasTitle = Form("%s Z mass", muonType);
     const char* logFileName = "fit_results.txt";
@@ -56,8 +54,8 @@ void drawHistogramsForAllMuonTypes(const char* dataFilename, const char* mcFilen
         return;
     }
 
-    TH1F* dataHist = new TH1F("dataHist", Form("%s;M_{\\mu\\mu} (GeV);Counts /0.5GeV", histTitle), 120, 60, 120);
-    TH1F* mcHist = new TH1F("mcHist", Form("%s;M_{\\mu\\mu} (GeV);Counts /0.5GeV", histTitle), 120, 60, 120);
+    TH1F* dataHist = new TH1F("dataHist", Form("%s;M_{\\mu\\mu} (GeV);Counts", histTitle), 60, 60, 120);
+    TH1F* mcHist = new TH1F("mcHist", Form("%s;M_{\\mu\\mu} (GeV);Counts", histTitle), 60, 60, 120);
 
     double zBosonMass;
     dataTree->SetBranchAddress(dataBranchName, &zBosonMass);
@@ -74,14 +72,32 @@ void drawHistogramsForAllMuonTypes(const char* dataFilename, const char* mcFilen
         mcHist->Fill(zBosonMass);
     }
 
-    double dataEntries = dataHist->Integral();
     double mcEntries = mcHist->Integral();
+    double mcCrossSection = 6688.0;
+    double mcCrossSectionUnc = 83.99; 
+    double dataLumi = 11060.4; 
+    double Nmc = 72909628;
+    double goldenRatio = 11.0604 / 13.0298; //recorded lumi / golden JSON lumi
 
     if (mcEntries > 0) {
-        double scaleFactor = dataEntries / mcEntries;
+        double scaleFactor = goldenRatio * mcCrossSection * dataLumi / Nmc;
+        double scaleFactorUnc = (mcCrossSectionUnc / mcCrossSection) * scaleFactor;
+
         mcHist->Scale(scaleFactor);
-        std::cerr << scaleFactor << "is sclaeFactor" << std::endl;
+        std::cerr << scaleFactor << " ± " << scaleFactorUnc << " is scaleFactor" << std::endl;
+
+
+        int nBins = mcHist->GetNbinsX();
+        for (int bin = 1; bin <= nBins; ++bin) {
+            double binContent = mcHist->GetBinContent(bin);
+            double binStatUnc = mcHist->GetBinError(bin);
+            double binScaleUnc = binContent * (scaleFactorUnc / scaleFactor);
+
+            double totalUnc = sqrt(binStatUnc * binStatUnc + binScaleUnc * binScaleUnc);
+            mcHist->SetBinError(bin, totalUnc);
+        }
     }
+
 
     TCanvas* canvas = new TCanvas(canvasTitle, canvasTitle, 800, 600);
     gStyle->SetOptStat(0);
@@ -109,7 +125,7 @@ void drawHistogramsForAllMuonTypes(const char* dataFilename, const char* mcFilen
     latex.DrawLatex(0.14, 0.91, "CMS");
     latex.SetTextFont(42); // normal font for "Preliminary"
     latex.DrawLatex(0.20, 0.91, "#it{In Progress}");
-    latex.DrawLatex(0.75, 0.91, "#sqrt{s} = 13.6 TeV, L = 120.57/fb");
+    latex.DrawLatex(0.75, 0.91, "#sqrt{s} = 13.6 TeV, L = 11.06/fb");
     
     TLegend* legend = new TLegend(0.7, 0.7, 0.9, 0.9);
     legend->AddEntry(dataHist, "Data", "lep");

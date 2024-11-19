@@ -38,11 +38,8 @@ private:
   TTree* treeGlobal;
   TTree* treeTracker;
   TTree* treeStandAlone;
-  TTree* treeCalo;
-  TTree* treePF;
   TTree* treeRPC;
   TTree* treeGEM;
-  TTree* treeME0;
   TTree* treeReco;
 
   mutable double zBosonMass;
@@ -50,24 +47,15 @@ private:
   mutable int runNumber;
   mutable int lumiSection;
 
-  mutable int muonSizeGlobal;
-  mutable int muonSizeTracker;
-  mutable int muonSizeStandAlone;
-  mutable int muonSizeCalo;
-  mutable int muonSizePF;
-  mutable int muonSizeRPC;
-  mutable int muonSizeGEM;
-  mutable int muonSizeME0;
 
+  // Reco muon variables
+  mutable std::vector<double> muonPt;
+  mutable std::vector<double> muonEta;
+  mutable std::vector<double> muonPhi;
+  mutable std::vector<double> muonIso;
   mutable int muonSize;
-  mutable double muonPt;
-  mutable double muonEta;
-  mutable double muonPhi;
-  mutable double muonIso;
+
   mutable double vertexdz;
-
-
-
   mutable std::mutex mtx_;
 };
 
@@ -85,23 +73,16 @@ Analysis::~Analysis() {
 void Analysis::beginJob() {
   std::lock_guard<std::mutex> lock(mtx_);
 
-
   treeGlobal = new TTree("GlobalMuons", "Global Muons");
-  if (!treeGlobal) {
-    throw std::runtime_error("Failed to create treeGlobal");
-  }
   treeTracker = new TTree("TrackerMuons", "Tracker Muons");
   treeStandAlone = new TTree("StandAloneMuons", "StandAlone Muons");
-  treeCalo = new TTree("CaloMuons", "Calo Muons");
-  treePF = new TTree("PFMuons", "PF Muons");
   treeRPC = new TTree("RPCMuons", "RPC Muons");
   treeGEM = new TTree("GEMMuons", "GEM Muons");
-  treeME0 = new TTree("ME0Muons", "ME0 Muons");
   treeReco = new TTree("RecoMuons", "Reco Muons");
 
   auto initializeTree = [this](TTree* tree) {
     tree->Branch("zBosonMass", &zBosonMass, "zBosonMass/D");
-    tree->Branch("vertexdz", &vertexdz, "vertexdz/D" );
+    tree->Branch("vertexdz", &vertexdz, "vertexdz/D");
     tree->Branch("eventNumber", &eventNumber, "eventNumber/I");
     tree->Branch("runNumber", &runNumber, "runNumber/I");
     tree->Branch("lumiSection", &lumiSection, "lumiSection/I");  
@@ -110,115 +91,99 @@ void Analysis::beginJob() {
   initializeTree(treeGlobal);
   initializeTree(treeTracker);
   initializeTree(treeStandAlone);
-  initializeTree(treeCalo);
-  initializeTree(treePF);
   initializeTree(treeRPC);
   initializeTree(treeGEM);
-  initializeTree(treeME0);
 
-  //Reco branch
+  // Reco branches - now using vectors
   treeReco->Branch("muonSize", &muonSize, "muonSize/I");
-  treeReco->Branch("muonPt", &muonPt, "muonPT/D");
-  treeReco->Branch("muonEta", &muonEta, "muonEta/D");
-  treeReco->Branch("muonPhi", &muonPhi, "muonPhi/D");
-  treeReco->Branch("muonIso", &muonIso, "muonIso/D");  
+  treeReco->Branch("muonPt", &muonPt);
+  treeReco->Branch("muonEta", &muonEta);
+  treeReco->Branch("muonPhi", &muonPhi);
+  treeReco->Branch("muonIso", &muonIso);
 }
 
 void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm::EventSetup& iSetup) const {
-  edm::Handle<reco::MuonCollection> muons;
-  iEvent.getByToken(muonToken_, muons);
+    std::lock_guard<std::mutex> lock(mtx_);
 
-  edm::Handle<reco::VertexCollection> vertices;
-  iEvent.getByToken(vertexToken_, vertices);
+    edm::Handle<reco::MuonCollection> muons;
+    iEvent.getByToken(muonToken_, muons);
 
-  edm::Handle<edm::TriggerResults> triggerResults;
-  iEvent.getByToken(triggerToken_, triggerResults);
-
-  if (muons.isValid()) {  
-      muonSize = muons->size();
-  } else {
-      muonSize = 0;
-  }
-  treeReco->Fill();
+    edm::Handle<reco::VertexCollection> vertices;
+    iEvent.getByToken(vertexToken_, vertices);
 
 
 
-  const edm::TriggerNames &triggerNames = iEvent.triggerNames(*triggerResults);
-  bool passTrigger = false;
+    // Check if vertices exist and are non-empty
 
-  // Check if the event passes the HLT_IsoMu24_v trigger
-  for (unsigned int i = 0; i < triggerResults->size(); ++i) {
-    if (triggerNames.triggerName(i).find(hltPath_) != std::string::npos) {
-      if (triggerResults->accept(i)) {
-        passTrigger = true;
-        break;
+    edm::Handle<edm::TriggerResults> triggerResults;
+    iEvent.getByToken(triggerToken_, triggerResults);
+
+    const edm::TriggerNames &triggerNames = iEvent.triggerNames(*triggerResults);
+    bool passTrigger = false;
+
+    // Check if the event passes the HLT_IsoMu24_v trigger
+    for (unsigned int i = 0; i < triggerResults->size(); ++i) {
+      if (triggerNames.triggerName(i).find(hltPath_) != std::string::npos) {
+        if (triggerResults->accept(i)) {
+          passTrigger = true;
+          break;
+        }
       }
     }
-  }
 
-  if (!passTrigger) return;  // Skip event if it doesn't pass the trigger
+    if (!passTrigger) return;
 
-  reco::Vertex primaryVertex;
-  if (!vertices->empty()) {
-    primaryVertex = vertices->front();  // get first good vertex
-  }
-  // muons below are probe muons
   std::vector<reco::Muon> globalMuons;
   std::vector<reco::Muon> trackerMuons;
   std::vector<reco::Muon> standAloneMuons;
-  std::vector<reco::Muon> caloMuons;
-  std::vector<reco::Muon> pfMuons;
   std::vector<reco::Muon> rpcMuons;
   std::vector<reco::Muon> gemMuons;
-  std::vector<reco::Muon> me0Muons;
   
   eventNumber = iEvent.id().event();
   runNumber = iEvent.id().run();
   lumiSection = iEvent.luminosityBlock();
 
+  // Clear vectors for new event
+  muonPt.clear();
+  muonEta.clear();
+  muonPhi.clear();
+  muonIso.clear();
 
-  //muon selection
+  // Muon selection
   for (const auto& muon : *muons) {
-    muonPt = muon.pt();
-    muonEta = muon.eta();
-    muonPhi = muon.phi();
-    muonIso = (muon.pfIsolationR04().sumChargedHadronPt + 
-                         ((muon.pfIsolationR04().sumNeutralHadronEt + muon.pfIsolationR04().sumPhotonEt - 0.5 * muon.pfIsolationR04().sumPUPt) > 0 ? 
-                          (muon.pfIsolationR04().sumNeutralHadronEt + muon.pfIsolationR04().sumPhotonEt - 0.5 * muon.pfIsolationR04().sumPUPt) : 0)) / muon.pt();
-    treeReco->Fill();
     if (muon.pt() > 24 && fabs(muon.eta()) < 2.4) {
-      if (muonIso < 0.15) {
-        if (muon.isGlobalMuon()) {
-          globalMuons.push_back(muon);
-          if (muon.isTrackerMuon()) {
-            trackerMuons.push_back(muon);
-          }
-          if (muon.isStandAloneMuon()) {
-            standAloneMuons.push_back(muon);
-          }
-          if (muon.isCaloMuon()) {
-            caloMuons.push_back(muon);
-          }
-          if (muon.isPFMuon()) {
-            pfMuons.push_back(muon);
-          }
-          if (muon.isRPCMuon()) {
-            rpcMuons.push_back(muon);
-          }
-          if (muon.isGEMMuon()) {
-            gemMuons.push_back(muon);
-          }
-          if (muon.isME0Muon()) {
-            me0Muons.push_back(muon);
-          }
-          }
+      double iso = (muon.pfIsolationR04().sumChargedHadronPt + 
+                   std::max(0.0, muon.pfIsolationR04().sumNeutralHadronEt + 
+                           muon.pfIsolationR04().sumPhotonEt - 
+                           0.5 * muon.pfIsolationR04().sumPUPt)) / muon.pt();
+      
+      if (iso < 0.15 && muon.isGlobalMuon() && muon.isRPCMuon()) {  // Added isTightMuon check
+        // Fill Reco muon information
+        muonPt.push_back(muon.pt());
+        muonEta.push_back(muon.eta());
+        muonPhi.push_back(muon.phi());
+        muonIso.push_back(iso);
+        globalMuons.push_back(muon);
+        if (muon.isTrackerMuon()) {
+          trackerMuons.push_back(muon);
+        }
+        if (muon.isStandAloneMuon()) {
+          standAloneMuons.push_back(muon);
+        }
+        if (muon.isRPCMuon()) {
+          rpcMuons.push_back(muon);
+        }
+        if (muon.isGEMMuon()) {
+          gemMuons.push_back(muon);
+        }
       }
     }
   }
-  
 
-
-
+  muonSize = muonPt.size();
+  if (muonSize > 0) {
+    treeReco->Fill();
+  }
 
   // Z reconstruction  
   auto reconstructZBoson = [](const std::vector<reco::Muon>& muons) -> std::pair<double, double> { // Change return type to pair
@@ -247,14 +212,6 @@ void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm:
     return {goodMass, minDvz}; // Return pair of goodMass and minDvz
   };
 
-  muonSizeGlobal = globalMuons.size();
-  muonSizeTracker = trackerMuons.size();
-  muonSizeStandAlone = standAloneMuons.size();
-  muonSizeCalo = caloMuons.size();
-  muonSizePF = pfMuons.size();
-  muonSizeRPC = rpcMuons.size();
-  muonSizeGEM = gemMuons.size();
-  muonSizeME0 = me0Muons.size();
 
   {
     auto [zBosonMassResult, vertexdzResult] = reconstructZBoson(globalMuons);
@@ -284,24 +241,6 @@ void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm:
   }
 
   {
-    auto [zBosonMassResult, vertexdzResult] = reconstructZBoson(caloMuons); 
-    zBosonMass = zBosonMassResult;
-    vertexdz = vertexdzResult;
-    if (zBosonMass > 0.0) {
-      treeCalo->Fill();    
-    }
-  }
-
-  {
-    auto [zBosonMassResult, vertexdzResult] = reconstructZBoson(pfMuons);
-    zBosonMass = zBosonMassResult;
-    vertexdz = vertexdzResult;
-    if (zBosonMass > 0.0) {
-      treePF->Fill();    
-    }
-  }
-
-  {
     auto [zBosonMassResult, vertexdzResult] = reconstructZBoson(rpcMuons);
     zBosonMass = zBosonMassResult;
     vertexdz = vertexdzResult; 
@@ -318,16 +257,6 @@ void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm:
       treeGEM->Fill();    
     }
   }
-
-  {
-    auto [zBosonMassResult, vertexdzResult] = reconstructZBoson(me0Muons);
-    zBosonMass = zBosonMassResult;
-    vertexdz = vertexdzResult;
-    if (zBosonMass > 0.0) {
-      treeME0->Fill();    
-    }
-  }
-
 
 
 }
@@ -347,6 +276,3 @@ void Analysis::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
 }
 
 DEFINE_FWK_MODULE(Analysis);
-
-
- 

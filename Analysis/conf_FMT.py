@@ -32,7 +32,7 @@ process.options = cms.untracked.PSet(
 if len(sys.argv) > 2:
     output_file_name = sys.argv[2]
 else:
-    output_file_name = "data_2022D_test.root"
+    output_file_name = "data_2022C.root"
 
 process.TFileService = cms.Service("TFileService",
     fileName=cms.string(output_file_name)
