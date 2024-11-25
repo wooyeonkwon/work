@@ -142,3 +142,273 @@ Mean: 91.2
 Sigma: 2
 Amplitude: 0
 
+Global Z mass Fit Parameters:
+AlphaL: 1.15566
+AlphaH: 1.34407
+nL: 2.01168
+nH: 2.11658
+Mean: 90.8846
+Sigma: 1.97392
+Amplitude: 466880
+
+Tracker Z mass Fit Parameters:
+AlphaL: 1.15566
+AlphaH: 1.34407
+nL: 2.01168
+nH: 2.11658
+Mean: 90.8846
+Sigma: 1.97392
+Amplitude: 466880
+
+StandAlone Z mass Fit Parameters:
+AlphaL: 1.15566
+AlphaH: 1.34407
+nL: 2.01168
+nH: 2.11658
+Mean: 90.8846
+Sigma: 1.97392
+Amplitude: 466880
+
+RPC Z mass Fit Parameters:
+AlphaL: 1.16383
+AlphaH: 1.36336
+nL: 1.89449
+nH: 1.99655
+Mean: 90.9162
+Sigma: 1.81293
+Amplitude: 291502
+
+GEM Z mass Fit Parameters:
+AlphaL: 1.34915
+AlphaH: 1.50941
+nL: 1.58699
+nH: 2.17465
+Mean: 90.7052
+Sigma: 2.52974
+Amplitude: 6442.39
+
+Global Z mass Fit Parameters:
+AlphaL: 1.15566
+AlphaH: 1.34407
+nL: 2.01168
+nH: 2.11658
+Mean: 90.8846
+Sigma: 1.97392
+Amplitude: 466880
+
+Tracker Z mass Fit Parameters:
+AlphaL: 1.15566
+AlphaH: 1.34407
+nL: 2.01168
+nH: 2.11658
+Mean: 90.8846
+Sigma: 1.97392
+Amplitude: 466880
+
+StandAlone Z mass Fit Parameters:
+AlphaL: 1.15566
+AlphaH: 1.34407
+nL: 2.01168
+nH: 2.11658
+Mean: 90.8846
+Sigma: 1.97392
+Amplitude: 466880
+
+RPC Z mass Fit Parameters:
+AlphaL: 1.16383
+AlphaH: 1.36336
+nL: 1.89449
+nH: 1.99655
+Mean: 90.9162
+Sigma: 1.81293
+Amplitude: 291502
+
+GEM Z mass Fit Parameters:
+AlphaL: 1.34915
+AlphaH: 1.50941
+nL: 1.58699
+nH: 2.17465
+Mean: 90.7052
+Sigma: 2.52974
+Amplitude: 6442.39
+
+Global Z mass Fit Parameters:
+AlphaL: 1.15566
+AlphaH: 1.34407
+nL: 2.01168
+nH: 2.11658
+Mean: 90.8846
+Sigma: 1.97392
+Amplitude: 466880
+
+Tracker Z mass Fit Parameters:
+AlphaL: 1.15566
+AlphaH: 1.34407
+nL: 2.01168
+nH: 2.11658
+Mean: 90.8846
+Sigma: 1.97392
+Amplitude: 466880
+
+StandAlone Z mass Fit Parameters:
+AlphaL: 1.15566
+AlphaH: 1.34407
+nL: 2.01168
+nH: 2.11658
+Mean: 90.8846
+Sigma: 1.97392
+Amplitude: 466880
+
+RPC Z mass Fit Parameters:
+AlphaL: 1.16383
+AlphaH: 1.36336
+nL: 1.89449
+nH: 1.99655
+Mean: 90.9162
+Sigma: 1.81293
+Amplitude: 291502
+
+GEM Z mass Fit Parameters:
+AlphaL: 1.34915
+AlphaH: 1.50941
+nL: 1.58699
+nH: 2.17465
+Mean: 90.7052
+Sigma: 2.52974
+Amplitude: 6442.39
+
+Global Z mass Fit Parameters:
+AlphaL: 1.15566
+AlphaH: 1.34407
+nL: 2.01168
+nH: 2.11658
+Mean: 90.8846
+Sigma: 1.97392
+Amplitude: 466880
+
+Tracker Z mass Fit Parameters:
+AlphaL: 1.15566
+AlphaH: 1.34407
+nL: 2.01168
+nH: 2.11658
+Mean: 90.8846
+Sigma: 1.97392
+Amplitude: 466880
+
+StandAlone Z mass Fit Parameters:
+AlphaL: 1.15566
+AlphaH: 1.34407
+nL: 2.01168
+nH: 2.11658
+Mean: 90.8846
+Sigma: 1.97392
+Amplitude: 466880
+
+RPC Z mass Fit Parameters:
+AlphaL: 1.16383
+AlphaH: 1.36336
+nL: 1.89449
+nH: 1.99655
+Mean: 90.9162
+Sigma: 1.81293
+Amplitude: 291502
+
+GEM Z mass Fit Parameters:
+AlphaL: 1.34915
+AlphaH: 1.50941
+nL: 1.58699
+nH: 2.17465
+Mean: 90.7052
+Sigma: 2.52974
+Amplitude: 6442.39
+
+Global Z mass Fit Parameters:
+AlphaL: 1.15566
+AlphaH: 1.34407
+nL: 2.01168
+nH: 2.11658
+Mean: 90.8846
+Sigma: 1.97392
+Amplitude: 466880
+
+Tracker Z mass Fit Parameters:
+AlphaL: 1.15566
+AlphaH: 1.34407
+nL: 2.01168
+nH: 2.11658
+Mean: 90.8846
+Sigma: 1.97392
+Amplitude: 466880
+
+StandAlone Z mass Fit Parameters:
+AlphaL: 1.15566
+AlphaH: 1.34407
+nL: 2.01168
+nH: 2.11658
+Mean: 90.8846
+Sigma: 1.97392
+Amplitude: 466880
+
+RPC Z mass Fit Parameters:
+AlphaL: 1.16383
+AlphaH: 1.36336
+nL: 1.89449
+nH: 1.99655
+Mean: 90.9162
+Sigma: 1.81293
+Amplitude: 291502
+
+GEM Z mass Fit Parameters:
+AlphaL: 1.34915
+AlphaH: 1.50941
+nL: 1.58699
+nH: 2.17465
+Mean: 90.7052
+Sigma: 2.52974
+Amplitude: 6442.39
+
+Global Z mass Fit Parameters:
+AlphaL: 1.15566
+AlphaH: 1.34407
+nL: 2.01168
+nH: 2.11658
+Mean: 90.8846
+Sigma: 1.97392
+Amplitude: 466880
+
+Tracker Z mass Fit Parameters:
+AlphaL: 1.15566
+AlphaH: 1.34407
+nL: 2.01168
+nH: 2.11658
+Mean: 90.8846
+Sigma: 1.97392
+Amplitude: 466880
+
+StandAlone Z mass Fit Parameters:
+AlphaL: 1.15566
+AlphaH: 1.34407
+nL: 2.01168
+nH: 2.11658
+Mean: 90.8846
+Sigma: 1.97392
+Amplitude: 466880
+
+RPC Z mass Fit Parameters:
+AlphaL: 1.16383
+AlphaH: 1.36336
+nL: 1.89449
+nH: 1.99655
+Mean: 90.9162
+Sigma: 1.81293
+Amplitude: 291502
+
+GEM Z mass Fit Parameters:
+AlphaL: 1.34915
+AlphaH: 1.50941
+nL: 1.58699
+nH: 2.17465
+Mean: 90.7052
+Sigma: 2.52974
+Amplitude: 6442.39
+

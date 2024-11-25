@@ -56,6 +56,7 @@ void drawHistogramAndFit(TTree* tree, const char* branchName, const char* histTi
 
     TCanvas* canvas = new TCanvas(canvasTitle, canvasTitle, 800, 600);
     gStyle->SetOptStat(0);
+    hist->SetFillColor(kBlue);
     hist->Draw();
     TF1* fitFunc = new TF1(Form("fitFunc%s", canvasTitle), dscbf, xMin, xMax, 7);
     fitFunc->SetParNames("AlphaL", "AlphaH", "nL", "nH", "Mean", "Sigma", "Events");
@@ -65,10 +66,10 @@ void drawHistogramAndFit(TTree* tree, const char* branchName, const char* histTi
     latex.SetNDC();
     latex.SetTextSize(0.035);
     latex.SetTextFont(62); // bold font for "CMS"
-    latex.DrawLatex(0.15, 0.95, "CMS");
+    latex.DrawLatex(0.15, 0.92, "CMS");
     latex.SetTextFont(42); // normal font for "Preliminary"
-    latex.DrawLatex(0.15, 0.92, "#it{Preliminary}");
-    latex.DrawLatex(0.60, 0.92, "#sqrt{s} = 13.6 TeV, L = 120.57/fb");
+    latex.DrawLatex(0.21, 0.92, "#it{In Progress}");
+    latex.DrawLatex(0.60, 0.92, "#sqrt{s} = 13.6 TeV, L =  11.06/fb");
     latex.DrawLatex(0.70, 0.85, Form("nEntries: %d", (int)nEntries));
     latex.DrawLatex(0.70, 0.80, Form("Mean: %.2f", fitFunc->GetParameter(4)));
     latex.DrawLatex(0.70, 0.75, Form("Sigma: %.2f", fitFunc->GetParameter(5)));
@@ -122,7 +123,7 @@ void drawHistograms_cbf(const char* filename) {
 
     // draw hist for exist trees
     if (!treeGlobal) std::cerr << "GlobalMuons tree not found." << std::endl;
-    else drawHistogramAndFit(treeGlobal, "zBosonMass", "M(mumu)", "fit_zBosonsGlobal.png", "Global Z mass", "fit_results.txt");
+    else drawHistogramAndFit(treeGlobal, "zBosonMass", "", "fit_zBosonsGlobal.png", "Global Z mass", "fit_results.txt");
     if (!treeTracker) std::cerr << "TrackerMuons tree not found." << std::endl;
     else drawHistogramAndFit(treeTracker, "zBosonMass", "Z (Global&Tracker)", "fit_zBosonsTracker.png", "Tracker Z mass", "fit_results.txt");
     if (!treeStandAlone) std::cerr << "StandAloneMuons tree not found." << std::endl;
@@ -132,9 +133,9 @@ void drawHistograms_cbf(const char* filename) {
     if (!treePF) std::cerr << "PFMuons tree not found." << std::endl;
     else drawHistogramAndFit(treePF, "zBosonMass", "Z (Global&PF)", "fit_zBosonsPF.png", "PF Z mass", "fit_results.txt");
     if (!treeRPC) std::cerr << "RPCMuons tree not found." << std::endl;
-    else drawHistogramAndFit(treeRPC, "zBosonMass", "Z (Global&RPC)", "fit_zBosonsRPC.png", "RPC Z mass", "fit_results.txt");
+    else drawHistogramAndFit(treeRPC, "zBosonMass", "RPC muon", "fit_zBosonsRPC.png", "RPC Z mass", "fit_results.txt");
     if (!treeGEM) std::cerr << "GEMMuons tree not found." << std::endl;
-    else drawHistogramAndFit(treeGEM, "zBosonMass", "Z (Global&GEM)", "fit_zBosonsGEM.png", "GEM Z mass", "fit_results.txt");
+    else drawHistogramAndFit(treeGEM, "zBosonMass", "GEM muon", "fit_zBosonsGEM.png", "GEM Z mass", "fit_results.txt");
     if (!treeME0) std::cerr << "ME0Muons tree not found." << std::endl;
     else drawHistogramAndFit(treeME0, "zBosonMass", "Z (Global&ME0)", "fit_zBosonsME0.png", "ME0 Z mass", "fit_results.txt");
 

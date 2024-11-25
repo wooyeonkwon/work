@@ -157,7 +157,7 @@ void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm:
                            muon.pfIsolationR04().sumPhotonEt - 
                            0.5 * muon.pfIsolationR04().sumPUPt)) / muon.pt();
       
-      if (iso < 0.15 && muon.isGlobalMuon() && muon.isRPCMuon()) {  // Added isTightMuon check
+      if (iso < 0.15 && muon.passed(reco::Muon::CutBasedIdTight)) {  // Added isTightMuon check
         // Fill Reco muon information
         muonPt.push_back(muon.pt());
         muonEta.push_back(muon.eta());

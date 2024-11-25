@@ -46,7 +46,7 @@ void drawHistogram(TTree* tree, const char* leafName, int bins, double xMin, dou
     latex.DrawLatex(0.25, 0.91, "In progress");
     latex.SetTextFont(42);
     latex.SetTextSize(0.035);
-    latex.DrawLatex(0.60, 0.91, "#sqrt{s} = 13.6 TeV, Nevent : 72909628");  //full data : L = 120.56 / 11.06/fb
+    latex.DrawLatex(0.60, 0.91, "#sqrt{s} = 13.6 TeV, 11.06/fb");  //full data : L = 120.56 / 11.06/fb Nevent : 72909628
 
 
     canvas->SaveAs(Form("mc_%s_histogram.png", leafName));
@@ -78,10 +78,10 @@ void drawHistograms_BasicInfo(const char* filename) {
 
             // 히스토그램을 그릴 leaf 이름과 범위 설정
             const char* leaves[] = {"muonSize", "muonPt", "muonEta", "muonPhi", "muonIso"};
-            int bins[] = {50, 1000, 60, 70, 300};
+            int bins[] = {10, 2000, 60, 70, 20};
             double xMin[] = {0, 0.0, -3.0, -3.5, 0.0};
-            double xMax[] = {50, 100.0, 3.0, 3.5, 3.0};
-            const char* histTitle[] = {"Muon Mutiplicity","Muon Pt", "Muon Eta", "Muon Phi", "Muon Iso(dR = 0.4)"};
+            double xMax[] = {10, 200.0, 3.0, 3.5, 0.2};
+            const char* histTitle[] = {"Muon Mutiplicity","Muon Pt", "Muon Eta", "Muon Phi", "Muon PFIso(dR = 0.4)"};
             const char* xUnit[] = {"","GeV","","",""};
 
             for (int i = 0; i < 5; ++i) {

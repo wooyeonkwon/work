@@ -19,7 +19,7 @@ void drawHistogramsForAllMuonTypes(const char* dataFilename, const char* mcFilen
     const char* histTitle;
 
     //histTitle = Form("Z (%s)", muonType);
-    histTitle = Form("M(mumu)");
+    histTitle = Form("");
     const char* histFileName = Form("zBosons%s.png", muonType);
     const char* canvasTitle = Form("%s Z mass", muonType);
     const char* logFileName = "fit_results.txt";
