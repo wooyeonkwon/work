@@ -412,3 +412,75 @@ Mean: 90.7052
 Sigma: 2.52974
 Amplitude: 6442.39
 
+RPC Z mass Pass Fit Parameters:
+AlphaL: 0.0261236
+AlphaH: 0.0307645
+nL: 0.955441
+nH: 2.0588
+Mean: 91.4844
+Sigma: 0.0287929
+Amplitude: 2594.78
+
+RPC Z mass Fail Fit Parameters:
+AlphaL: 0.668637
+AlphaH: 0.212642
+nL: 0.0115861
+nH: 0.514724
+Mean: 91.2448
+Sigma: 7.99633e-05
+Amplitude: 114.281
+
+GEM Z mass Pass Fit Parameters:
+AlphaL: 0.0261236
+AlphaH: 0.0307645
+nL: 0.955441
+nH: 2.0588
+Mean: 91.4844
+Sigma: 0.0287929
+Amplitude: 2594.78
+
+GEM Z mass Fail Fit Parameters:
+AlphaL: 0.225481
+AlphaH: -0.238214
+nL: 8.48169
+nH: -28.1213
+Mean: 74.7675
+Sigma: -4.29251
+Amplitude: 84.4847
+
+RPC Z mass Pass Fit Parameters:
+AlphaL: 1.25
+AlphaH: 1.44
+nL: 1.59
+nH: 1.8
+Mean: 91.2
+Sigma: 2
+Amplitude: 0
+
+RPC Z mass Fail Fit Parameters:
+AlphaL: 1.25
+AlphaH: 1.44
+nL: 1.59
+nH: 1.8
+Mean: 91.2
+Sigma: 2
+Amplitude: 0
+
+GEM Z mass Pass Fit Parameters:
+AlphaL: 1.25
+AlphaH: 1.44
+nL: 1.59
+nH: 1.8
+Mean: 91.2
+Sigma: 2
+Amplitude: 0
+
+GEM Z mass Fail Fit Parameters:
+AlphaL: 1.25
+AlphaH: 1.44
+nL: 1.59
+nH: 1.8
+Mean: 91.2
+Sigma: 2
+Amplitude: 0
+
