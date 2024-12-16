@@ -17,6 +17,8 @@
 #include "TFile.h"
 #include "TTree.h"
 #include <cstdlib>
+#include "CommonTools/UtilAlgos/interface/TFileService.h"
+#include "FWCore/ServiceRegistry/interface/Service.h"
 
 class AnalysisTnp : public edm::global::EDAnalyzer<> {
 public:
@@ -63,43 +65,26 @@ AnalysisTnp::~AnalysisTnp() {
 
 void AnalysisTnp::beginJob() {
   std::lock_guard<std::mutex> lock(mtx_);
+  edm::Service<TFileService> fs;
 
-  treeRPCPass = new TTree("RPCPassMuons", "RPC Pass Muons");
-  treeRPCFail = new TTree("RPCFailMuons", "RPC Fail Muons");
-  treeRPCEff = new TTree("RPCEffMuons", "RPC Eff Muons");
-  treeGEMPass = new TTree("GEMPassMuons", "GEM pass Muons");
-  treeGEMFail = new TTree("GEMFailMuons", "GEM Fail Muons");
-  treeGEMEff = new TTree("GEMEffMuons", "GEM Eff Muons");
+  treeRPCPass = fs->make<TTree>("RPCPassMuons", "RPC Pass Muons");
+  treeRPCPass->Branch("zBosonMass", &zBosonMass, "zBosonMass/D");
 
-  auto initializeTree = [this](TTree* tree) {
-    tree->Branch("zBosonMass", &zBosonMass, "zBosonMass/D");
-  };
+  treeRPCFail = fs->make<TTree>("RPCFailMuons", "RPC Fail Muons");
+  treeRPCFail->Branch("zBosonMass", &zBosonMass, "zBosonMass/D");
+
+  treeRPCEff = fs->make<TTree>("RPCEffMuons", "RPC Eff Muons");
   treeRPCEff->Branch("efficiency", &efficiency, "efficiency/D");
-  treeGEMEff->Branch("efficiency", &efficiency, "efficiency/D");
-  
-  initializeTree(treeRPCPass);
-  initializeTree(treeRPCFail);
-  initializeTree(treeGEMPass);
-  initializeTree(treeGEMFail);
-  treeRPCPass->Fill();
-  treeRPCPass->Write(); 
 
-  if (treeRPCPass) {
-    std::cout << "Debug: treeRPCPass가 정상적으로 생성되었습니다." << std::endl;
-  } else {
-    std::cout << "Debug: treeRPCPass 생성에 실패했습니다." << std::endl;
-  }
-  
-  TFile *outputFile = TFile::Open("data.root", "UPDATE");
-  if (outputFile) {
-      outputFile->ls();  // 파일 안의 모든 객체를 출력
-      TTree *tree = (TTree*)outputFile->Get("RPCPassMuons");
-      if (tree) {
-          std::cout << "RPCPassMuons 트리가 정상적으로 로드되었습니다." << std::endl;
-      } else {
-          std::cout << "RPCPassMuons 트리가 로드되지 않았습니다." << std::endl;
-      }
-  }
+  treeGEMPass = fs->make<TTree>("GEMPassMuons", "GEM Pass Muons");
+  treeGEMPass->Branch("zBosonMass", &zBosonMass, "zBosonMass/D");
+
+  treeGEMFail = fs->make<TTree>("GEMFailMuons", "GEM Fail Muons");
+  treeGEMFail->Branch("zBosonMass", &zBosonMass, "zBosonMass/D");
+
+  treeGEMEff = fs->make<TTree>("GEMEffMuons", "GEM Eff Muons");
+  treeGEMEff->Branch("efficiency", &efficiency, "efficiency/D");
+
 }
 
 void AnalysisTnp::analyze(const edm::StreamID, const edm::Event& iEvent, const edm::EventSetup& iSetup) const {
@@ -136,26 +121,29 @@ void AnalysisTnp::analyze(const edm::StreamID, const edm::Event& iEvent, const e
     if (muon.pt() > 24 && fabs(muon.eta()) < 2.4 && muon.passed(reco::Muon::CutBasedIdTight) && muon.passed(reco::Muon::PFIsoTight)) {
       tagMuons.push_back(&muon);
     } else {
-      if (muon.isRPCMuon() && muon.pt() > 15 && fabs(muon.eta()) < 2.4) {
-        passingProbeRPCMuons.push_back(&muon);
-      } else {
-        failingProbeRPCMuons.push_back(&muon);
+      if (muon.pt() > 15 && fabs(muon.eta()) < 2.4) {
+        if (muon.isRPCMuon()){
+          passingProbeRPCMuons.push_back(&muon);
+        } else {
+          failingProbeRPCMuons.push_back(&muon);
+        }
       }
-
-      if (muon.isGEMMuon() && muon.pt() > 15 && fabs(muon.eta()) < 2.4) {
-        passingProbeGEMMuons.push_back(&muon);
-      } else {
-        failingProbeGEMMuons.push_back(&muon);
+      if (muon.isGEMMuon()) {
+        if(muon.pt() > 15 && fabs(muon.eta()) < 2.4){
+          passingProbeGEMMuons.push_back(&muon);
+        } else {
+          failingProbeGEMMuons.push_back(&muon);
+        }
       }
     }
   }
 
   auto reconstructZBoson = [](const reco::Muon* tagMuon, const reco::Muon* probeMuon) {
-    if (tagMuon->charge() != probeMuon->charge()) {
+    if ((tagMuon->charge() != probeMuon->charge()) && (fabs(tagMuon->vz() - probeMuon->vz()) < 0.5 )) {
       auto zBoson = tagMuon->p4() + probeMuon->p4();
       return zBoson.M();
     }
-    return 0.0;
+    return -1.0;
   };
 
 
@@ -205,8 +193,10 @@ void AnalysisTnp::analyze(const edm::StreamID, const edm::Event& iEvent, const e
 
   if (!(passCountRPC == 0 && failCountRPC == 0)){
     efficiency = passCountRPC / static_cast<double>(passCountRPC + failCountRPC);
-    treeRPCEff->Fill(); 
+  } else {
+    efficiency = -1;
   }
+  treeRPCEff->Fill(); 
 
   if (!(passCountGEM == 0 && failCountGEM == 0)){
     efficiency = (passCountGEM) / static_cast<double>(passCountGEM + failCountGEM);
@@ -217,14 +207,6 @@ void AnalysisTnp::analyze(const edm::StreamID, const edm::Event& iEvent, const e
 
 void AnalysisTnp::endJob() {
   std::lock_guard<std::mutex> lock(mtx_);
-
-  delete treeRPCPass;
-  delete treeRPCFail;
-  delete treeRPCEff;
-  delete treeGEMPass;
-  delete treeGEMFail;
-  delete treeGEMEff;
-  
   std::cout << "endJob" << std::endl;
 }
 
