@@ -1,3 +1,0 @@
-/pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/CRAB_UserFiles/crab_MuonSkimming_Run2022E_sup/241117_135331/0000/skimmed_data_14.root
-/pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/CRAB_UserFiles/crab_MuonSkimming_Run2022E_sup/241117_135331/0000/skimmed_data_60.root
-/pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/CRAB_UserFiles/crab_MuonSkimming_Run2022E_sup/241117_135331/0000/skimmed_data_15.root

@@ -8,18 +8,12 @@
 #include <string.h>
 
 
-void drawHistogram(TTree* tree, const char* leafName, int bins, double xMin, double xMax, const char* histTitle, const char* xUnit) {
+void drawHistogram(TTree* tree,const char* treeName, const char* leafName, int bins, double xMin, double xMax, const char* histTitle, const char* xUnit, const char* yUnit) {
     double binWidth = (xMax - xMin) / bins;
-    const double tolerance = 1e-6;
+
     TH1D *hist = nullptr;
 
-    if (fabs(binWidth - 1.0) < tolerance){
-        hist = new TH1D(leafName, Form("%s;%s;Multiplicity %s", histTitle, xUnit, xUnit), bins, xMin, xMax);
-    }
-    else {
-        hist = new TH1D(leafName, Form("%s;%s;Multiplicity/%g\n %s", histTitle, xUnit, binWidth, xUnit), bins, xMin, xMax);
-    }
-    
+    hist = new TH1D(leafName, Form("%s;%s;%s/%g\n %s", histTitle, xUnit, yUnit, binWidth, xUnit), bins, xMin, xMax);
     // 히스토그램을 채우기 위해 leaf를 읽어들임
     tree->Draw(Form("%s>>%s", leafName, leafName));
 
@@ -46,10 +40,15 @@ void drawHistogram(TTree* tree, const char* leafName, int bins, double xMin, dou
     latex.DrawLatex(0.25, 0.91, "In progress");
     latex.SetTextFont(42);
     latex.SetTextSize(0.035);
-    latex.DrawLatex(0.60, 0.91, "#sqrt{s} = 13.6 TeV, 11.06/fb");  //full data : L = 120.56 / 11.06/fb Nevent : 72909628
+    latex.DrawLatex(0.60, 0.91, "#sqrt{s} = 13.6 TeV");  //full data : L = 120.56 / 11.06/fb Nevent : 72909628
+
+    int bin1 = hist->FindBin(60);
+    int bin2 = hist->FindBin(120);
+    double entries = hist->Integral(bin1,bin2); 
+    std::cout << "Number of entries: " << entries << std::endl;
 
 
-    canvas->SaveAs(Form("mc_%s_histogram.png", leafName));
+    canvas->SaveAs(Form("%s_%s_histogram.png",treeName, leafName));
 
     // 리소스 정리
     delete canvas;
@@ -64,32 +63,39 @@ void drawHistograms_BasicInfo(const char* filename) {
         return;
     }
 
-    TTree *treeReco;
-    TIter nextKey(file->GetListOfKeys());
-    TKey *key;
+    const char* dirName = "Analysis";
+    TDirectoryFile *dir = (TDirectoryFile*)file->Get(dirName);
+    if (!dir) {
+        printf("Error: Directory '%s' not found in file!\n", dirName);
+        file->Close();
+        delete file;
+        return;
+    }
 
-    while ((key = (TKey*)nextKey())) {
-        if (strcmp(key->GetClassName(), "TTree") == 0 && strstr(key->GetName(), "RecoMuons") != NULL) {
-            treeReco = (TTree*)key->ReadObj();
-            if (!treeReco) {
-                printf("Error loading tree '%s'!\n", key->GetName());
-                continue;
-            }
+    const char* treeNames[] = {"RPCMuons","GEMMuons", "RecoMuons"};
+    const char* branches[] = {"zBosonMass", "vertexdz", "muonSize", "muonPt", "muonEta", "muonPhi", "muonIso"};
+    const char* histTitles[] = {"diMuon Mass", "vertexdz", "muonSize", "muonPt", "muonEta", "muonPhi", "muonIso"};
+    int bins[] = {60, 100, 5, 2000, 60, 70, 150};
+    double xMin[] = {60.0, 0.0, 0.0, 0.0, -3.0, -3.5, 0};
+    double xMax[] = {120.0, 0.1, 5.0, 200.0, 3.0, 3.5, 0.15};
+    const char* xUnits[] = {"GeV", "cm", "", "GeV", "", "", ""};
+    const char* yUnits[] = {"Events", "Events", "Multiplicity", "Multiplicity", "Multiplicity", "Multiplicity", "Multiplicity"};
 
-            // 히스토그램을 그릴 leaf 이름과 범위 설정
-            const char* leaves[] = {"muonSize", "muonPt", "muonEta", "muonPhi", "muonIso"};
-            int bins[] = {10, 2000, 60, 70, 20};
-            double xMin[] = {0, 0.0, -3.0, -3.5, 0.0};
-            double xMax[] = {10, 200.0, 3.0, 3.5, 0.2};
-            const char* histTitle[] = {"Muon Mutiplicity","Muon Pt", "Muon Eta", "Muon Phi", "Muon PFIso(dR = 0.4)"};
-            const char* xUnit[] = {"","GeV","","",""};
+    for (int i = 0; i < 3; ++i) {
 
-            for (int i = 0; i < 5; ++i) {
-                drawHistogram(treeReco, leaves[i], bins[i], xMin[i], xMax[i], histTitle[i], xUnit[i]);
-            }
+        TTree *tree = (TTree*)dir->Get(treeNames[i]);
+        if (!tree) {
+            printf("Tree '%s' not found in directory '%s'!\n", treeNames[i], dirName);
+            continue;
         }
+        for (int j = 0; j < 7; ++j ){
+            drawHistogram(tree, treeNames[i], branches[j], bins[j], xMin[j], xMax[j], histTitles[j], xUnits[j], yUnits[j]);
+        }
+        // drawHistogram 함수 호출
+
     }
 
     file->Close();
     delete file;
 }
+
