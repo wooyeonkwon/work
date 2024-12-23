@@ -39,7 +39,9 @@ private:
 
 
   TTree* treeRPC;
+  TTree* treeTightRPC;
   TTree* treeGEM;
+  TTree* treeTightGEM;
   TTree* treeReco;
 
   mutable double zBosonMass;
@@ -75,7 +77,9 @@ void Analysis::beginJob() {
   edm::Service<TFileService> fs;
 
   treeRPC = fs->make<TTree>("RPCMuons", "RPC Muons");
+  treeTightRPC = fs->make<TTree>("TightRPCMuons", "Tight RPC Muons");
   treeGEM = fs->make<TTree>("GEMMuons", "GEM Muons");
+  treeTightGEM = fs->make<TTree>("TightGEMMuons", "Tight GEM Muons");
   treeReco = fs->make<TTree>("RecoMuons", "Reco Muons");
 
   auto initializeTree = [this](TTree* tree) {
@@ -95,7 +99,9 @@ void Analysis::beginJob() {
 
   initializeTree(treeReco);
   initializeTree(treeRPC);
+  initializeTree(treeTightRPC);
   initializeTree(treeGEM);
+  initializeTree(treeTightGEM);
 }
 
 void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm::EventSetup& iSetup) const {
@@ -143,7 +149,9 @@ void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm:
 
 
   std::vector<reco::Muon> rpcMuons;
+  std::vector<reco::Muon> rpcTightMuons;
   std::vector<reco::Muon> gemMuons;
+  std::vector<reco::Muon> gemTightMuons;
   std::vector<reco::Muon> recoMuons;
 
   
@@ -158,19 +166,26 @@ void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm:
                    std::max(0.0, muon.pfIsolationR04().sumNeutralHadronEt + 
                            muon.pfIsolationR04().sumPhotonEt - 
                            0.5 * muon.pfIsolationR04().sumPUPt)) / muon.pt();
+      muonPt.push_back(muon.pt());
+      muonEta.push_back(muon.eta());
+      muonPhi.push_back(muon.phi());
+      muonIso.push_back(iso);
+      if (muon.isRPCMuon()) {
+        rpcMuons.push_back(muon);
+      }
+      if (muon.isGEMMuon()) {
+        gemMuons.push_back(muon);
+      }
+
       
       if (iso < 0.15 && muon.passed(reco::Muon::CutBasedIdTight)) {  // Added isTightMuon check
         // Fill Reco muon information
-        muonPt.push_back(muon.pt());
-        muonEta.push_back(muon.eta());
-        muonPhi.push_back(muon.phi());
-        muonIso.push_back(iso);
         recoMuons.push_back(muon);
         if (muon.isRPCMuon()) {
-          rpcMuons.push_back(muon);
+          rpcTightMuons.push_back(muon);
         }
         if (muon.isGEMMuon()) {
-          gemMuons.push_back(muon);
+          gemTightMuons.push_back(muon);
         }
       }
     }
@@ -233,6 +248,18 @@ void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm:
   }
 
   {
+    auto [zBosonMassResult, vertexdzResult] = reconstructZBoson(rpcTightMuons);
+    zBosonMass = zBosonMassResult;
+    vertexdz = vertexdzResult;
+    muonSize = rpcTightMuons.size();
+    if (muonSize > 0) {
+      treeTightRPC->Fill();
+    }
+
+
+  }
+
+  {
     auto [zBosonMassResult, vertexdzResult] = reconstructZBoson(gemMuons);
     zBosonMass = zBosonMassResult;
     vertexdz = vertexdzResult;
@@ -242,6 +269,15 @@ void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm:
     }    
   }
 
+  {
+    auto [zBosonMassResult, vertexdzResult] = reconstructZBoson(gemTightMuons);
+    zBosonMass = zBosonMassResult;
+    vertexdz = vertexdzResult;
+    muonSize = gemTightMuons.size();
+    if (muonSize > 0) {
+      treeTightGEM->Fill();
+    }    
+  }
 
 }
 
