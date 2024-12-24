@@ -2,7 +2,7 @@
 
 # Default directory paths
 directory_path=""
-output_directory="/pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/processed_data_2/"
+output_directory="/pnfs/knu.ac.kr/data/cms/store/user/wkwon/AnalysisResults/processed_data_3/"
 
 # Parse command-line arguments
 while getopts "d:l:o:" opt; do
