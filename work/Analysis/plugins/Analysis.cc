@@ -42,39 +42,46 @@ private:
 
   TTree* trees[5];
   std::array<std::string, 5> treeNames = {{"RecoMuons", "TightRPCMuons", "RPCMuons", "TightGEMMuons", "GEMMuons"}};
-
+  mutable std::array<std::mutex, 5> mtx;
   
-  static thread_local double zBosonMass;
   static thread_local int eventNumber;
   static thread_local int runNumber;
   static thread_local int lumiSection;
-
-
-  // Reco muon variables
+  static thread_local int muonSize;
   static thread_local std::vector<double> muonPt;
   static thread_local std::vector<double> muonEta;
   static thread_local std::vector<double> muonPhi;
   static thread_local std::vector<double> muonIso;
-  static thread_local int muonSize;
-
+  static thread_local double zBosonMass;
   static thread_local double vertexdz;
-  mutable std::array<std::mutex, 5> mtx;
+
+
+  static thread_local std::vector<reco::Muon> recoMuons;
+  static thread_local std::vector<reco::Muon> rpcTightMuons;
+  static thread_local std::vector<reco::Muon> rpcMuons;
+  static thread_local std::vector<reco::Muon> gemTightMuons;
+  static thread_local std::vector<reco::Muon> gemMuons;
+  static thread_local std::vector<reco::Muon> muonLists[];
 
 };
 
 
-
-thread_local double Analysis::zBosonMass = 0.0;
-thread_local int Analysis::eventNumber = 0;
-thread_local int Analysis::runNumber = 0;
-thread_local int Analysis::lumiSection = 0;
+thread_local std::vector<reco::Muon> Analysis::recoMuons;
+thread_local std::vector<reco::Muon> Analysis::rpcTightMuons;
+thread_local std::vector<reco::Muon> Analysis::rpcMuons;
+thread_local std::vector<reco::Muon> Analysis::gemTightMuons;
+thread_local std::vector<reco::Muon> Analysis::gemMuons;
+thread_local std::vector<reco::Muon> muonLists[5];
+thread_local int Analysis::eventNumber = -1;
+thread_local int Analysis::runNumber = -1;
+thread_local int Analysis::lumiSection = -1;
+thread_local int Analysis::muonSize = -1;
 thread_local std::vector<double> Analysis::muonPt;
 thread_local std::vector<double> Analysis::muonEta;
 thread_local std::vector<double> Analysis::muonPhi;
 thread_local std::vector<double> Analysis::muonIso;
-thread_local int Analysis::muonSize = 0;
-thread_local double Analysis::vertexdz = 0.0;
-
+thread_local double Analysis::zBosonMass = -1.0;
+thread_local double Analysis::vertexdz = -1.0;
 
 Analysis::Analysis(const edm::ParameterSet& iConfig)
   : muonToken_(consumes<reco::MuonCollection>(iConfig.getParameter<edm::InputTag>("muons"))),
@@ -151,7 +158,6 @@ void Analysis::analyze(const edm::StreamID, const edm::Event& iEvent, const edm:
   std::vector<reco::Muon> rpcMuons;
   std::vector<reco::Muon> gemTightMuons;
   std::vector<reco::Muon> gemMuons;
-
   std::vector<reco::Muon> muonLists[] =  {recoMuons, rpcTightMuons, rpcMuons, gemTightMuons, gemMuons};
 
   

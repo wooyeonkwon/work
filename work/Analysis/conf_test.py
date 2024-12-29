@@ -23,7 +23,7 @@ process.source = cms.Source("PoolSource",
 # Enable multithreading 
 process.options = cms.untracked.PSet(
     numberOfThreads = cms.untracked.uint32(0),
-    numberOfStreams = cms.untracked.uint32(0)
+    numberOfStreams = cms.untracked.uint32(2)
 )
 process.TFileService = cms.Service("TFileService",
     fileName = cms.string("/data1/users/dndus0107/AnalysisResults/processed_data/data_C.root")
