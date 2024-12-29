@@ -1,0 +1,42 @@
+import FWCore.ParameterSet.Config as cms
+import os
+
+process = cms.Process("Analysis")
+print("flag1")
+# Configure the MessageLogger
+process.load("FWCore.MessageService.MessageLogger_cfi")
+process.MessageLogger.cerr.FwkReport.reportEvery = 10000  # Report every 10000 events
+print("flag2")
+process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(10))
+directory_path = '/data1/users/dndus0107/AnalysisResults/Muon0/crab_MuonSkimming_Run2024C0/241109_142235/0000/'
+file_list = os.listdir(directory_path)
+file_paths = [f'file://{directory_path}{filename}' for filename in file_list]
+print("flag3")
+#file_paths = ['file:///pnfs/knu.ac.kr/data/cms/store/data/Run2022E/Muon/AOD/27Jun2023-v1/28210001/b71df8a5-d018-4039-a52e-e29e43bf3d0c.root',
+#              'file:///pnfs/knu.ac.kr/data/cms/store/data/Run2022E/Muon/AOD/27Jun2023-v1/28210002/7b430187-1c89-432f-a854-46173c2d939f.root',
+#              'file:///pnfs/knu.ac.kr/data/cms/store/data/Run2022E/Muon/AOD/27Jun2023-v1/28210002/eeb61afc-9f37-4546-8888-8096016cbd40.root'
+#              ]
+process.source = cms.Source("PoolSource",
+    fileNames = cms.untracked.vstring(*file_paths)
+)
+
+# Enable multithreading 
+process.options = cms.untracked.PSet(
+    numberOfThreads = cms.untracked.uint32(0),
+    numberOfStreams = cms.untracked.uint32(0)
+)
+print("flag4")
+process.TFileService = cms.Service("TFileService",
+    fileName = cms.string("/data1/users/dndus0107/AnalysisResults/processed_data/data_test.root")
+)
+
+process.Analysis = cms.EDAnalyzer('Analysis',
+    muons = cms.InputTag("muons"),
+    triggerResults = cms.InputTag("TriggerResults", "", "HLT"),
+    vertices = cms.InputTag("offlinePrimaryVertices"),  
+    hltPath = cms.string("HLT_IsoMu24_v")
+)
+print("flag5")
+process.p = cms.Path(process.Analysis)
+print("flag6")
+process.options.wantSummary = True
