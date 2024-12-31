@@ -5,7 +5,7 @@ directory_path="/data1/users/dndus0107/AnalysisResults/Muon/crab_MuonSkimming_Ru
 output_directory="/data1/users/dndus0107/AnalysisResults/processed_data_2022C/"
 
 #thread
-num_groups=54
+num_groups=56
 
 # Parse command-line arguments
 while getopts "d:l:o:" opt; do
@@ -70,16 +70,19 @@ if [ ! -z "${custom_lists+x}" ]; then
     done
 else
     # Use root_files directly if no custom lists are provided
-    files_per_group=$(( (${#root_files[@]} + num_groups - 1) / num_groups ))  # Ensure proper division for uneven splits
+    files_per_group=$(( ${#root_files[@]} / num_groups ))
+    remainder=$(( ${#root_files[@]} % num_groups ))  # Ensure proper division for uneven splits
 
     for i in $(seq 0 $((num_groups - 1)))
     do
-        start_index=$(( i * files_per_group ))
-        end_index=$(( start_index + files_per_group ))
+        start_index=$(( i * files_per_group + (i < remainder ? i : remainder) ))
+        end_index=$(( start_index + files_per_group + (i < remainder ? 1 : 0) ))
 
-        sublist=(${root_files[@]:$start_index:$files_per_group})  # Extract a subset of files for this group
+        sublist_file="$output_directory/list${i}.txt"
         if [ ${#sublist[@]} -eq 0 ]; then
-            continue  # Skip empty sublists
+            touch "$sublist_file"
+        else
+            printf "%s\n" "${sublist[@]}" > "$sublist_file"
         fi
 
         sublist_file="$output_directory/list${i}.txt"  # Sublist file path in the output directory

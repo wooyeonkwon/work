@@ -1,0 +1,33 @@
+#include <set>
+#include <iostream>
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
+#include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/MakerMacros.h"
+
+class CheckDuplicateEvents : public edm::one::EDAnalyzer<> {
+public:
+    explicit CheckDuplicateEvents(const edm::ParameterSet&) {}
+    ~CheckDuplicateEvents() override {}
+
+    void analyze(const edm::Event& event, const edm::EventSetup&) override {
+        auto run = event.id().run();
+        auto lumi = event.id().luminosityBlock();
+        auto eventNumber = event.id().event();
+
+        // Unique event identifier
+        std::tuple<unsigned int, unsigned int, unsigned int> eventID(run, lumi, eventNumber);
+
+        // Check if the event is already processed
+        if (!seenEvents.insert(eventID).second) {
+            std::cout << "Duplicate event found! Run: " << run
+                      << ", LumiSection: " << lumi
+                      << ", Event: " << eventNumber << std::endl;
+        }
+    }
+
+private:
+    std::set<std::tuple<unsigned int, unsigned int, unsigned int>> seenEvents; // Unique events tracker
+};
+
+// Define the module
+DEFINE_FWK_MODULE(CheckDuplicateEvents);

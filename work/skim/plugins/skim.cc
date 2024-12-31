@@ -1,47 +1,16 @@
-// -*- C++ -*-
-//
-// Package:    work/skim
-// Class:      skim
-//
-/**\class skim skim.cc work/skim/plugins/skim.cc
-
- Description: [one line class summary]
-
- Implementation:
-     [Notes on implementation]
-*/
-//
-// Original Author:  Wooyeon Kwon
-//         Created:  Wed, 06 Nov 2024 05:47:51 GMT
-//
-//
-
-// system include files
 #include <memory>
-
-// user include files
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/one/EDAnalyzer.h"
-
+#include "FWCore/Framework/interface/stream/EDFilter.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
-
+#include "FWCore/Framework/interface/ConsumesCollector.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
-#include "FWCore/Utilities/interface/InputTag.h"
-#include "DataFormats/TrackReco/interface/Track.h"
-#include "DataFormats/TrackReco/interface/TrackFwd.h"
-//
-// class declaration
-//
+#include "FWCore/Utilities/interface/StreamID.h"
+#include "FWCore/Common/interface/TriggerNames.h"
+#include "DataFormats/Common/interface/TriggerResults.h"
 
-// If the analyzer does not use TFileService, please remove
-// the template argument to the base class so the class inherits
-// from  edm::one::EDAnalyzer<>
-// This will improve performance in multithreaded jobs.
 
-using reco::TrackCollection;
-
-class skim : public edm::one::EDAnalyzer<edm::one::SharedResources> {
+class skim : public edm::stream::EDFilter<> {
 public:
   explicit skim(const edm::ParameterSet&);
   ~skim() override;
@@ -49,88 +18,49 @@ public:
   static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
 
 private:
-  void beginJob() override;
-  void analyze(const edm::Event&, const edm::EventSetup&) override;
-  void endJob() override;
-
-  // ----------member data ---------------------------
-  edm::EDGetTokenT<TrackCollection> tracksToken_;  //used to select what tracks to read from configuration file
-#ifdef THIS_IS_AN_EVENTSETUP_EXAMPLE
-  edm::ESGetToken<SetupData, SetupRecord> setupToken_;
-#endif
+  void beginStream(edm::StreamID) override;
+  bool filter(edm::Event&, const edm::EventSetup&) override;
+  void endStream() override;
+  std::string hltPath_;
+  edm::EDGetTokenT<edm::TriggerResults> triggerToken_;
 };
 
-//
-// constants, enums and typedefs
-//
+skim::skim(const edm::ParameterSet& iConfig) 
+  : hltPath_(iConfig.getParameter<std::string>("hltPath")),
+    triggerToken_(consumes<edm::TriggerResults>(iConfig.getParameter<edm::InputTag>("triggerResults"))){
 
-//
-// static data member definitions
-//
-
-//
-// constructors and destructor
-//
-skim::skim(const edm::ParameterSet& iConfig)
-    : tracksToken_(consumes<TrackCollection>(iConfig.getUntrackedParameter<edm::InputTag>("tracks"))) {
-#ifdef THIS_IS_AN_EVENTSETUP_EXAMPLE
-  setupDataToken_ = esConsumes<SetupData, SetupRecord>();
-#endif
-  //now do what ever initialization is needed
 }
 
 skim::~skim() {
-  // do anything here that needs to be done at desctruction time
-  // (e.g. close files, deallocate resources etc.)
-  //
-  // please remove this method altogether if it would be left empty
 }
 
-//
-// member functions
-//
+bool skim::filter(edm::Event& iEvent, const edm::EventSetup& iSetup) {
+  edm::Handle<edm::TriggerResults> triggerResults;
+  iEvent.getByToken(triggerToken_, triggerResults);
+  const edm::TriggerNames &triggerNames = iEvent.triggerNames(*triggerResults);
 
-// ------------ method called for each event  ------------
-void skim::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
-  using namespace edm;
-
-  for (const auto& track : iEvent.get(tracksToken_)) {
-    // do something with track parameters, e.g, plot the charge.
-    // int charge = track.charge();
+  // Check if the event passes the HLT_IsoMu24_v trigger
+  for (unsigned int i = 0; i < triggerResults->size(); ++i) {
+    if (triggerNames.triggerName(i).find(hltPath_) != std::string::npos) {
+      if (triggerResults->accept(i)) {
+        return true;
+      }
+    }
   }
 
-#ifdef THIS_IS_AN_EVENTSETUP_EXAMPLE
-  // if the SetupData is always needed
-  auto setup = iSetup.getData(setupToken_);
-  // if need the ESHandle to check if the SetupData was there or not
-  auto pSetup = iSetup.getHandle(setupToken_);
-#endif
+  return false;
 }
 
-// ------------ method called once each job just before starting event loop  ------------
-void skim::beginJob() {
-  // please remove this method if not needed
+void skim::beginStream(edm::StreamID) {
 }
 
-// ------------ method called once each job just after ending the event loop  ------------
-void skim::endJob() {
-  // please remove this method if not needed
+void skim::endStream() {
 }
-
-// ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
 void skim::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
-  //The following says we do not know what parameters are allowed so do no validation
-  // Please change this to state exactly what you do use, even if it is no parameters
   edm::ParameterSetDescription desc;
-  desc.setUnknown();
-  descriptions.addDefault(desc);
-
-  //Specify that only 'tracks' is allowed
-  //To use, remove the default given above and uncomment below
-  //edm::ParameterSetDescription desc;
-  //desc.addUntracked<edm::InputTag>("tracks", edm::InputTag("ctfWithMaterialTracks"));
-  //descriptions.addWithDefaultLabel(desc);
+  desc.add<edm::InputTag>("triggerResults", edm::InputTag("TriggerResults"));
+  desc.add<std::string>("hltPath", "HLT_IsoMu24_v");
+  descriptions.add("skim", desc);
 }
-
 //define this as a plug-in
 DEFINE_FWK_MODULE(skim);

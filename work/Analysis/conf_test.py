@@ -1,7 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 import os
-import gc
-gc.collect()
+
 process = cms.Process("Analysis")
 # Configure the MessageLogger
 process.load("FWCore.MessageService.MessageLogger_cfi")
@@ -22,11 +21,11 @@ process.source = cms.Source("PoolSource",
 
 # Enable multithreading 
 process.options = cms.untracked.PSet(
-    numberOfThreads = cms.untracked.uint32(56),
-    numberOfStreams = cms.untracked.uint32(56)
+    numberOfThreads = cms.untracked.uint32(0),
+    numberOfStreams = cms.untracked.uint32(0)
 )
 process.TFileService = cms.Service("TFileService",
-    fileName = cms.string("/data1/users/dndus0107/AnalysisResults/processed_data/data_C.root")
+    fileName = cms.string("/data1/users/dndus0107/AnalysisResults/processed_data/data_C_2.root")
 )
 
 process.Analysis = cms.EDAnalyzer('Analysis',

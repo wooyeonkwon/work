@@ -195,36 +195,35 @@ void Analysis::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) 
   eventNumber = iEvent.id().event();
   runNumber = iEvent.id().run();
   lumiSection = iEvent.luminosityBlock();
-  tree->Fill();
-//
-//  {  
-//    bool i = false;
-//    int attempt = 0;
-//    while (!i) {
-//      std::unique_lock<std::mutex> lock(mtx, std::defer_lock);
-//      auto start = std::chrono::steady_clock::now();
-//      while (true) {
-//        if (lock.try_lock()) {
-//          std::this_thread::sleep_for(std::chrono::milliseconds(10));
-//          if (i == false) tree->Fill();
-//          std::this_thread::sleep_for(std::chrono::milliseconds(10));
-//          lock.unlock();
-//          i = true;
-//          break;
-//        }
-//        ++attempt;
-//        // check timeout
-//        if (std::chrono::steady_clock::now() - start > std::chrono::milliseconds(100)) {
-//          break;
-//        }
-//      }
-//      std::this_thread::sleep_for(std::chrono::milliseconds(10));
-//      break;
-//    }
-//
-//
-//  }
-//
+
+  {  
+    bool i = false;
+    int attempt = 0;
+    while (!i) {
+      std::unique_lock<std::mutex> lock(mtx, std::defer_lock);
+      auto start = std::chrono::steady_clock::now();
+      while (true) {
+        if (lock.try_lock()) {
+          std::this_thread::sleep_for(std::chrono::milliseconds(10));
+          if (i == false) tree->Fill();
+          std::this_thread::sleep_for(std::chrono::milliseconds(10));
+          lock.unlock();
+          i = true;
+          break;
+        }
+        ++attempt;
+        // check timeout
+        if (std::chrono::steady_clock::now() - start > std::chrono::milliseconds(100)) {
+          break;
+        }
+      }
+      std::this_thread::sleep_for(std::chrono::milliseconds(10));
+      break;
+    }
+
+
+  }
+
 
     
 }

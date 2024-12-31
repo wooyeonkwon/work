@@ -1,0 +1,148 @@
+import ROOT
+from ROOT import RDataFrame
+import numpy as np
+from array import array
+import sys
+import gc
+import threading
+
+ROOT.gStyle.SetOptStat(0)
+ROOT.gROOT.SetBatch(True) #don't show pop-up
+ROOT.EnableThreadSafety()
+ROOT.EnableImplicitMT(48)
+
+def classify_eta(eta):
+    abs_eta = abs(eta)
+    if abs_eta < 0.9: return 0
+    elif abs_eta < 1.2: return 1
+    elif abs_eta < 2.1: return 2
+    elif abs_eta < 2.4: return 3
+    return -1
+
+def classify_phi(phi):
+    phi_step = 2 * np.pi / 10
+    normalized_phi = phi
+    if phi < -np.pi:
+        normalized_phi += 2*np.pi
+    elif phi > np.pi:
+        normalized_phi -= 2*np.pi
+    
+    bin_number = int((normalized_phi + np.pi) / phi_step)
+    return min(bin_number, 9)  # Ensure we don't exceed 9
+
+def analyze_muons(input_file, output_file):
+    # Open the input file and get the tree using RDataFrame
+    df = ROOT.RDataFrame("Analysis/Analysis", input_file)
+    
+    # Apply Z boson mass filter
+    df = df.Filter("zBosonMass[1] >= 60 && zBosonMass[1] <= 120", "Z boson mass filter")
+
+    # Find best muon pair (we assume recoMuons is a list of TLorentzVectors)
+    def find_best_muon_pair(muons):
+        best_pair = None
+        min_mass_diff = float('inf')
+        n_muons = len(muons)
+        for i in range(n_muons):
+            for j in range(i+1, n_muons):
+                vec1 = ROOT.TLorentzVector()
+                vec2 = ROOT.TLorentzVector()
+                vec1.SetPtEtaPhiM(muons[i].pt(), muons[i].eta(), muons[i].phi(), 0.106)
+                vec2.SetPtEtaPhiM(muons[j].pt(), muons[j].eta(), muons[j].phi(), 0.106)
+                mass = (vec1 + vec2).M()
+                mass_diff = abs(mass - 91.2)
+                if mass_diff < min_mass_diff:
+                    min_mass_diff = mass_diff
+                    best_pair = (muons[i], muons[j])
+        return best_pair
+
+    # Apply function to select best muon pair for each event
+    df = df.Define("bestMuonPair", find_best_muon_pair, ["recoMuons"])
+
+    # Apply classification of eta and phi for the two muons
+    df = df.Define("muon1_eta_bin", "classify_eta(bestMuonPair[0].eta())")
+    df = df.Define("muon1_phi_bin", "classify_phi(bestMuonPair[0].phi())")
+    df = df.Define("muon2_eta_bin", "classify_eta(bestMuonPair[1].eta())")
+    df = df.Define("muon2_phi_bin", "classify_phi(bestMuonPair[1].phi())")
+
+    # Create a new TTree for output
+    outfile = ROOT.TFile(output_file, "RECREATE")
+    outtree = ROOT.TTree("MuonAnalysis", "Analyzed Muon Data")
+    
+    # Define output variables
+    eventNumber = array('i', [0])
+    lumiSection = array('i', [0])
+    runNumber = array('i', [0])
+    zBosonMass = array('d', [0])
+    muon1_pt = array('d', [0])
+    muon1_eta = array('d', [0])
+    muon1_phi = array('d', [0])
+    muon1_charge = array('i', [0])
+    muon1_eta_bin = array('i', [0])
+    muon1_phi_bin = array('i', [0])
+    muon2_pt = array('d', [0])
+    muon2_eta = array('d', [0])
+    muon2_phi = array('d', [0])
+    muon2_charge = array('i', [0])
+    muon2_eta_bin = array('i', [0])
+    muon2_phi_bin = array('i', [0])
+    
+    # Create branches
+    outtree.Branch("eventNumber", eventNumber, "eventNumber/I")
+    outtree.Branch("lumiSection", lumiSection, "lumiSection/I")
+    outtree.Branch("runNumber", runNumber, "runNumber/I")
+    outtree.Branch("zBosonMass", zBosonMass, "zBosonMass/D")
+    outtree.Branch("muon1_pt", muon1_pt, "muon1_pt/D")
+    outtree.Branch("muon1_eta", muon1_eta, "muon1_eta/D")
+    outtree.Branch("muon1_phi", muon1_phi, "muon1_phi/D")
+    outtree.Branch("muon1_charge", muon1_charge, "muon1_charge/I")
+    outtree.Branch("muon1_eta_bin", muon1_eta_bin, "muon1_eta_bin/I")
+    outtree.Branch("muon1_phi_bin", muon1_phi_bin, "muon1_phi_bin/I")
+    outtree.Branch("muon2_pt", muon2_pt, "muon2_pt/D")
+    outtree.Branch("muon2_eta", muon2_eta, "muon2_eta/D")
+    outtree.Branch("muon2_phi", muon2_phi, "muon2_phi/D")
+    outtree.Branch("muon2_charge", muon2_charge, "muon2_charge/I")
+    outtree.Branch("muon2_eta_bin", muon2_eta_bin, "muon2_eta_bin/I")
+    outtree.Branch("muon2_phi_bin", muon2_phi_bin, "muon2_phi_bin/I")
+    
+    # Process and fill tree
+    for row in df:
+        # Extract event info from the row
+        eventNumber[0] = row["eventNumber"]
+        lumiSection[0] = row["lumiSection"]
+        runNumber[0] = row["runNumber"]
+        zBosonMass[0] = row["zBosonMass"]
+        
+        muon1 = row["bestMuonPair"][0]
+        muon2 = row["bestMuonPair"][1]
+        
+        # Fill muon 1 info
+        muon1_pt[0] = muon1.pt()
+        muon1_eta[0] = muon1.eta()
+        muon1_phi[0] = muon1.phi()
+        muon1_charge[0] = muon1.charge()
+        muon1_eta_bin[0] = row["muon1_eta_bin"]
+        muon1_phi_bin[0] = row["muon1_phi_bin"]
+        
+        # Fill muon 2 info
+        muon2_pt[0] = muon2.pt()
+        muon2_eta[0] = muon2.eta()
+        muon2_phi[0] = muon2.phi()
+        muon2_charge[0] = muon2.charge()
+        muon2_eta_bin[0] = row["muon2_eta_bin"]
+        muon2_phi_bin[0] = row["muon2_phi_bin"]
+        
+        # Fill the tree
+        outtree.Fill()
+    
+    # Save and close
+    outfile.cd()
+    outtree.Write()
+    outfile.Close()
+
+if __name__ == "__main__":
+    import sys
+    if len(sys.argv) != 3:
+        print("Usage: python script.py input_file.root output_file.root")
+        sys.exit(1)
+    
+    analyze_muons(sys.argv[1], sys.argv[2])
