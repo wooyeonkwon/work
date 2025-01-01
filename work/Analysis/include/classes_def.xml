@@ -1,0 +1,6 @@
+<lcgdict>
+  <class name="ZBosonInfo"/>
+  <class name="SelectedMuon"/>
+  <class name="std::vector<ZBosonInfo>"/>
+  <class name="std::vector<SelectedMuon>"/>
+</lcgdict>

@@ -9,6 +9,11 @@
 <use name="DataFormats/Common"/>
 <use name="CLHEP"/>
 <use name="root"/>
+
+<addIncludePaths>src/work/Analysis/include</addIncludePaths>
+
+<use name="src/work/Analysis/include/LinkDef.h" />
 <library file="Analysis.cc" name="Analysis">
   <flags EDM_PLUGIN="1"/>
 </library>
+

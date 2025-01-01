@@ -8,7 +8,9 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 10000 # Report every 10000 ev
 process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(-1))
 directory_path = '/data1/users/dndus0107/AnalysisResults/Muon/crab_MuonSkimming_Run2022C/241108_143513/0000/'
 file_list = os.listdir(directory_path)
-file_paths = [f'file://{directory_path}{filename}' for filename in file_list]
+#file_paths = [f'file://{directory_path}{filename}' for filename in file_list]
+file_paths = ['file:///data1/users/dndus0107/public/skimmed_data_2022E.root']
+
 #file_paths = ['file:///data1/users/dndus0107/AnalysisResults/Muon/crab_MuonSkimming_Run2022C/241108_143513/0000/skimmed_data_1-1.root',
 #              'file:///data1/users/dndus0107/AnalysisResults/Muon/crab_MuonSkimming_Run2022C/241108_143513/0000/skimmed_data_1-2.root',
 #              'file:///data1/users/dndus0107/AnalysisResults/Muon/crab_MuonSkimming_Run2022C/241108_143513/0000/skimmed_data_1-3.root',
@@ -21,7 +23,7 @@ process.source = cms.Source("PoolSource",
 
 # Enable multithreading 
 process.options = cms.untracked.PSet(
-    numberOfThreads = cms.untracked.uint32(0),
+    numberOfThreads = cms.untracked.uint32(1),
     numberOfStreams = cms.untracked.uint32(0)
 )
 process.TFileService = cms.Service("TFileService",
@@ -29,10 +31,7 @@ process.TFileService = cms.Service("TFileService",
 )
 
 process.Analysis = cms.EDAnalyzer('Analysis',
-    muons = cms.InputTag("muons"),
-    triggerResults = cms.InputTag("TriggerResults", "", "HLT"),
-    vertices = cms.InputTag("offlinePrimaryVertices"),  
-    hltPath = cms.string("HLT_IsoMu24_v")
+    muons = cms.InputTag("muons")
 )
 process.p = cms.Path(process.Analysis)
 process.options.wantSummary = True
