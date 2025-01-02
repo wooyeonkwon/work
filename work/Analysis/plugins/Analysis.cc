@@ -1,7 +1,5 @@
 #include <memory>
 #include <mutex>
-#include <thread>
-#include <array>
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Event.h"
@@ -11,18 +9,15 @@
 #include "DataFormats/MuonReco/interface/Muon.h"
 #include "DataFormats/MuonReco/interface/MuonFwd.h"
 #include "DataFormats/Math/interface/LorentzVector.h"
-#include "DataFormats/Common/interface/TriggerResults.h"
-#include "FWCore/Common/interface/TriggerNames.h"
 #include "DataFormats/MuonReco/interface/MuonSelectors.h"
 #include "TFile.h"
 #include "TTree.h"
 #include <cstdlib>
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
-#include <set>
-#include <iostream>
-#include "ZBosonInfo.h"
-#include "SelectedMuon.h"
+#include "work/Analysis/interface/AnalysisClasses.h"
+#include "TSystem.h"
+
 
 
 class Analysis : public edm::one::EDAnalyzer<> {
@@ -41,28 +36,18 @@ private:
   
   TTree* tree;
 
-  mutable std::mutex mtx;
-  
-
-
   static thread_local int eventNumber;
   static thread_local int runNumber;
   static thread_local int lumiSection;
   static thread_local std::vector<ZBosonInfo> zBoson;
   static thread_local std::vector<SelectedMuon> selectedMuons;
- 
-
-
-  std::set<int> eventNumbers;
-
 };
-thread_local int Analysis::eventNumber = -1;
-thread_local int Analysis::runNumber = -1;
-thread_local int Analysis::lumiSection = -1;
+
+thread_local int Analysis::eventNumber;
+thread_local int Analysis::runNumber;
+thread_local int Analysis::lumiSection;
 thread_local std::vector<ZBosonInfo> Analysis::zBoson;
 thread_local std::vector<SelectedMuon> Analysis::selectedMuons;
-
-
 
 Analysis::Analysis(const edm::ParameterSet& iConfig)
   : muonToken_(consumes<reco::MuonCollection>(iConfig.getParameter<edm::InputTag>("muons"))){
@@ -72,6 +57,7 @@ Analysis::~Analysis() {
 }
 
 void Analysis::beginJob() {
+  gSystem->Load("libAnalysisClasses.so");
   edm::Service<TFileService> fs;
   //TFile &file = fs->file();
   //file.SetCompressionLevel(3);
@@ -91,10 +77,10 @@ void Analysis::beginJob() {
 
 void Analysis::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
   // Clear vectors for new event
-  zBoson.clear();
   edm::Handle<reco::MuonCollection> muons;
   iEvent.getByToken(muonToken_, muons);
-
+  zBoson.clear();
+  zBoson.resize(6);
   selectedMuons.clear();
 
   // Muon selection
@@ -105,27 +91,17 @@ void Analysis::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) 
                             muon.pfIsolationR04().sumPhotonEt -
                             0.5 * muon.pfIsolationR04().sumPUPt)) / muon.pt();
 
-      SelectedMuon selectedMuon = {
-        .charge = muon.charge(),
-        .pt = muon.pt(),
-        .eta = muon.eta(),
-        .phi = muon.phi(),
-        .iso = iso,
-        .vz = muon.vz(),
-        .p4 = muon.p4(),
-        .isReco = true,
-        .isTightReco = muon.passed(reco::Muon::PFIsoTight) && muon.passed(reco::Muon::CutBasedIdTight),
-        .isRPC = muon.isRPCMuon(),
-        .isTightRPC = muon.isRPCMuon() && muon.passed(reco::Muon::PFIsoTight) && muon.passed(reco::Muon::CutBasedIdTight),
-        .isGEM = muon.isGEMMuon(),
-        .isTightGEM = muon.isGEMMuon() && muon.passed(reco::Muon::PFIsoTight) && muon.passed(reco::Muon::CutBasedIdTight),
-        .isRecoZ = false,
-        .isTightRecoZ = false,
-        .isRPCZ = false,
-        .isTightRPCZ = false,
-        .isGEMZ = false,
-        .isTightGEMZ = false,
+      SelectedMuon selectedMuon{
+          muon.charge(), muon.pt(), muon.eta(), muon.phi(), iso, muon.vz(),
+          muon.p4(), true,
+          muon.passed(reco::Muon::PFIsoTight) && muon.passed(reco::Muon::CutBasedIdTight),
+          muon.isRPCMuon(),
+          muon.isRPCMuon() && muon.passed(reco::Muon::PFIsoTight) && muon.passed(reco::Muon::CutBasedIdTight),
+          muon.isGEMMuon(),
+          muon.isGEMMuon() && muon.passed(reco::Muon::PFIsoTight) && muon.passed(reco::Muon::CutBasedIdTight),
+          false, false, false, false, false, false
       };
+
 
       selectedMuons.push_back(selectedMuon);
     }
@@ -171,37 +147,6 @@ void Analysis::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) 
   lumiSection = iEvent.luminosityBlock();
 
   tree->Fill();
-//
-//  {  
-//    bool i = false;
-//    int attempt = 0;
-//    while (!i) {
-//      std::unique_lock<std::mutex> lock(mtx, std::defer_lock);
-//      auto start = std::chrono::steady_clock::now();
-//      while (true) {
-//        if (lock.try_lock()) {
-//          std::this_thread::sleep_for(std::chrono::milliseconds(10));
-//          if (i == false) tree->Fill();
-//          std::this_thread::sleep_for(std::chrono::milliseconds(10));
-//          lock.unlock();
-//          i = true;
-//          break;
-//        }
-//        ++attempt;
-//        // check timeout
-//        if (std::chrono::steady_clock::now() - start > std::chrono::milliseconds(100)) {
-//          break;
-//        }
-//      }
-//      std::this_thread::sleep_for(std::chrono::milliseconds(10));
-//      break;
-//    }
-//
-//
-//  }
-//
-
-    
 }
 
 void Analysis::endJob() {

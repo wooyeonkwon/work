@@ -1,6 +1,7 @@
 <use name="FWCore/Framework"/>
 <use name="FWCore/PluginManager"/>
 <use name="FWCore/ParameterSet"/>
+<use name="FWCore/Utilities"/>
 <use name="DataFormats/MuonReco"/>
 <use name="DataFormats/Math"/>
 <use name="CommonTools/UtilAlgos"/>
@@ -10,10 +11,12 @@
 <use name="CLHEP"/>
 <use name="root"/>
 
-<addIncludePaths>src/work/Analysis/include</addIncludePaths>
 
-<use name="src/work/Analysis/include/LinkDef.h" />
+<flags LCG_DICT_HEADER="../interface/AnalysisClasses.h"/>
+<flags LCG_DICT_XML="../src/classes_def.xml"/>
+<export>
+  <lib name="1"/>
+</export>
 <library file="Analysis.cc" name="Analysis">
   <flags EDM_PLUGIN="1"/>
 </library>
-

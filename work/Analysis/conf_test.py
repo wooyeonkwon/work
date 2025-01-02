@@ -4,7 +4,7 @@ import os
 process = cms.Process("Analysis")
 # Configure the MessageLogger
 process.load("FWCore.MessageService.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 10000 # Report every 10000 events
+process.MessageLogger.cerr.FwkReport.reportEvery = 1000 # Report every 10000 events
 process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(-1))
 directory_path = '/data1/users/dndus0107/AnalysisResults/Muon/crab_MuonSkimming_Run2022C/241108_143513/0000/'
 file_list = os.listdir(directory_path)
@@ -24,7 +24,11 @@ process.source = cms.Source("PoolSource",
 # Enable multithreading 
 process.options = cms.untracked.PSet(
     numberOfThreads = cms.untracked.uint32(1),
-    numberOfStreams = cms.untracked.uint32(0)
+    numberOfStreams = cms.untracked.uint32(1),
+    numberOfConcurrentLuminosityBlocks = cms.untracked.uint32(1),
+    numberOfConcurrentRuns = cms.untracked.uint32(1),
+    wantSummary = cms.untracked.bool(True),
+    throwIfIllegalParameter = cms.untracked.bool(True)
 )
 process.TFileService = cms.Service("TFileService",
     fileName = cms.string("/data1/users/dndus0107/AnalysisResults/processed_data/data_C_2.root")
