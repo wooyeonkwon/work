@@ -386,3 +386,193 @@ DEBUG 2024-11-17 08:25:20.117 UTC: 	 Not using Singularity
 DEBUG 2024-11-17 08:25:20.117 UTC: 	 Operating System: Red Hat Enterprise Linux 9.4 (Plow)
 DEBUG 2024-11-17 08:25:20.117 UTC: 	 Executing command: 'getlog'
 DEBUG 2024-11-17 08:25:20.117 UTC: 	 Found CRAB cache file /afs/cern.ch/user/w/wkwon/.crab3
+DEBUG 2024-12-31 12:20:37.228 UTC: 	 CRAB Client version: v3.241125
+DEBUG 2024-12-31 12:20:37.229 UTC: 	 Running on: Linux cms01.knu.ac.kr 3.10.0-1160.119.1.el7.x86_64 #1 SMP Tue Jun 4 14:43:51 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2024-12-31 12:20:37.229 UTC: 	 Not using Singularity
+DEBUG 2024-12-31 12:20:37.229 UTC: 	 Operating System: CentOS Linux 7 (Core)
+DEBUG 2024-12-31 12:20:37.229 UTC: 	 Executing command: 'submit'
+DEBUG 2024-12-31 12:20:37.230 UTC: 	 Could not find CRAB cache file /u/user/wkwon/.crab3; creating a new one.
+INFO 2024-12-31 12:20:37.234 UTC: 	 Will use CRAB configuration file crab_conf.py
+DEBUG 2024-12-31 12:20:37.235 UTC: 	 Loading CRAB configuration file.
+ERROR 2024-12-31 12:20:37.242 UTC: 	 Invalid CRAB configuration: Parameter JobType.pluginName has an invalid value ('skim').
+Allowed values are: ANALYSIS, PRIVATEMC, COPYCAT, RECOVER.
+The documentation about the CRAB configuration file can be found in https://twiki.cern.ch/twiki/bin/view/CMSPublic/CRAB3ConfigurationFile
+ERROR 2024-12-31 12:20:37.242 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.241125.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.241125.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.241125.00/lib/CRABClient/Commands/submit.py", line 37, in __init__
+    SubCommand.__init__(self, logger, cmdargs, disable_interspersed_args=True)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.241125.00/lib/CRABClient/Commands/SubCommand.py", line 326, in __init__
+    self.loadConfig(self.options.config, self.args)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.241125.00/lib/CRABClient/Commands/SubCommand.py", line 95, in loadConfig
+    raise ConfigurationException(configmsg)
+CRABClient.ClientExceptions.ConfigurationException: Invalid CRAB configuration: Parameter JobType.pluginName has an invalid value ('skim').
+Allowed values are: ANALYSIS, PRIVATEMC, COPYCAT, RECOVER.
+The documentation about the CRAB configuration file can be found in https://twiki.cern.ch/twiki/bin/view/CMSPublic/CRAB3ConfigurationFile
+INFO 2024-12-31 12:20:37.245 UTC: 	 Log file is /u/user/wkwon/work/CMSSW_14_0_19_patch2/src/work/skim/crab.log
+DEBUG 2024-12-31 12:21:47.620 UTC: 	 CRAB Client version: v3.241125
+DEBUG 2024-12-31 12:21:47.621 UTC: 	 Running on: Linux cms01.knu.ac.kr 3.10.0-1160.119.1.el7.x86_64 #1 SMP Tue Jun 4 14:43:51 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2024-12-31 12:21:47.621 UTC: 	 Not using Singularity
+DEBUG 2024-12-31 12:21:47.621 UTC: 	 Operating System: CentOS Linux 7 (Core)
+DEBUG 2024-12-31 12:21:47.621 UTC: 	 Executing command: 'submit'
+DEBUG 2024-12-31 12:21:47.622 UTC: 	 Found CRAB cache file /u/user/wkwon/.crab3
+INFO 2024-12-31 12:21:47.624 UTC: 	 Will use CRAB configuration file crab_conf.py
+DEBUG 2024-12-31 12:21:47.625 UTC: 	 Loading CRAB configuration file.
+DEBUG 2024-12-31 12:21:47.627 UTC: 	 Will use CRAB plugin ANALYSIS (i.e. will run an analysis job type).
+ERROR 2024-12-31 12:21:47.628 UTC: 	 Working area '/u/user/wkwon/work/CMSSW_14_0_19_patch2/src/work/skim/crab_projects/crab_Run2022C-27Jun2023-v1' already exists 
+Please change the requestName in the config file
+ERROR 2024-12-31 12:21:47.628 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.241125.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.241125.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.241125.00/lib/CRABClient/Commands/submit.py", line 37, in __init__
+    SubCommand.__init__(self, logger, cmdargs, disable_interspersed_args=True)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.241125.00/lib/CRABClient/Commands/SubCommand.py", line 328, in __init__
+    self.requestarea, self.requestname, self.logfile = createWorkArea(
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.241125.00/lib/CRABClient/ClientUtilities.py", line 392, in createWorkArea
+    raise ConfigException("Working area '%s' already exists \nPlease change the requestName in the config file" % fullpath)
+CRABClient.ClientExceptions.ConfigException: Working area '/u/user/wkwon/work/CMSSW_14_0_19_patch2/src/work/skim/crab_projects/crab_Run2022C-27Jun2023-v1' already exists 
+Please change the requestName in the config file
+INFO 2024-12-31 12:21:47.632 UTC: 	 Log file is /u/user/wkwon/work/CMSSW_14_0_19_patch2/src/work/skim/crab.log
+DEBUG 2024-12-31 12:22:27.983 UTC: 	 CRAB Client version: v3.241125
+DEBUG 2024-12-31 12:22:27.983 UTC: 	 Running on: Linux cms01.knu.ac.kr 3.10.0-1160.119.1.el7.x86_64 #1 SMP Tue Jun 4 14:43:51 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2024-12-31 12:22:27.983 UTC: 	 Not using Singularity
+DEBUG 2024-12-31 12:22:27.984 UTC: 	 Operating System: CentOS Linux 7 (Core)
+DEBUG 2024-12-31 12:22:27.984 UTC: 	 Executing command: 'resubmit'
+DEBUG 2024-12-31 12:22:27.984 UTC: 	 Found CRAB cache file /u/user/wkwon/.crab3
+ERROR 2024-12-31 12:22:27.986 UTC: 	 Cannot find .requestcache file in CRAB project directory /u/user/wkwon/work/CMSSW_14_0_19_patch2/src/work/skim/crab_projects/crab_Run2022C-27Jun2023-v1
+ERROR 2024-12-31 12:22:27.987 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.241125.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.241125.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.241125.00/lib/CRABClient/Commands/resubmit.py", line 30, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.241125.00/lib/CRABClient/Commands/SubCommand.py", line 281, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.241125.00/lib/CRABClient/Commands/SubCommand.py", line 695, in validateOptions
+    self.loadLocalCache()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.241125.00/lib/CRABClient/Commands/SubCommand.py", line 537, in loadLocalCache
+    raise ex
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.241125.00/lib/CRABClient/Commands/SubCommand.py", line 531, in loadLocalCache
+    self.cachedinfo, self.logfile = loadCache(self.requestarea, self.logger)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.241125.00/lib/CRABClient/ClientUtilities.py", line 445, in loadCache
+    raise CachefileNotFoundException(msg)
+CRABClient.ClientExceptions.CachefileNotFoundException: Cannot find .requestcache file in CRAB project directory /u/user/wkwon/work/CMSSW_14_0_19_patch2/src/work/skim/crab_projects/crab_Run2022C-27Jun2023-v1
+INFO 2024-12-31 12:22:27.991 UTC: 	 Log file is /u/user/wkwon/work/CMSSW_14_0_19_patch2/src/work/skim/crab.log
+DEBUG 2024-12-31 16:01:10.926 UTC: 	 CRAB Client version: v3.241125
+DEBUG 2024-12-31 16:01:10.926 UTC: 	 Running on: Linux cms01.knu.ac.kr 3.10.0-1160.119.1.el7.x86_64 #1 SMP Tue Jun 4 14:43:51 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2024-12-31 16:01:10.926 UTC: 	 Not using Singularity
+DEBUG 2024-12-31 16:01:10.926 UTC: 	 Operating System: CentOS Linux 7 (Core)
+DEBUG 2024-12-31 16:01:10.926 UTC: 	 Executing command: 'submit'
+DEBUG 2024-12-31 16:01:10.927 UTC: 	 Found CRAB cache file /u/user/wkwon/.crab3
+INFO 2024-12-31 16:01:10.929 UTC: 	 Will use CRAB configuration file crab_conf.py
+DEBUG 2024-12-31 16:01:10.930 UTC: 	 Loading CRAB configuration file.
+DEBUG 2024-12-31 16:01:10.936 UTC: 	 Will use CRAB plugin ANALYSIS (i.e. will run an analysis job type).
+ERROR 2024-12-31 16:01:10.936 UTC: 	 Error: The '/' character is not accepted in the requestName parameter. If your intention was to specify the location of your task, please use the General.workArea parameter.
+ERROR 2024-12-31 16:01:10.936 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.241125.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.241125.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.241125.00/lib/CRABClient/Commands/submit.py", line 37, in __init__
+    SubCommand.__init__(self, logger, cmdargs, disable_interspersed_args=True)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.241125.00/lib/CRABClient/Commands/SubCommand.py", line 328, in __init__
+    self.requestarea, self.requestname, self.logfile = createWorkArea(
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.241125.00/lib/CRABClient/ClientUtilities.py", line 386, in createWorkArea
+    requestName = getRequestName(requestName)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.241125.00/lib/CRABClient/ClientUtilities.py", line 364, in getRequestName
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: [91mError[0m: The '/' character is not accepted in the requestName parameter. If your intention was to specify the location of your task, please use the General.workArea parameter.
+INFO 2024-12-31 16:01:10.941 UTC: 	 Log file is /u/user/wkwon/work/CMSSW_14_0_19_patch2/src/work/skim/crab.log
+DEBUG 2025-01-02 05:38:13.442 UTC: 	 CRAB Client version: v3.241125
+DEBUG 2025-01-02 05:38:13.442 UTC: 	 Running on: Linux cms.knu.ac.kr 3.10.0-1160.119.1.el7.x86_64 #1 SMP Tue Jun 4 14:43:51 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2025-01-02 05:38:13.442 UTC: 	 Not using Singularity
+DEBUG 2025-01-02 05:38:13.442 UTC: 	 Operating System: CentOS Linux 7 (Core)
+DEBUG 2025-01-02 05:38:13.442 UTC: 	 Executing command: 'submit'
+DEBUG 2025-01-02 05:38:13.443 UTC: 	 Found CRAB cache file /u/user/wkwon/.crab3
+INFO 2025-01-02 05:38:13.444 UTC: 	 Will use CRAB configuration file crab_conf.py
+DEBUG 2025-01-02 05:38:13.444 UTC: 	 Loading CRAB configuration file.
+DEBUG 2025-01-02 05:38:13.448 UTC: 	 Will use CRAB plugin ANALYSIS (i.e. will run an analysis job type).
+ERROR 2025-01-02 05:38:13.448 UTC: 	 Error: The '/' character is not accepted in the requestName parameter. If your intention was to specify the location of your task, please use the General.workArea parameter.
+ERROR 2025-01-02 05:38:13.448 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.241125.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.241125.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.241125.00/lib/CRABClient/Commands/submit.py", line 37, in __init__
+    SubCommand.__init__(self, logger, cmdargs, disable_interspersed_args=True)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.241125.00/lib/CRABClient/Commands/SubCommand.py", line 328, in __init__
+    self.requestarea, self.requestname, self.logfile = createWorkArea(
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.241125.00/lib/CRABClient/ClientUtilities.py", line 386, in createWorkArea
+    requestName = getRequestName(requestName)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.241125.00/lib/CRABClient/ClientUtilities.py", line 364, in getRequestName
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: [91mError[0m: The '/' character is not accepted in the requestName parameter. If your intention was to specify the location of your task, please use the General.workArea parameter.
+INFO 2025-01-02 05:38:13.450 UTC: 	 Log file is /u/user/wkwon/work/CMSSW_14_0_19_patch2/src/work/skim/crab.log
+DEBUG 2025-01-02 06:26:31.978 UTC: 	 CRAB Client version: v3.241125
+DEBUG 2025-01-02 06:26:31.978 UTC: 	 Running on: Linux cms.knu.ac.kr 3.10.0-1160.119.1.el7.x86_64 #1 SMP Tue Jun 4 14:43:51 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2025-01-02 06:26:31.978 UTC: 	 Not using Singularity
+DEBUG 2025-01-02 06:26:31.978 UTC: 	 Operating System: CentOS Linux 7 (Core)
+DEBUG 2025-01-02 06:26:31.978 UTC: 	 Executing command: 'submit'
+DEBUG 2025-01-02 06:26:31.978 UTC: 	 Found CRAB cache file /u/user/wkwon/.crab3
+INFO 2025-01-02 06:26:31.980 UTC: 	 Will use CRAB configuration file crab_conf.py
+DEBUG 2025-01-02 06:26:31.980 UTC: 	 Loading CRAB configuration file.
+DEBUG 2025-01-02 06:26:31.983 UTC: 	 Will use CRAB plugin ANALYSIS (i.e. will run an analysis job type).
+ERROR 2025-01-02 06:26:31.984 UTC: 	 Working area '/u/user/wkwon/work/CMSSW_14_0_19_patch2/src/work/skim/crab_projects/crab_crab_Run2022C-27Jun2023-v1_2' already exists 
+Please change the requestName in the config file
+ERROR 2025-01-02 06:26:31.984 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.241125.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.241125.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.241125.00/lib/CRABClient/Commands/submit.py", line 37, in __init__
+    SubCommand.__init__(self, logger, cmdargs, disable_interspersed_args=True)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.241125.00/lib/CRABClient/Commands/SubCommand.py", line 328, in __init__
+    self.requestarea, self.requestname, self.logfile = createWorkArea(
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.241125.00/lib/CRABClient/ClientUtilities.py", line 392, in createWorkArea
+    raise ConfigException("Working area '%s' already exists \nPlease change the requestName in the config file" % fullpath)
+CRABClient.ClientExceptions.ConfigException: Working area '/u/user/wkwon/work/CMSSW_14_0_19_patch2/src/work/skim/crab_projects/crab_crab_Run2022C-27Jun2023-v1_2' already exists 
+Please change the requestName in the config file
+INFO 2025-01-02 06:26:31.986 UTC: 	 Log file is /u/user/wkwon/work/CMSSW_14_0_19_patch2/src/work/skim/crab.log
+DEBUG 2025-01-03 05:23:43.567 UTC: 	 CRAB Client version: v3.241125
+DEBUG 2025-01-03 05:23:43.567 UTC: 	 Running on: Linux cms.knu.ac.kr 3.10.0-1160.119.1.el7.x86_64 #1 SMP Tue Jun 4 14:43:51 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2025-01-03 05:23:43.567 UTC: 	 Not using Singularity
+DEBUG 2025-01-03 05:23:43.567 UTC: 	 Operating System: CentOS Linux 7 (Core)
+DEBUG 2025-01-03 05:23:43.567 UTC: 	 Executing command: 'submit'
+DEBUG 2025-01-03 05:23:43.567 UTC: 	 Found CRAB cache file /u/user/wkwon/.crab3
+INFO 2025-01-03 05:23:43.584 UTC: 	 Will use CRAB configuration file crab_conf.py
+DEBUG 2025-01-03 05:23:43.584 UTC: 	 Loading CRAB configuration file.
+DEBUG 2025-01-03 05:23:43.624 UTC: 	 Will use CRAB plugin ANALYSIS (i.e. will run an analysis job type).
+ERROR 2025-01-03 05:23:43.624 UTC: 	 Error: The '/' character is not accepted in the requestName parameter. If your intention was to specify the location of your task, please use the General.workArea parameter.
+ERROR 2025-01-03 05:23:43.624 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.241125.00/bin/crab.py", line 157, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.241125.00/bin/crab.py", line 135, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])  # the crab command to be executed
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.241125.00/lib/CRABClient/Commands/submit.py", line 37, in __init__
+    SubCommand.__init__(self, logger, cmdargs, disable_interspersed_args=True)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.241125.00/lib/CRABClient/Commands/SubCommand.py", line 328, in __init__
+    self.requestarea, self.requestname, self.logfile = createWorkArea(
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.241125.00/lib/CRABClient/ClientUtilities.py", line 386, in createWorkArea
+    requestName = getRequestName(requestName)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.241125.00/lib/CRABClient/ClientUtilities.py", line 364, in getRequestName
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: [91mError[0m: The '/' character is not accepted in the requestName parameter. If your intention was to specify the location of your task, please use the General.workArea parameter.
+INFO 2025-01-03 05:23:43.626 UTC: 	 Log file is /u/user/wkwon/work/CMSSW_14_0_19_patch2/src/work/skim/crab.log
+DEBUG 2025-01-03 10:55:51.480 UTC: 	 CRAB Client version: v3.241125
+DEBUG 2025-01-03 10:55:51.480 UTC: 	 Running on: Linux cms.knu.ac.kr 3.10.0-1160.119.1.el7.x86_64 #1 SMP Tue Jun 4 14:43:51 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux
+DEBUG 2025-01-03 10:55:51.480 UTC: 	 Not using Singularity
+DEBUG 2025-01-03 10:55:51.480 UTC: 	 Operating System: CentOS Linux 7 (Core)
+DEBUG 2025-01-03 10:55:51.480 UTC: 	 Executing command: 'submit'
+DEBUG 2025-01-03 10:55:51.481 UTC: 	 Found CRAB cache file /u/user/wkwon/.crab3

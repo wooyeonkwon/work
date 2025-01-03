@@ -1,0 +1,65 @@
+#include <memory>
+#include "FWCore/Framework/interface/Frameworkfwd.h"
+#include "FWCore/Framework/interface/stream/EDFilter.h"
+#include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/MakerMacros.h"
+#include "FWCore/Framework/interface/ConsumesCollector.h"
+#include "FWCore/ParameterSet/interface/ParameterSet.h"
+#include "FWCore/Common/interface/TriggerNames.h"
+#include "DataFormats/Common/interface/TriggerResults.h"
+#include "DataFormats/GenParticle/interface/GenParticle.h"
+
+class skimGen : public edm::stream::EDFilter<> {
+public:
+  explicit skimGen(const edm::ParameterSet&);
+  ~skimGen() override;
+
+  static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
+
+private:
+  void beginStream(edm::StreamID) override;
+  bool filter(edm::Event&, const edm::EventSetup&) override;
+  void endStream() override;
+  std::string hltPath_;
+  edm::EDGetTokenT<edm::TriggerResults> triggerToken_;
+  edm::EDGetTokenT<std::vector<reco::GenParticle>> genParticleToken_;
+};
+
+skimGen::skimGen(const edm::ParameterSet& iConfig) 
+  : hltPath_(iConfig.getParameter<std::string>("hltPath")),
+    triggerToken_(consumes<edm::TriggerResults>(iConfig.getParameter<edm::InputTag>("triggerResults"))),
+    genParticleToken_(consumes<std::vector<reco::GenParticle>>(iConfig.getParameter<edm::InputTag>("genParticles"))){}
+
+skimGen::~skimGen() {}
+
+bool skimGen::filter(edm::Event& iEvent, const edm::EventSetup& iSetup) {
+  edm::Handle<edm::TriggerResults> triggerResults;
+  iEvent.getByToken(triggerToken_, triggerResults);
+  const edm::TriggerNames &triggerNames = iEvent.triggerNames(*triggerResults);
+
+  // Check if the event passes the HLT_IsoMu24_v trigger
+  for (unsigned int i = 0; i < triggerResults->size(); ++i) {
+    if (triggerNames.triggerName(i).find(hltPath_) != std::string::npos) {
+      if (triggerResults->accept(i)) {
+        edm::Handle<std::vector<reco::GenParticle>> genParticles;
+        iEvent.getByToken(genParticleToken_, genParticles);
+      }
+    }
+  }
+
+  return false;
+}
+
+void skimGen::beginStream(edm::StreamID) {}
+
+void skimGen::endStream() {}
+
+void skimGen::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
+  edm::ParameterSetDescription desc;
+  desc.add<edm::InputTag>("triggerResults", edm::InputTag("TriggerResults"));
+  desc.add<std::string>("hltPath", "HLT_IsoMu24_v");
+  desc.add<edm::InputTag>("genParticles", edm::InputTag("genParticles"));
+  descriptions.add("skimGen", desc);
+}
+
+DEFINE_FWK_MODULE(skimGen);

@@ -1,5 +1,4 @@
 import FWCore.ParameterSet.Config as cms
-import os
 
 process = cms.Process("skim")
 
@@ -13,40 +12,28 @@ process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring()
 )
 
-# Enable multithreading 
-process.options = cms.untracked.PSet(
-    numberOfThreads = cms.untracked.uint32(1),
-    numberOfStreams = cms.untracked.uint32(0)
+process.skim = cms.EDFilter('skim',
+    triggerResults = cms.InputTag("TriggerResults", "", "HLT"),
+    hltPath = cms.string("HLT_IsoMu24_v")
 )
 
+process.p = cms.Path(process.skim)
+
 process.out = cms.OutputModule("PoolOutputModule",
-    fileName = cms.untracked.string('file:mc_skimmed_data.root'),
+    fileName = cms.untracked.string('file:skimmed_mc.root'),
     SelectEvents = cms.untracked.PSet(
         SelectEvents = cms.vstring('p')
     ),
     outputCommands = cms.untracked.vstring(
         'drop *',
         'keep recoMuons_muons__*',
-        'keep recoVertexs_offlinePrimaryVertices__*',
-        'keep edmTriggerResults_TriggerResults__HLT',
-        'keep edmEventAuxiliary_*_*_*',
-        #'keep recoTracks_generalTracks_*_*',
-        #'keep recoTracks_globalMuons_*_*',
-        #'keep recoTracks_standAloneMuons_*_*',
-        'keep triggerTriggerEvent_hltTriggerSummaryAOD__*'
+        'keep edmEventAuxiliary_*_*_*'
         # comment out, if real data
-        #,'keep recoGenParticles_genParticles__*'
+        ,'keep recoGenParticles_genParticles__*'
+        ,'keep genWeights_genWeight__*'
     )
 )
 
-process.p = cms.Path()
 process.e = cms.EndPath(process.out)
-
-#process.MessageLogger = cms.Service("MessageLogger",
-#    destinations = cms.untracked.vstring('cout'),
-#    cout = cms.untracked.PSet(
-#        threshold = cms.untracked.string('INFO')
-#    )
-#)
 
 process.options.wantSummary = True
