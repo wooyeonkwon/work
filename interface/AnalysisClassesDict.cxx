@@ -57,7 +57,7 @@ namespace ROOT {
       ::ZBosonInfo *ptr = nullptr;
       static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(::ZBosonInfo));
       static ::ROOT::TGenericClassInfo 
-         instance("ZBosonInfo", "AnalysisClasses.h", 10,
+         instance("ZBosonInfo", "AnalysisClasses.h", 9,
                   typeid(::ZBosonInfo), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &ZBosonInfo_Dictionary, isa_proxy, 4,
                   sizeof(::ZBosonInfo) );
@@ -102,7 +102,7 @@ namespace ROOT {
       ::SelectedMuon *ptr = nullptr;
       static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(::SelectedMuon));
       static ::ROOT::TGenericClassInfo 
-         instance("SelectedMuon", "AnalysisClasses.h", 15,
+         instance("SelectedMuon", "AnalysisClasses.h", 14,
                   typeid(::SelectedMuon), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &SelectedMuon_Dictionary, isa_proxy, 4,
                   sizeof(::SelectedMuon) );
@@ -128,6 +128,51 @@ namespace ROOT {
    }
 
    static void SelectedMuon_TClassManip(TClass* ){
+   }
+
+} // end of namespace ROOT
+
+namespace ROOT {
+   static TClass *GenMuonInfo_Dictionary();
+   static void GenMuonInfo_TClassManip(TClass*);
+   static void *new_GenMuonInfo(void *p = nullptr);
+   static void *newArray_GenMuonInfo(Long_t size, void *p);
+   static void delete_GenMuonInfo(void *p);
+   static void deleteArray_GenMuonInfo(void *p);
+   static void destruct_GenMuonInfo(void *p);
+
+   // Function generating the singleton type initializer
+   static TGenericClassInfo *GenerateInitInstanceLocal(const ::GenMuonInfo*)
+   {
+      ::GenMuonInfo *ptr = nullptr;
+      static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(::GenMuonInfo));
+      static ::ROOT::TGenericClassInfo 
+         instance("GenMuonInfo", "AnalysisClasses.h", 58,
+                  typeid(::GenMuonInfo), ::ROOT::Internal::DefineBehavior(ptr, ptr),
+                  &GenMuonInfo_Dictionary, isa_proxy, 4,
+                  sizeof(::GenMuonInfo) );
+      instance.SetNew(&new_GenMuonInfo);
+      instance.SetNewArray(&newArray_GenMuonInfo);
+      instance.SetDelete(&delete_GenMuonInfo);
+      instance.SetDeleteArray(&deleteArray_GenMuonInfo);
+      instance.SetDestructor(&destruct_GenMuonInfo);
+      return &instance;
+   }
+   TGenericClassInfo *GenerateInitInstance(const ::GenMuonInfo*)
+   {
+      return GenerateInitInstanceLocal(static_cast<::GenMuonInfo*>(nullptr));
+   }
+   // Static variable to force the class initialization
+   static ::ROOT::TGenericClassInfo *_R__UNIQUE_DICT_(Init) = GenerateInitInstanceLocal(static_cast<const ::GenMuonInfo*>(nullptr)); R__UseDummy(_R__UNIQUE_DICT_(Init));
+
+   // Dictionary for non-ClassDef classes
+   static TClass *GenMuonInfo_Dictionary() {
+      TClass* theClass =::ROOT::GenerateInitInstanceLocal(static_cast<const ::GenMuonInfo*>(nullptr))->GetClass();
+      GenMuonInfo_TClassManip(theClass);
+   return theClass;
+   }
+
+   static void GenMuonInfo_TClassManip(TClass* ){
    }
 
 } // end of namespace ROOT
@@ -173,6 +218,27 @@ namespace ROOT {
       (static_cast<current_t*>(p))->~current_t();
    }
 } // end of namespace ROOT for class ::SelectedMuon
+
+namespace ROOT {
+   // Wrappers around operator new
+   static void *new_GenMuonInfo(void *p) {
+      return  p ? new(p) ::GenMuonInfo : new ::GenMuonInfo;
+   }
+   static void *newArray_GenMuonInfo(Long_t nElements, void *p) {
+      return p ? new(p) ::GenMuonInfo[nElements] : new ::GenMuonInfo[nElements];
+   }
+   // Wrapper around operator delete
+   static void delete_GenMuonInfo(void *p) {
+      delete (static_cast<::GenMuonInfo*>(p));
+   }
+   static void deleteArray_GenMuonInfo(void *p) {
+      delete [] (static_cast<::GenMuonInfo*>(p));
+   }
+   static void destruct_GenMuonInfo(void *p) {
+      typedef ::GenMuonInfo current_t;
+      (static_cast<current_t*>(p))->~current_t();
+   }
+} // end of namespace ROOT for class ::GenMuonInfo
 
 namespace ROOT {
    static TClass *vectorlEZBosonInfogR_Dictionary();
@@ -304,6 +370,71 @@ namespace ROOT {
    }
 } // end of namespace ROOT for class vector<SelectedMuon>
 
+namespace ROOT {
+   static TClass *vectorlEGenMuonInfogR_Dictionary();
+   static void vectorlEGenMuonInfogR_TClassManip(TClass*);
+   static void *new_vectorlEGenMuonInfogR(void *p = nullptr);
+   static void *newArray_vectorlEGenMuonInfogR(Long_t size, void *p);
+   static void delete_vectorlEGenMuonInfogR(void *p);
+   static void deleteArray_vectorlEGenMuonInfogR(void *p);
+   static void destruct_vectorlEGenMuonInfogR(void *p);
+
+   // Function generating the singleton type initializer
+   static TGenericClassInfo *GenerateInitInstanceLocal(const vector<GenMuonInfo>*)
+   {
+      vector<GenMuonInfo> *ptr = nullptr;
+      static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(vector<GenMuonInfo>));
+      static ::ROOT::TGenericClassInfo 
+         instance("vector<GenMuonInfo>", -2, "vector", 423,
+                  typeid(vector<GenMuonInfo>), ::ROOT::Internal::DefineBehavior(ptr, ptr),
+                  &vectorlEGenMuonInfogR_Dictionary, isa_proxy, 4,
+                  sizeof(vector<GenMuonInfo>) );
+      instance.SetNew(&new_vectorlEGenMuonInfogR);
+      instance.SetNewArray(&newArray_vectorlEGenMuonInfogR);
+      instance.SetDelete(&delete_vectorlEGenMuonInfogR);
+      instance.SetDeleteArray(&deleteArray_vectorlEGenMuonInfogR);
+      instance.SetDestructor(&destruct_vectorlEGenMuonInfogR);
+      instance.AdoptCollectionProxyInfo(TCollectionProxyInfo::Generate(TCollectionProxyInfo::Pushback< vector<GenMuonInfo> >()));
+
+      instance.AdoptAlternate(::ROOT::AddClassAlternate("vector<GenMuonInfo>","std::vector<GenMuonInfo, std::allocator<GenMuonInfo> >"));
+      return &instance;
+   }
+   // Static variable to force the class initialization
+   static ::ROOT::TGenericClassInfo *_R__UNIQUE_DICT_(Init) = GenerateInitInstanceLocal(static_cast<const vector<GenMuonInfo>*>(nullptr)); R__UseDummy(_R__UNIQUE_DICT_(Init));
+
+   // Dictionary for non-ClassDef classes
+   static TClass *vectorlEGenMuonInfogR_Dictionary() {
+      TClass* theClass =::ROOT::GenerateInitInstanceLocal(static_cast<const vector<GenMuonInfo>*>(nullptr))->GetClass();
+      vectorlEGenMuonInfogR_TClassManip(theClass);
+   return theClass;
+   }
+
+   static void vectorlEGenMuonInfogR_TClassManip(TClass* ){
+   }
+
+} // end of namespace ROOT
+
+namespace ROOT {
+   // Wrappers around operator new
+   static void *new_vectorlEGenMuonInfogR(void *p) {
+      return  p ? ::new(static_cast<::ROOT::Internal::TOperatorNewHelper*>(p)) vector<GenMuonInfo> : new vector<GenMuonInfo>;
+   }
+   static void *newArray_vectorlEGenMuonInfogR(Long_t nElements, void *p) {
+      return p ? ::new(static_cast<::ROOT::Internal::TOperatorNewHelper*>(p)) vector<GenMuonInfo>[nElements] : new vector<GenMuonInfo>[nElements];
+   }
+   // Wrapper around operator delete
+   static void delete_vectorlEGenMuonInfogR(void *p) {
+      delete (static_cast<vector<GenMuonInfo>*>(p));
+   }
+   static void deleteArray_vectorlEGenMuonInfogR(void *p) {
+      delete [] (static_cast<vector<GenMuonInfo>*>(p));
+   }
+   static void destruct_vectorlEGenMuonInfogR(void *p) {
+      typedef vector<GenMuonInfo> current_t;
+      (static_cast<current_t*>(p))->~current_t();
+   }
+} // end of namespace ROOT for class vector<GenMuonInfo>
+
 namespace {
   void TriggerDictionaryInitialization_AnalysisClassesDict_Impl() {
     static const char* headers[] = {
@@ -312,7 +443,7 @@ nullptr
     };
     static const char* includePaths[] = {
 "/cvmfs/cms.cern.ch/slc7_amd64_gcc12/lcg/root/6.30.03-eeaa8ee64e8127bca194ba397d21d514/include/",
-"/home/dndus0107/CMSSW_14_0_19_patch2/src/work/Analysis/interface/",
+"/home/dndus0107/CMSSW_14_0_19_patch2/src/interface/",
 nullptr
     };
     static const char* fwdDeclCode = R"DICTFWDDCLS(
@@ -325,6 +456,7 @@ struct __attribute__((annotate("$clingAutoload$AnalysisClasses.h")))  ZBosonInfo
 namespace std{template <typename _Tp> class __attribute__((annotate("$clingAutoload$bits/allocator.h")))  __attribute__((annotate("$clingAutoload$string")))  allocator;
 }
 struct __attribute__((annotate("$clingAutoload$AnalysisClasses.h")))  SelectedMuon;
+struct __attribute__((annotate("$clingAutoload$AnalysisClasses.h")))  GenMuonInfo;
 )DICTFWDDCLS";
     static const char* payloadCode = R"DICTPAYLOAD(
 #line 1 "AnalysisClassesDict dictionary payload"
@@ -337,6 +469,7 @@ struct __attribute__((annotate("$clingAutoload$AnalysisClasses.h")))  SelectedMu
 #undef  _BACKWARD_BACKWARD_WARNING_H
 )DICTPAYLOAD";
     static const char* classesHeaders[] = {
+"GenMuonInfo", payloadCode, "@",
 "SelectedMuon", payloadCode, "@",
 "ZBosonInfo", payloadCode, "@",
 nullptr

@@ -6,4 +6,6 @@
 #pragma link C++ class std::vector<ZBosonInfo>+;
 #pragma link C++ class SelectedMuon+;
 #pragma link C++ class std::vector<SelectedMuon>+;
+#pragma link C++ class GenMuonInfo+;
+#pragma link C++ class std::vector<GenMuonInfo>+;
 #endif

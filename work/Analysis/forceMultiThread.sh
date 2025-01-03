@@ -1,39 +1,78 @@
 #!/bin/bash
 
-# Default directory paths
-directory_path="/data1/users/dndus0107/AnalysisResults/Muon/crab_MuonSkimming_Run2022C/241108_143513/0000/"
-output_directory="/data1/users/dndus0107/AnalysisResults/processed_data_2022C/"
-
-#thread
+# Default values
+input_paths=()
+output_directory=""
 num_groups=56
 
+# Function to print usage
+print_usage() {
+    echo "Usage: $0 -i <input_path1,input_path2,...> -o <output_directory> [-l <list1.txt,list2.txt,...>] [-w <num_workers>]"
+    echo "Required options:"
+    echo "  -i: Input directory paths (comma-separated)"
+    echo "  -o: Output directory path"
+    echo "Optional options:"
+    echo "  -l: Comma-separated list of input files"
+    echo "  -w: Number of worker groups (default: 56)"
+    exit 1
+}
+
 # Parse command-line arguments
-while getopts "d:l:o:" opt; do
+while getopts "i:l:o:w:" opt; do
     case $opt in
-        d) directory_path="$OPTARG" ;;  # Set directory_path from -d option
+        i) IFS=',' read -r -a input_paths <<< "$OPTARG" ;;  # Parse -i option as comma-separated paths
         l) IFS=',' read -r -a custom_lists <<< "$OPTARG" ;;  # Parse -l option as a comma-separated list
-        o) output_directory="$OPTARG" ;;  # Set output directory from -o option
-        *) echo "Usage: $0 [-d <directory_path>] [-l <list1.txt,list2.txt,...>] [-o <output_directory>]"; exit 1 ;;
+        o) output_directory="$OPTARG" ;; # Set output directory from -o option
+        w) num_groups="$OPTARG" ;;      # Set number of worker groups from -w option
+        *) print_usage ;;
     esac
 done
+
+# Check for required options
+if [ ${#input_paths[@]} -eq 0 ] || [ -z "$output_directory" ]; then
+    echo "Error: -i (input paths) and -o (output directory) are required options"
+    print_usage
+fi
+
+# Validate num_groups is a positive integer
+if ! [[ "$num_groups" =~ ^[1-9][0-9]*$ ]]; then
+    echo "Error: Number of workers (-w) must be a positive integer"
+    exit 1
+fi
 
 # Ensure output directory exists
 mkdir -p "$output_directory"
 
-# Expand wildcard paths if directory_path contains a wildcard
-if [[ "$directory_path" == *"*"* ]]; then
-    expanded_paths=($(ls -d $directory_path 2>/dev/null))  # Expand wildcard paths
-    if [ ${#expanded_paths[@]} -eq 0 ]; then
-        echo "Error: No directories match the wildcard pattern: $directory_path"
-        exit 1
+# Initialize empty array for all root files
+root_files=()
+
+# Process each input path
+for input_path in "${input_paths[@]}"; do
+    # Expand wildcard paths if input_path contains a wildcard
+    if [[ "$input_path" == *"*"* ]]; then
+        expanded_paths=($(ls -d $input_path 2>/dev/null))  # Expand wildcard paths
+        if [ ${#expanded_paths[@]} -eq 0 ]; then
+            echo "Warning: No directories match the wildcard pattern: $input_path"
+            continue
+        fi
+        for path in "${expanded_paths[@]}"; do
+            found_files=($(find "$path" -type f -name "*.root"))
+            root_files+=("${found_files[@]}")
+        done
+    else
+        found_files=($(find "$input_path" -type f -name "*.root"))
+        root_files+=("${found_files[@]}")
     fi
-    root_files=()
-    for path in "${expanded_paths[@]}"; do
-        root_files+=( $(find "$path" -type f -name "*.root") )  # Collect .root files from all expanded paths
-    done
-else
-    root_files=($(find "$directory_path" -type f -name "*.root"))  # Collect .root files from the specified directory
+done
+
+# Check if any root files were found
+if [ ${#root_files[@]} -eq 0 ]; then
+    echo "Error: No .root files found in any of the input paths:"
+    printf '%s\n' "${input_paths[@]}"
+    exit 1
 fi
+
+echo "Found ${#root_files[@]} root files in total"
 
 # Process custom lists if provided
 if [ ! -z "${custom_lists+x}" ]; then
@@ -70,20 +109,25 @@ if [ ! -z "${custom_lists+x}" ]; then
     done
 else
     # Use root_files directly if no custom lists are provided
-    files_per_group=$(( ${#root_files[@]} / num_groups ))
-    remainder=$(( ${#root_files[@]} % num_groups ))  # Ensure proper division for uneven splits
+    files_per_group=$(( (${#root_files[@]} + num_groups - 1) / num_groups ))  # Calculate files per group with ceiling division
 
     for i in $(seq 0 $((num_groups - 1)))
     do
-        start_index=$(( i * files_per_group + (i < remainder ? i : remainder) ))
-        end_index=$(( start_index + files_per_group + (i < remainder ? 1 : 0) ))
-
-        sublist_file="$output_directory/list${i}.txt"
-        if [ ${#sublist[@]} -eq 0 ]; then
-            touch "$sublist_file"
-        else
-            printf "%s\n" "${sublist[@]}" > "$sublist_file"
+        start_index=$(( i * files_per_group ))
+        current_group_size=$files_per_group
+        
+        # Adjust group size for the last group if necessary
+        if [ $(( start_index + current_group_size )) -gt ${#root_files[@]} ]; then
+            current_group_size=$(( ${#root_files[@]} - start_index ))
         fi
+
+        # Skip if we've processed all files
+        if [ $start_index -ge ${#root_files[@]} ]; then
+            continue
+        fi
+
+        # Extract sublist for this group
+        sublist=("${root_files[@]:$start_index:$current_group_size}")
 
         sublist_file="$output_directory/list${i}.txt"  # Sublist file path in the output directory
         output_file="$output_directory/output_data_${i}.root"  # Output ROOT file path

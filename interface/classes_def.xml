@@ -1,8 +1,0 @@
-<lcgdict>
-  <class name="ZBosonInfo"/>
-  <class name="std::vector<ZBosonInfo>"/>
-  <class name="edm::Wrapper<std::vector<ZBosonInfo>>"/>
-  <class name="SelectedMuon"/>
-  <class name="std::vector<SelectedMuon>"/>
-  <class name="edm::Wrapper<std::vector<SelectedMuon>>"/>
-</lcgdict>

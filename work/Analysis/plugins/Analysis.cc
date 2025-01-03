@@ -1,5 +1,7 @@
 #include <memory>
 #include <mutex>
+#include <array>
+#include <iostream>
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Event.h"
@@ -15,7 +17,7 @@
 #include <cstdlib>
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
-#include "work/Analysis/interface/AnalysisClasses.h"
+#include "interface/AnalysisClasses.h"
 #include "TSystem.h"
 
 
@@ -36,18 +38,13 @@ private:
   
   TTree* tree;
 
-  static thread_local int eventNumber;
-  static thread_local int runNumber;
-  static thread_local int lumiSection;
-  static thread_local std::vector<ZBosonInfo> zBoson;
-  static thread_local std::vector<SelectedMuon> selectedMuons;
+  unsigned long long eventNumber;
+  unsigned int runNumber;
+  unsigned int lumiSection;
+  std::vector<ZBosonInfo> zBoson;
+  std::vector<SelectedMuon> selectedMuons;
 };
 
-thread_local int Analysis::eventNumber;
-thread_local int Analysis::runNumber;
-thread_local int Analysis::lumiSection;
-thread_local std::vector<ZBosonInfo> Analysis::zBoson;
-thread_local std::vector<SelectedMuon> Analysis::selectedMuons;
 
 Analysis::Analysis(const edm::ParameterSet& iConfig)
   : muonToken_(consumes<reco::MuonCollection>(iConfig.getParameter<edm::InputTag>("muons"))){
@@ -68,7 +65,6 @@ void Analysis::beginJob() {
   tree->Branch("zBoson", &zBoson);
   tree->Branch("muons", &selectedMuons);
 
-  tree->SetAutoFlush(10000);
   tree->SetCacheSize(10000000);
   tree->SetMaxVirtualSize(1000000);
   std::cout << "beginJob" << std::endl;
@@ -101,7 +97,7 @@ void Analysis::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) 
           muon.isGEMMuon() && muon.passed(reco::Muon::PFIsoTight) && muon.passed(reco::Muon::CutBasedIdTight),
           false, false, false, false, false, false
       };
-
+      
 
       selectedMuons.push_back(selectedMuon);
     }
@@ -111,7 +107,7 @@ void Analysis::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) 
   auto reconstructZBoson = [](std::vector<SelectedMuon>& muons, std::function<bool(const SelectedMuon&)> filter) -> ZBosonInfo {
     double bestMass = std::numeric_limits<double>::max();
     double minDvz = std::numeric_limits<double>::max();
-    for (size_t i = 0; i < muons.size() - 1; ++i) {
+    for (size_t i = 0; i < muons.size(); ++i) {
       if (!filter(muons[i])) continue;
       for (size_t j = i + 1; j < muons.size(); ++j) {
         if (!filter(muons[j])) continue;

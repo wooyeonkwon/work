@@ -7,7 +7,7 @@
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "DataFormats/MuonReco/interface/Muon.h"
 #include "DataFormats/MuonReco/interface/MuonFwd.h"
-#include "DataFormats/Math/interface/LorentzVector.h"
+#include "DataFormats/Math/interface/PtEtaPhiM4D.h"
 #include "DataFormats/Common/interface/TriggerResults.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"

@@ -1,4 +1,5 @@
 import FWCore.ParameterSet.Config as cms
+import FWCore.PythonUtilities.LumiList as LumiList
 import os
 import sys
 
@@ -19,8 +20,12 @@ if len(sys.argv) > 1:
     else:
         raise FileNotFoundError(f"Input list file '{sublist_file}' not found.")
 
+golden_json_path = "/home/dndus0107/CMSSW_14_0_19_patch2/src/work/skim/Cert_Collisions2022_355100_362760_Golden.json"
+lumi_list = LumiList.LumiList(filename=golden_json_path).getCMSSWString().split(',')
+
 process.source = cms.Source("PoolSource",
-    fileNames=cms.untracked.vstring(*file_paths)
+    fileNames=cms.untracked.vstring(*file_paths),
+    lumisToProcess = cms.untracked.VLuminosityBlockRange(*lumi_list)
 )
 
 process.options = cms.untracked.PSet(
@@ -32,7 +37,7 @@ process.options = cms.untracked.PSet(
 if len(sys.argv) > 2:
     output_file_name = sys.argv[2]
 else:
-    output_file_name = "data_2022C.root"
+    output_file_name = "Analysis_Data.root"
 
 process.TFileService = cms.Service("TFileService",
     fileName=cms.string(output_file_name)
@@ -40,9 +45,6 @@ process.TFileService = cms.Service("TFileService",
 
 process.Analysis = cms.EDAnalyzer('Analysis',
     muons=cms.InputTag("muons"),
-    triggerResults=cms.InputTag("TriggerResults", "", "HLT"),
-    vertices=cms.InputTag("offlinePrimaryVertices"),
-    hltPath=cms.string("HLT_IsoMu24_v")
 )
 
 process.p = cms.Path(process.Analysis)

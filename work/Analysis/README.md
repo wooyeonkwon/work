@@ -1,1 +1,0 @@
-export LD_LIBRARY_PATH=/home/dndus0107/CMSSW_14_0_19_patch2/src/work/Analysis/interface/:$LD_LIBRARY_PATH

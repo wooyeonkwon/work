@@ -6,10 +6,10 @@ process = cms.Process("Analysis")
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000 # Report every 10000 events
 process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(-1))
-directory_path = '/data1/users/dndus0107/AnalysisResults/Muon/crab_MuonSkimming_Run2022C/241108_143513/0000/'
+directory_path = '/data1/users/dndus0107/AnalysisResults/Muon/crab_Run2022D-27Jun2023-v2/241231_153948/1000/'
 file_list = os.listdir(directory_path)
-#file_paths = [f'file://{directory_path}{filename}' for filename in file_list]
-file_paths = ['file:///data1/users/dndus0107/public/skimmed_data_2022E.root']
+file_paths = [f'file://{directory_path}{filename}' for filename in file_list]
+#file_paths = ['file:///data1/users/dndus0107/public/skimmed_data_2022E.root']
 
 #file_paths = ['file:///data1/users/dndus0107/AnalysisResults/Muon/crab_MuonSkimming_Run2022C/241108_143513/0000/skimmed_data_1-1.root',
 #              'file:///data1/users/dndus0107/AnalysisResults/Muon/crab_MuonSkimming_Run2022C/241108_143513/0000/skimmed_data_1-2.root',
@@ -24,18 +24,14 @@ process.source = cms.Source("PoolSource",
 # Enable multithreading 
 process.options = cms.untracked.PSet(
     numberOfThreads = cms.untracked.uint32(1),
-    numberOfStreams = cms.untracked.uint32(1),
-    numberOfConcurrentLuminosityBlocks = cms.untracked.uint32(1),
-    numberOfConcurrentRuns = cms.untracked.uint32(1),
-    wantSummary = cms.untracked.bool(True),
-    throwIfIllegalParameter = cms.untracked.bool(True)
+    numberOfStreams = cms.untracked.uint32(0),
 )
 process.TFileService = cms.Service("TFileService",
-    fileName = cms.string("/data1/users/dndus0107/AnalysisResults/processed_data/data_C_2.root")
+    fileName = cms.string("/data1/users/dndus0107/AnalysisResults/processed_data/Analysis_Data_22D.root")
 )
 
 process.Analysis = cms.EDAnalyzer('Analysis',
     muons = cms.InputTag("muons")
 )
-process.p = cms.Path(process.Analysis)
+process.p = cms.Path(process.Analysis)  
 process.options.wantSummary = True
