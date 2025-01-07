@@ -1,3 +1,4 @@
 *.root
 crab_projects/
 *.txt
+*.nfs*

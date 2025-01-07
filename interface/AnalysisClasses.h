@@ -9,6 +9,8 @@
 struct ZBosonInfo {
   double mass;
   double dvz;
+
+  ClassDef(ZBosonInfo, 1); 
 };
 
 struct SelectedMuon {
@@ -51,16 +53,20 @@ struct SelectedMuon {
     }
   }
 
-
+  ClassDef(SelectedMuon, 1);
 };
 
 // Structure for GenMuon information
 struct GenMuonInfo {
+  int charge;
   double pt;
   double eta;
   double phi;
-  int charge;
-  double genWeight;  // Added generator weight
+  double vz;
+  math::XYZTLorentzVector p4;
+  bool isGenZ;
+  
+  ClassDef(GenMuonInfo, 1); 
 };
 
 namespace {

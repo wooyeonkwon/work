@@ -2,7 +2,8 @@ import ROOT
 from ROOT import RDataFrame
 import sys
 from tqdm import tqdm
-ROOT.EnableImplicitMT()
+import numpy as np
+ROOT.EnableImplicitMT(56)
 
 def check_duplicate_eventnumbers_rdf(file_list):
     # ROOT 파일 열기
