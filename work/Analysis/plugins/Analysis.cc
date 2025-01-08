@@ -54,6 +54,7 @@ private:
   std::vector<double> muon_phi;
   std::vector<double> muon_iso;
   std::vector<double> muon_vz;
+  std::vector<int> muon_size;
   
   // Muon flags
   std::vector<bool> muon_isReco;
@@ -111,6 +112,7 @@ void Analysis::beginJob() {
   tree->Branch("muon_phi", &muon_phi);
   tree->Branch("muon_iso", &muon_iso);
   tree->Branch("muon_vz", &muon_vz);
+  tree->Branch("muon_size", &muon_size);
   
   // Muon flags branches
   tree->Branch("muon_isReco", &muon_isReco);
@@ -143,6 +145,7 @@ void Analysis::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) 
   muon_phi.clear();
   muon_iso.clear();
   muon_vz.clear();
+  muon_size.clear();
   muon_isReco.clear();
   muon_isTightReco.clear();
   muon_isRPC.clear();
@@ -175,6 +178,7 @@ void Analysis::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) 
       muon_phi.push_back(muon.phi());
       muon_iso.push_back(iso);
       muon_vz.push_back(muon.vz());
+      
 
       // Store muon flags
       bool isTight = muon.passed(reco::Muon::PFIsoTight) && muon.passed(reco::Muon::CutBasedIdTight);

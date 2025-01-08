@@ -1,3 +1,4 @@
+
 import ROOT
 from ROOT import RDataFrame
 import sys
@@ -65,14 +66,14 @@ def log_corrupted_entry(event_number):
             log_file.write(f"Corrupted event: {event_number}\n")
 
 def histogram_def(rdf, branch):
-    # branch 딕셔너리의 정보 추출
+
     variable_name = branch["name"]
     condition = branch["condition"]
-    new_var_name = f"filtered_{variable_name}"  # 새 변수 이름
+    new_var_name = f"filtered_{variable_name}" 
     if condition :
         rdf = rdf.Define(new_var_name, variable_name)
     else :
-        # Define: 필터링된 데이터 정의
+
         rdf = rdf.Define(new_var_name, 
                         f"""
                         std::vector<double> filtered;
@@ -83,12 +84,10 @@ def histogram_def(rdf, branch):
                         }}
                         return filtered;
                         """)
-
-    # Histo1D: 히스토그램 생성
     
     hist = rdf.Histo1D(ROOT.RDF.TH1DModel(
-        f"{variable_name}_{condition}",  # 히스토그램 이름
-        branch["xtitle"],               # X축 제목
+        f"{variable_name}_{condition}", 
+        branch["xtitle"],              
         branch["bins"], branch["xmin"], branch["xmax"]  # bin, xmin, xmax
     ), new_var_name, "scale_factor")
 
@@ -239,7 +238,9 @@ def main(data_filename, mc_filename, output_dir="."):
             continue
 
         # RDataFrame
+        one = 1
         data_rdf = ROOT.RDataFrame(data_tree)
+        data_rdf = data_rdf.Define("scale_factor", f"{one}")
         mc_rdf = ROOT.RDataFrame(mc_tree)
         mc_rdf = mc_rdf.Define("scale_factor", f"{data_lumi}*{mc_cross_section}/{n_mc}")
 
