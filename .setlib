@@ -1,1 +1,2 @@
 export LD_LIBRARY_PATH=/home/dndus0107/CMSSW_14_0_19_patch2/src/interface/:$LD_LIBRARY_PATH
+export PYTHONPATH=$PYTHONPATH:/home/dndus0107/CMSSW_14_0_19_patch2/src/interface
