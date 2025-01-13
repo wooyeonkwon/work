@@ -54,30 +54,56 @@ def load_file(data_filename, mc_filename, DIR_NAMES):
 #]
 def Histo1D_def(rdf, branch):
     variable_name = branch["name"]
-    condition = branch.get("condition", None)
+    condition = branch.get("condition", None)  # if there is no condition, None
     new_var_name = variable_name
 
-    if condition:
-        condition_str = condition("i")
-        new_var_name = f"filtered_{variable_name}"
-        rdf = rdf.Define(new_var_name,
-                         f"""
-                         std::vector<double> filtered;
-                         for (size_t i = 0; i < {variable_name}.size(); ++i) {{
-                             if ({condition_str}) {{
-                                 filtered.push_back({variable_name}[i]);
-                             }}
-                         }}
-                         return filtered;
-                         """)
+    # check if scalar or vector
+    # nevermind error messages like the one below
+    # error: member reference base type 'const Double_t' (aka 'const double') is not a structure or union for (size_t i = 0; i < var1.size(); ++i) {
 
+    is_vector = True
+    try:
+        scalar_check_code = f"return {variable_name}.size();"
+        rdf.Define("check", scalar_check_code)
+    except:
+        is_vector = False
+
+    if condition:
+        if is_vector:
+            condition_str = condition("i") if callable(condition) else condition
+            new_var_name = f"filtered_{variable_name}"
+            rdf = rdf.Define(new_var_name,
+                             f"""
+                             std::vector<double> filtered;
+                             for (size_t i = 0; i < {variable_name}.size(); ++i) {{
+                                 if ({condition_str}) {{
+                                     filtered.push_back({variable_name}[i]);
+                                 }}
+                             }}
+                             return filtered;
+                             """)
+        else:
+            condition_str = condition("") if callable(condition) else condition
+            new_var_name = f"filtered_{variable_name}"
+            rdf = rdf.Define(new_var_name,
+                             f"""
+                             return {condition_str} ? {variable_name} : std::numeric_limits<double>::quiet_NaN();
+                             """)
+    else:
+        if is_vector:
+            new_var_name = variable_name
+        else:
+            new_var_name = variable_name
+
+    # create histogram
     hist = rdf.Histo1D((
-        f"{variable_name}_hist",      
-        branch["xtitle"],             
-        branch["bins"],               
-        branch["xmin"], branch["xmax"]  
+        f"{variable_name}_hist",
+        branch["xtitle"],        
+        branch["bins"], branch["xmin"], branch["xmax"]
     ), new_var_name)
 
     ROOT.SetOwnership(hist, False)
 
     return hist
+
+

@@ -31,34 +31,40 @@ canvas_lock = threading.Lock()
 DIR_NAMES = ["Analysis","AnalysisMC"] # set directory of the root file ["data","mc" ], if no directory : []
 TREE_NAMES = ["Analysis"] # set tree path of the root file, you must use same Treename for data and mc.
 BRANCHES = [
-    {"output": "muonpt_isTightRecoZ", "name": "muon_pt", "bins": 200, "xmin": 20.0, "xmax": 120.0, "xtitle": "muonPt [GeV]", "ytitle": "Multiplicity", "condition": lambda i: "muon_isTightRecoZ[i]"},
-    {"output": "muoneta_isTightRecoZ", "name": "muon_eta", "bins": 60, "xmin": -3.0, "xmax": 3.0, "xtitle": "muonEta", "ytitle": "Multiplicity", "condition": lambda i: "muon_isTightRecoZ[i]"},
-    {"output": "muonphi_isTightRecoZ", "name": "muon_phi", "bins": 70, "xmin": -3.5, "xmax": 3.5, "xtitle": "muonPhi", "ytitle": "Multiplicity", "condition": lambda i: "muon_isTightRecoZ[i]"},
-    {"output": "muoniso_isTightRecoZ", "name": "muon_iso", "bins": 150, "xmin": 0.0, "xmax": 0.15, "xtitle": "muonIso", "ytitle": "Multiplicity", "condition": lambda i: "muon_isTightRecoZ[i]"},
+    {"output": "muonpt_isTightRecoZ", "name": "muon_pt", "bins": 200, "xmin": 20.0, "xmax": 120.0, "xtitle": "muonPt [GeV]", "ytitle": "Multiplicity", "condition": lambda i: "muon_isTightRecoZ[i] && zMass_TightReco > 60 && zMass_TightReco < 120"},
+    {"output": "muoneta_isTightRecoZ", "name": "muon_eta", "bins": 60, "xmin": -3.0, "xmax": 3.0, "xtitle": "muonEta", "ytitle": "Multiplicity", "condition": lambda i: "muon_isTightRecoZ[i] && zMass_TightReco > 60 && zMass_TightReco < 120"},
+    {"output": "muonphi_isTightRecoZ", "name": "muon_phi", "bins": 70, "xmin": -3.5, "xmax": 3.5, "xtitle": "muonPhi", "ytitle": "Multiplicity", "condition": lambda i: "muon_isTightRecoZ[i] && zMass_TightReco > 60 && zMass_TightReco < 120"},
+    {"output": "muoniso_isTightRecoZ", "name": "muon_iso", "bins": 150, "xmin": 0.0, "xmax": 0.15, "xtitle": "muonIso", "ytitle": "Multiplicity", "condition": lambda i: "muon_isTightRecoZ[i] && zMass_TightReco > 60 && zMass_TightReco < 120"},
     {"output": "zMass_isTightReco", "name": "zMass_TightReco", "bins": 120, "xmin": 60.0, "xmax": 120.0, "xtitle": "dimuon mass", "ytitle": "Multiplicity"},
-    {"output": "muonpt_isTightRPCZ", "name": "muon_pt", "bins": 2000, "xmin": 0.0, "xmax": 200.0, "xtitle": "muonPt [GeV]", "ytitle": "Multiplicity", "condition": lambda i: "muon_isTightRPCZ[i]"},
-    {"output": "muoneta_isTightRPCZ", "name": "muon_eta", "bins": 60, "xmin": -3.0, "xmax": 3.0, "xtitle": "muonEta", "ytitle": "Multiplicity", "condition": lambda i: "muon_isTightRPCZ[i]"},
-    {"output": "muonphi_isTightRPCZ", "name": "muon_phi", "bins": 70, "xmin": -3.5, "xmax": 3.5, "xtitle": "muonPhi", "ytitle": "Multiplicity", "condition": lambda i: "muon_isTightRPCZ[i]"},
-    {"output": "muoniso_isTightRPCZ", "name": "muon_iso", "bins": 150, "xmin": 0.0, "xmax": 0.15, "xtitle": "muonIso", "ytitle": "Multiplicity", "condition": lambda i: "muon_isTightRPCZ[i]"},
+    {"output": "zMass_isTightReco_narrow", "name": "zMass_TightReco", "bins": 100, "xmin": 85.0, "xmax": 95.0, "xtitle": "dimuon mass", "ytitle": "Multiplicity"},
+    {"output": "zDvz_Reco", "name": "zDvz_Reco", "bins": 100, "xmin": 0.0, "xmax": 0.1, "xtitle": "dimuon mass", "ytitle": "Multiplicity", "condition": "zMass_TightReco > 60 && zMass_TightReco < 120"},
+    {"output": "muonpt_isTightRPCZ", "name": "muon_pt", "bins": 2000, "xmin": 0.0, "xmax": 200.0, "xtitle": "muonPt [GeV]", "ytitle": "Multiplicity", "condition": lambda i: "muon_isTightRPCZ[i] && zMass_TightRPC > 60 && zMass_TightRPC < 120"},
+    {"output": "muoneta_isTightRPCZ", "name": "muon_eta", "bins": 60, "xmin": -3.0, "xmax": 3.0, "xtitle": "muonEta", "ytitle": "Multiplicity", "condition": lambda i: "muon_isTightRPCZ[i] && zMass_TightRPC > 60 && zMass_TightRPC < 120"},
+    {"output": "muonphi_isTightRPCZ", "name": "muon_phi", "bins": 70, "xmin": -3.5, "xmax": 3.5, "xtitle": "muonPhi", "ytitle": "Multiplicity", "condition": lambda i: "muon_isTightRPCZ[i] && zMass_TightRPC > 60 && zMass_TightRPC < 120"},
+    {"output": "muoniso_isTightRPCZ", "name": "muon_iso", "bins": 150, "xmin": 0.0, "xmax": 0.15, "xtitle": "muonIso", "ytitle": "Multiplicity", "condition": lambda i: "muon_isTightRPCZ[i] && zMass_TightRPC > 60 && zMass_TightRPC < 120"},
     {"output": "zMass_isTightRPC", "name": "zMass_TightRPC", "bins": 120, "xmin": 60.0, "xmax": 120.0, "xtitle": "dimuon mass", "ytitle": "Multiplicity"},
+    {"output": "zMass_isTightRPC_narrow", "name": "zMass_TightRPC", "bins": 100, "xmin": 85.0, "xmax": 95.0, "xtitle": "dimuon mass", "ytitle": "Multiplicity"},
+    {"output": "zDvz_RPC", "name": "zDvz_RPC", "bins": 100, "xmin": 0.0, "xmax": 0.1, "xtitle": "dimuon mass", "ytitle": "Multiplicity", "condition": "zMass_TightRPC > 60 && zMass_TightRPC < 120"},
 ]
 
+
 # parameters for Normalization factor
+#cross_section from https://cms.cern.ch/iCMS/analysisadmin/cadi?ancode=SMP-22-017
 # Run 22C,D
-mc_cross_section = 2219.0  
-mc_cross_section_unc = 0.2327  
-data_lumi = 7.9804
-gen_weight = 2219
-n_mc = 2924957
-equi_lumi = 0.4327
+#mc_cross_section = 2021.0 #2219.0  
+#mc_cross_section_unc = 0.049  
+#data_lumi = 7.9804
+#gen_weight = 2219
+#n_mc = 2924957
+#equi_lumi = 0.4327
 
 # Run 22E,F,G
-#   mc_cross_section = 2219.0  
-#   mc_cross_section_unc = 0.2327  
-#   data_lumi = 5.8070 + 17.7819 + 3.0828
-#   gen_weight = 2209
-#   n_mc = 10148870
-#   equi_lumi = 0.4327
+mc_cross_section = 2021.0  
+mc_cross_section_unc = 0.049 
+data_lumi = 5.8070 + 17.7819 + 3.0828
+gen_weight = 2209
+n_mc = 10148870
+equi_lumi = 0.4327
 
 ###################################################################################
 # Usage of this code                                                              #
@@ -143,7 +149,7 @@ def draw_histogram(data_rdf, mc_rdf, tree_name, branch, output_dir="."):
         latex.DrawLatex(0.15, 0.91, "CMS")
         latex.SetTextFont(42)  # normal font
         latex.DrawLatex(0.21, 0.91, "#it{In Progress}")
-        latex.DrawLatex(0.70, 0.91, "#sqrt{s} = 13.6 TeV, L = 7.98/fb")
+        latex.DrawLatex(0.70, 0.91, "#sqrt{s} = 13.6 TeV, L = 7.6 /fb")
         
         legend = ROOT.TLegend(0.7, 0.7, 0.9, 0.9)
         legend.AddEntry(hist_data.GetValue(), "Data", "lep")
