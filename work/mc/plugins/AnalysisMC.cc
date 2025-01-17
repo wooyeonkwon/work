@@ -37,7 +37,8 @@ private:
   edm::EDGetTokenT<reco::MuonCollection> muonToken_;
   edm::EDGetTokenT<reco::GenParticleCollection> genParticleToken_;
   edm::EDGetTokenT<GenEventInfoProduct> generatorToken_;
-  
+  edm::EDGetTokenT<edm::Association<reco::GenParticleCollection>> muonMCMatchToken_;
+
   TTree* tree;
 
   // Event information
@@ -58,8 +59,7 @@ private:
   std::vector<double> muon_phi;
   std::vector<double> muon_iso;
   std::vector<double> muon_vz;
-  std::vector<int> muon_size;
-  
+
   // Reconstructed Muon flags
   std::vector<bool> muon_isReco;
   std::vector<bool> muon_isTightReco;
@@ -82,14 +82,16 @@ private:
   std::vector<double> genMuon_eta;
   std::vector<double> genMuon_phi;
   std::vector<double> genMuon_vz;
-  std::vector<int> genMuon_size;
   std::vector<bool> genMuon_isGenZ;
+  bool matchingFailed;
+  int nMatching;
 };
 
 AnalysisMC::AnalysisMC(const edm::ParameterSet& iConfig)
   : muonToken_(consumes<reco::MuonCollection>(iConfig.getParameter<edm::InputTag>("muons"))),
     genParticleToken_(consumes<reco::GenParticleCollection>(iConfig.getParameter<edm::InputTag>("genParticles"))),
-    generatorToken_(consumes<GenEventInfoProduct>(iConfig.getParameter<edm::InputTag>("generator"))) {
+    generatorToken_(consumes<GenEventInfoProduct>(iConfig.getParameter<edm::InputTag>("generator"))),
+    muonMCMatchToken_(consumes<edm::Association<reco::GenParticleCollection>>(iConfig.getParameter<edm::InputTag>("muonMCMatch"))) {
 }
 
 AnalysisMC::~AnalysisMC() {
@@ -129,7 +131,6 @@ void AnalysisMC::beginJob() {
   tree->Branch("muon_phi", &muon_phi);
   tree->Branch("muon_iso", &muon_iso);
   tree->Branch("muon_vz", &muon_vz);
-  tree->Branch("muon_size", &muon_size);
   
   tree->Branch("muon_isReco", &muon_isReco);
   tree->Branch("muon_isTightReco", &muon_isTightReco);
@@ -161,10 +162,13 @@ void AnalysisMC::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   edm::Handle<reco::MuonCollection> muons;
   edm::Handle<reco::GenParticleCollection> genParticles;
   edm::Handle<GenEventInfoProduct> genInfo;
+  edm::Handle<edm::Association<reco::GenParticleCollection>> muonMCMatch;
   
+
   iEvent.getByToken(muonToken_, muons);
   iEvent.getByToken(genParticleToken_, genParticles);
   iEvent.getByToken(generatorToken_, genInfo);
+  iEvent.getByToken(muonMCMatchToken_, muonMCMatch);
 
   // Clear all vectors
   muon_charge.clear();
@@ -173,7 +177,6 @@ void AnalysisMC::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   muon_phi.clear();
   muon_iso.clear();
   muon_vz.clear();
-  muon_size.clear();
   muon_isReco.clear();
   muon_isTightReco.clear();
   muon_isRPC.clear();
@@ -192,29 +195,31 @@ void AnalysisMC::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   genMuon_eta.clear();
   genMuon_phi.clear();
   genMuon_vz.clear();
-  genMuon_size.clear();
   genMuon_isGenZ.clear();
 
   // Initialize Z boson variables
   std::fill(zMass.begin(), zMass.end(), -1.0);
   std::fill(zDvz.begin(), zDvz.end(), -1.0);
 
-  // Generator level muon selection
-  for (const auto& genParticle : *genParticles) {
-    if (abs(genParticle.pdgId()) == 13 && genParticle.pt() > 24 && fabs(genParticle.eta()) < 2.4) {
-      genMuon_charge.push_back(genParticle.charge());
-      genMuon_pt.push_back(genParticle.pt());
-      genMuon_eta.push_back(genParticle.eta());
-      genMuon_phi.push_back(genParticle.phi());
-      genMuon_vz.push_back(genParticle.vz());
-      genMuon_size.push_back(genParticle.size());
-      genMuon_isGenZ.push_back(false);
-    }
-  }
+
+  nMatching = 0;
 
   // Reconstructed muon selection
-  for (const auto& muon : *muons) {
-    if (muon.pt() > 24 && fabs(muon.eta()) < 2.4) {
+for (const auto& muon : *muons) {
+    // Get the reference to the current muon in the collection
+    edm::Ref<reco::MuonCollection> muonRef(muons, &muon - &(*muons)[0]);
+
+    // Check if there is a match in the muonMCMatch association
+    if (muonMCMatch.isValid()) {
+        // Get the index of the genParticle matched with this muon
+        const edm::Ref<reco::GenParticleCollection> genMatch = (*muonMCMatch)[muonRef];
+
+        if (genMatch.isAvailable()) {
+            ++nMatching;
+        }
+    }
+
+    if (muon.pt() > 24 && fabs(muon.eta()) < 2.4) {      
       double iso = (muon.pfIsolationR04().sumChargedHadronPt +
                    std::max(0.0, muon.pfIsolationR04().sumNeutralHadronEt +
                            muon.pfIsolationR04().sumPhotonEt -
@@ -228,7 +233,6 @@ void AnalysisMC::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       muon_phi.push_back(muon.phi());
       muon_iso.push_back(iso);
       muon_vz.push_back(muon.vz());
-      muon_size.push_back(muon.size());
 
       muon_isReco.push_back(true);
       muon_isTightReco.push_back(isTight);
@@ -243,6 +247,22 @@ void AnalysisMC::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       muon_isTightRPCZ.push_back(false);
       muon_isGEMZ.push_back(false);
       muon_isTightGEMZ.push_back(false);
+    }
+  }
+
+  if (nMatching < 2) {
+    return;  // Skip this event if matching failed (less than 2 valid reco muons)
+  }
+
+  // Generator level muon selection
+  for (const auto& genParticle : *genParticles) {
+    if (abs(genParticle.pdgId()) == 13 && genParticle.pt() > 24 && fabs(genParticle.eta()) < 2.4) {
+      genMuon_charge.push_back(genParticle.charge());
+      genMuon_pt.push_back(genParticle.pt());
+      genMuon_eta.push_back(genParticle.eta());
+      genMuon_phi.push_back(genParticle.phi());
+      genMuon_vz.push_back(genParticle.vz());
+      genMuon_isGenZ.push_back(false);
     }
   }
 
@@ -359,6 +379,7 @@ void AnalysisMC::fillDescriptions(edm::ConfigurationDescriptions& descriptions) 
   desc.add<edm::InputTag>("muons", edm::InputTag("muons"));
   desc.add<edm::InputTag>("genParticles", edm::InputTag("genParticles"));
   desc.add<edm::InputTag>("generator", edm::InputTag("generator"));
+  desc.add<edm::InputTag>("muonMCMatch", edm::InputTag("muonMCMatch"));
   descriptions.add("analysisMC", desc);
 }
 
