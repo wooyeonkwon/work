@@ -9,46 +9,50 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 10000
 process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(-1))
 
 process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring()
+    fileNames=cms.untracked.vstring()
 )
 
 # MC truth matching for muons
 process.muonMCMatch = cms.EDProducer("MCMatcher",
-    src         = cms.InputTag("muons"),
-    matched     = cms.InputTag("genParticles"),
-    mcPdgId     = cms.vint32(13),
-    checkCharge = cms.bool(True),
-    maxDeltaR   = cms.double(0.3),
-    maxDPtRel   = cms.double(0.5),
-    resolveAmbiguities = cms.bool(True),
-    resolveByMatchQuality = cms.bool(True)
+    src         = cms.InputTag("muons"),       # reco muons
+    matched     = cms.InputTag("genParticles"),  # gen particles
+    mcPdgId     = cms.vint32(13),             # Muon PDG ID
+    checkCharge = cms.bool(True),             # Check charge match
+    maxDeltaR   = cms.double(0.3),            # ΔR threshold
+    maxDPtRel   = cms.double(0.5),            # Relative pT difference
+    resolveAmbiguities = cms.bool(True),      # One-to-one matching
+    resolveByMatchQuality = cms.bool(True),   # Match by ΔR
+    mcStatus    = cms.vint32(1)               # Match only stable particles
 )
 
-
-# Skim filter
+# Skim filter (trigger filtering only)
 process.skim = cms.EDFilter('skim',
-    triggerResults = cms.InputTag("TriggerResults", "", "HLT"),
-    hltPath = cms.string("HLT_IsoMu24_v"),
-    matchedMuons = cms.InputTag("muonMCMatch")
+    triggerResults=cms.InputTag("TriggerResults", "", "HLT"),
+    hltPath=cms.string("HLT_IsoMu24_v")  # No matchedMuons here
 )
 
+# Path configuration
 process.p = cms.Path(
     process.muonMCMatch +  # MC truth matching
-    process.skim  # Trigger filter
+    process.skim           # Trigger filter
 )
 
+# Output module to store matched information
 process.out = cms.OutputModule("PoolOutputModule",
-    fileName = cms.untracked.string('file:skimmed_mc.root'),
-    SelectEvents = cms.untracked.PSet(
-        SelectEvents = cms.vstring('p')
+    fileName=cms.untracked.string('file:skimmed_mc.root'),
+    SelectEvents=cms.untracked.PSet(
+        SelectEvents=cms.vstring('p')
     ),
-    outputCommands = cms.untracked.vstring(
+    outputCommands=cms.untracked.vstring(
         'drop *',
-        'keep recoMuons_muons__*',
-        'keep recoMuons_muonMCMatch__*',  # Store matched muon information
+        'keep recoMuons_muons__*',         # Store all reco muons
+        'keep recoMuons_muonMCMatch__*',   # Store MC matching results
         'keep edmEventAuxiliary_*_*_*',
-        'keep recoGenParticles_genParticles__*',
-        'keep genWeights_genWeight__*'
+        # Keep gen-level particles
+        'keep recoGenParticles_genParticles__*',  
+        'keep genWeights_genWeight__*',
+        'keep recoGenParticlesedmAssociation_muonMCMatch__skim*',
+        'keep GenEventInfoProduct_generator__*'
     )
 )
 
