@@ -59,8 +59,10 @@ process.out = cms.OutputModule("PoolOutputModule",
         'keep recoMuons_muons__*',         # Store all reco muons
         'keep recoMuons_muonMCMatch__*',   # Store MC matching results
         'keep edmEventAuxiliary_*_*_*',
-        'keep recoGenParticles_genParticles__*',  # Keep gen-level particles
-        'keep genWeights_genWeight__*'
+        # Keep gen-level particles
+        'keep recoGenParticles_genParticles__*',  
+        'keep genWeights_genWeight__*',
+        'keep recoGenParticlesedmAssociation_muonMCMatch__skim*'
     )
 )
 
