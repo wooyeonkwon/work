@@ -13,17 +13,17 @@ process.source = cms.Source("PoolSource",
 )
 
 # MC truth matching for muons
-process.muonMCMatch = cms.EDProducer("MCMatcher",
-    src         = cms.InputTag("muons"),       # reco muons
-    matched     = cms.InputTag("genParticles"),  # gen particles
-    mcPdgId     = cms.vint32(13),             # Muon PDG ID
-    checkCharge = cms.bool(True),             # Check charge match
-    maxDeltaR   = cms.double(0.3),            # ΔR threshold
-    maxDPtRel   = cms.double(0.5),            # Relative pT difference
-    resolveAmbiguities = cms.bool(True),      # One-to-one matching
-    resolveByMatchQuality = cms.bool(True),   # Match by ΔR
-    mcStatus    = cms.vint32(1)               # Match only stable particles
-)
+#process.muonMCMatch = cms.EDProducer("MCMatcher",
+#    src         = cms.InputTag("muons"),       # reco muons
+#    matched     = cms.InputTag("genParticles"),  # gen particles
+#    mcPdgId     = cms.vint32(13),             # Muon PDG ID
+#    checkCharge = cms.bool(True),             # Check charge match
+#    maxDeltaR   = cms.double(0.3),            # ΔR threshold
+#    maxDPtRel   = cms.double(0.5),            # Relative pT difference
+#    resolveAmbiguities = cms.bool(True),      # One-to-one matching
+#    resolveByMatchQuality = cms.bool(True),   # Match by ΔR
+#    mcStatus    = cms.vint32(1)               # Match only stable particles
+#)
 
 # Skim filter (trigger filtering only)
 process.skim = cms.EDFilter('skim',
@@ -33,13 +33,13 @@ process.skim = cms.EDFilter('skim',
 
 # Path configuration
 process.p = cms.Path(
-    process.muonMCMatch +  # MC truth matching
+#    process.muonMCMatch +  # MC truth matching
     process.skim           # Trigger filter
 )
 
 # Output module to store matched information
 process.out = cms.OutputModule("PoolOutputModule",
-    fileName=cms.untracked.string('file:skimmed_mc.root'),
+    fileName=cms.untracked.string('file:skimmed_data.root'),
     SelectEvents=cms.untracked.PSet(
         SelectEvents=cms.vstring('p')
     ),
@@ -49,10 +49,10 @@ process.out = cms.OutputModule("PoolOutputModule",
         'keep recoMuons_muonMCMatch__*',   # Store MC matching results
         'keep edmEventAuxiliary_*_*_*',
         # Keep gen-level particles
-        'keep recoGenParticles_genParticles__*',  
-        'keep genWeights_genWeight__*',
-        'keep recoGenParticlesedmAssociation_muonMCMatch__skim*',
-        'keep GenEventInfoProduct_generator__*'
+#        'keep recoGenParticles_genParticles__*',  
+#        'keep genWeights_genWeight__*',
+#        'keep recoGenParticlesedmAssociation_muonMCMatch__skim*',
+#        'keep GenEventInfoProduct_generator__*'
     )
 )
 
