@@ -46,7 +46,7 @@ private:
   unsigned int runNumber;
   unsigned int lumiSection;
   float genWeight;
-
+  int muonMCMatchCount;
   // Z boson information - arrays for different categories
   static const int nCategories = 11; // +1 for Gen Z
   std::array<double, nCategories> zMass;
@@ -88,7 +88,8 @@ private:
   std::vector<bool> genMuon_isGenZ;
 
   // muon MC Matching information
-  std::vector<bool> muonMCMatchPass;
+  std::vector<bool> muonMCMatched;
+  bool muonMCMatchPass;
 };
 
 AnalysisMC::AnalysisMC(const edm::ParameterSet& iConfig)
@@ -144,7 +145,7 @@ void AnalysisMC::beginJob() {
   tree->Branch("muon_iso", &muon_iso);
   tree->Branch("muon_vz", &muon_vz);
   
-  tree->Branch("muon_isGlboal", &muon_isGlobal);
+  tree->Branch("muon_isGlobal", &muon_isGlobal);
   tree->Branch("muon_isTracker", &muon_isTracker);
   tree->Branch("muon_isRPC", &muon_isRPC);
   tree->Branch("muon_isGEM", &muon_isGEM);
@@ -169,7 +170,9 @@ void AnalysisMC::beginJob() {
   tree->Branch("genMuon_vz", &genMuon_vz);
   tree->Branch("genMuon_isGenZ", &genMuon_isGenZ);
 
+  tree->Branch("muonMCMatched", &muonMCMatched);
   tree->Branch("muonMCMatchPass", &muonMCMatchPass);
+
   tree->SetCacheSize(10000000);
   tree->SetMaxVirtualSize(1000000);
 }
@@ -213,15 +216,15 @@ void AnalysisMC::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   genMuon_phi.clear();
   genMuon_vz.clear();
   genMuon_isGenZ.clear();
-  muonMCMatchPass.clear();
-
+  muonMCMatched.clear();
+  muonMCMatchPass = false;
   // Initialize Z boson variables
   std::fill(zMass.begin(), zMass.end(), -1.0);
   std::fill(zDvz.begin(), zDvz.end(), -1.0);
 
-
+  muonMCMatchCount = 0;
   // Reconstructed muon information
-for (const auto& muon : *muons) {
+  for (const auto& muon : *muons) {
     //
     muon_isGlobal.push_back(muon.isGlobalMuon());
     muon_isTracker.push_back(muon.isTrackerMuon());
@@ -237,7 +240,8 @@ for (const auto& muon : *muons) {
     if (muonMCMatch.isValid()) {
       // Get the index of the genParticle matched with this muon
       const edm::Ref<reco::GenParticleCollection> genMatch = (*muonMCMatch)[muonRef];
-      muonMCMatchPass.push_back(genMatch.isAvailable());
+      muonMCMatched.push_back(genMatch.isAvailable());
+      if (genMatch.isAvailable()) muonMCMatchCount++;
     }
 
     double iso = (muon.pfIsolationR04().sumChargedHadronPt +
@@ -263,7 +267,7 @@ for (const auto& muon : *muons) {
     muon_isTunedGEMZ.push_back(false);
     muon_isTightGEMZ.push_back(false);
   }
-
+  if (muonMCMatchCount > 1) muonMCMatchPass = true;
   // Generator level muon information
   for (const auto& genParticle : *genParticles) {
     if (abs(genParticle.pdgId()) == 13) {
@@ -283,10 +287,10 @@ for (const auto& muon : *muons) {
     int bestMuon2 = -1;
 
     for (size_t i = 0; i < genMuon_pt.size(); ++i) {
-      if (genMuon_pt[i] > 24 && fabs(genMuon_eta[i])) continue;
+      if (genMuon_pt[i] > 24 && fabs(genMuon_eta[i]) < 2.4) continue;
       for (size_t j = i + 1; j < genMuon_pt.size(); ++j) {
         if (genMuon_charge[i] + genMuon_charge[j] != 0) continue;
-        if (genMuon_pt[j] > 24 && fabs(genMuon_eta[j])) continue;
+        if (genMuon_pt[j] > 24 && fabs(genMuon_eta[j]) < 2.4) continue;
 
         double dvz = fabs(genMuon_vz[i] - genMuon_vz[j]);
         math::PtEtaPhiMLorentzVector p4_1(genMuon_pt[i], genMuon_eta[i], genMuon_phi[i], 0.10566);
@@ -380,16 +384,16 @@ for (const auto& muon : *muons) {
 
   // Apply Z boson reconstruction for both gen and reco categories
   reconstructGenZBoson();
-  reconstructZBoson(0, [this](size_t i) { return (muonMCMatchPass[i] && muon_pt[i] > 24 && fabs(muon_eta[i])); });
-  reconstructZBoson(1, [this](size_t i) { return (muonMCMatchPass[i] && muon_pt[i] > 24 && fabs(muon_eta[i])) && muon_isGlobal[i]; });
-  reconstructZBoson(2, [this](size_t i) { return (muonMCMatchPass[i] && muon_pt[i] > 24 && fabs(muon_eta[i])) && muon_isGlobal[i] && muon_isTight[i]; });
-  reconstructZBoson(3, [this](size_t i) { return (muonMCMatchPass[i] && muon_pt[i] > 24 && fabs(muon_eta[i])) && muon_isTracker[i]; });
-  reconstructZBoson(4, [this](size_t i) { return (muonMCMatchPass[i] && muon_pt[i] > 24 && fabs(muon_eta[i])) && muon_isRPC[i]; });
-  reconstructZBoson(5, [this](size_t i) { return (muonMCMatchPass[i] && muon_pt[i] > 24 && fabs(muon_eta[i])) && muon_isRPC[i] && muon_isGlobal[i]; });
-  reconstructZBoson(6, [this](size_t i) { return (muonMCMatchPass[i] && muon_pt[i] > 24 && fabs(muon_eta[i])) && muon_isRPC[i] && muon_isTight[i]; });
-  reconstructZBoson(7, [this](size_t i) { return (muonMCMatchPass[i] && muon_pt[i] > 24 && fabs(muon_eta[i])) && muon_isGEM[i]; });
-  reconstructZBoson(8, [this](size_t i) { return (muonMCMatchPass[i] && muon_pt[i] > 24 && fabs(muon_eta[i])) && muon_isGEM[i] && muon_isGlobal[i]; });
-  reconstructZBoson(9, [this](size_t i) { return (muonMCMatchPass[i] && muon_pt[i] > 24 && fabs(muon_eta[i])) && muon_isGEM[i] && muon_isTight[i]; });
+  reconstructZBoson(0, [this](size_t i) { return (muonMCMatched[i] && muon_pt[i] > 24 && fabs(muon_eta[i]) < 2.4); });
+  reconstructZBoson(1, [this](size_t i) { return (muonMCMatched[i] && muon_pt[i] > 24 && fabs(muon_eta[i]) < 2.4) && muon_isGlobal[i]; });
+  reconstructZBoson(2, [this](size_t i) { return (muonMCMatched[i] && muon_pt[i] > 24 && fabs(muon_eta[i]) < 2.4) && muon_isGlobal[i] && muon_isTight[i]; });
+  reconstructZBoson(3, [this](size_t i) { return (muonMCMatched[i] && muon_pt[i] > 24 && fabs(muon_eta[i]) < 2.4) && muon_isTracker[i]; });
+  reconstructZBoson(4, [this](size_t i) { return (muonMCMatched[i] && muon_pt[i] > 24 && fabs(muon_eta[i]) < 2.4) && muon_isRPC[i]; });
+  reconstructZBoson(5, [this](size_t i) { return (muonMCMatched[i] && muon_pt[i] > 24 && fabs(muon_eta[i]) < 2.4) && muon_isRPC[i] && muon_isGlobal[i]; });
+  reconstructZBoson(6, [this](size_t i) { return (muonMCMatched[i] && muon_pt[i] > 24 && fabs(muon_eta[i]) < 2.4) && muon_isRPC[i] && muon_isTight[i]; });
+  reconstructZBoson(7, [this](size_t i) { return (muonMCMatched[i] && muon_pt[i] > 24 && fabs(muon_eta[i]) < 2.4) && muon_isGEM[i]; });
+  reconstructZBoson(8, [this](size_t i) { return (muonMCMatched[i] && muon_pt[i] > 24 && fabs(muon_eta[i]) < 2.4) && muon_isGEM[i] && muon_isGlobal[i]; });
+  reconstructZBoson(9, [this](size_t i) { return (muonMCMatched[i] && muon_pt[i] > 24 && fabs(muon_eta[i]) < 2.4) && muon_isGEM[i] && muon_isTight[i]; });
 
   // Event data
   eventNumber = iEvent.id().event();
