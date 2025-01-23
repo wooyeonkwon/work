@@ -12,7 +12,7 @@ import os
 import gc
 import threading
 from root_tool import load_file
-from root_tool import Profile1D_filterx_def
+from root_tool import Profile1D_filtery_def
 
 ROOT.gStyle.SetOptStat(0)
 ROOT.gROOT.SetBatch(True) # don't show pop-up (can cause seg fault with multi-thread)
@@ -32,15 +32,19 @@ canvas_lock = threading.Lock()
 DIR_NAMES = ["AnalysisMC"]   # set directory of the root file, if no directory : []
 TREE_NAMES = ["Analysis"]    # set tree path of the root file, you can use multiple trees.
 CONDITIONS = {
-    "muon_plus_isTightZ": {"name": "muon_", "ymean" : "zMass_TightGlobal", "condition": lambda i: "muon_charge[i] == 1 && muon_isTightGlobalZ[i] && zMass_TightGlobal > 86.5 && zMass_TightGlobal < 96.5", "color": ROOT.kMagenta, "marker": 24},
-    "muon_minus_isTightZ": {"name": "muon_", "ymean" : "zMass_TightGlobal", "condition": lambda i: "muon_charge[i] == -1 && muon_isTightGlobalZ[i] && zMass_TightGlobal > 86.5 && zMass_TightGlobal < 96.5", "color": ROOT.kCyan, "marker": 24},
-#    "muon_plus_isGenZ": {"name": "genMuon_", "ymean" : "zMass_Gen", "condition": lambda i: "genMuon_charge[i] == 1 && genMuon_isGenZ[i] && zMass_Gen > 86.5 && zMass_Gen < 96.5", "color": ROOT.kRed, "marker": 20},
-#    "muon_minus_isGenZ": {"name": "genMuon_", "ymean" : "zMass_Gen", "condition": lambda i: "genMuon_charge[i] == -1 && genMuon_isGenZ[i] && zMass_Gen > 86.5 && zMass_Gen < 96.5", "color": ROOT.kBlue, "marker": 20},
+    "muon_isGlobal": {"condition": lambda i: "muon_isGlobal[i]", "color": ROOT.kBlack, "marker": 4},
+    "muon_isTracker": {"condition": lambda i: "muon_isTracker[i]", "color": ROOT.kRed, "marker": 8},
+    "muon_isRPC": {"condition": lambda i: "muon_isRPC[i]", "color": ROOT.kBlue, "marker": 25},
+    "muon_isRPC_and_Global": {"condition": lambda i: "muon_isRPC[i] && muon_isGlobal[i]", "color": ROOT.kGreen+2, "marker": 21},
+    "muon_isGEM": {"condition": lambda i: "muon_isGEM[i]", "color": ROOT.kMagenta, "marker": 26},
+    "muon_isGEM_and_Global": {"condition": lambda i: "muon_isGEM[i] && muon_isGlobal[i]", "color": ROOT.kCyan, "marker": 22},
 }
 
 BRANCHES = [ # see details at Profile1D_def in the module interface/root_tool.py
-    {"output": "muoneta_matchingEff", "name": "eta", "ymean" : None, "bins": 16, "xmin": -2.4, "xmax": 2.4, "xtitle": "muonEta", "ytitle": "Multiplicity", "condition": None},
-    {"output": "muonphi_matchingEff", "name": "phi", "ymean" : None, "bins": 20, "xmin": -3.2, "xmax": 3.2, "xtitle": "muonPhi", "ytitle": "Multiplicity", "condition": None},
+    {"output": "muonpt_fakeRate", "name": "muon_pt", "ymean" : "isFake", "bins": 30, "xmin": 0.0, "xmax": 300.0, "xtitle": "muonPt [GeV]", "ytitle": "Multiplicity", "condition": None},
+    {"output": "muoneta_fakeRate", "name": "muon_eta", "ymean" : "isFake", "bins": [-3, -2.4, -2.1, -1.8, -1.5, -1.2, -0.9, 0, 0.9, 1.2, 1.5, 1.8, 2.1, 2.4, 3], "xmin": -3.0, "xmax": 3.0, "xtitle": "muonEta", "ytitle": "Multiplicity", "condition": None},
+    {"output": "muonphi_fakeRate", "name": "muon_phi", "ymean" : "isFake", "bins": 20, "xmin": -3.2, "xmax": 3.2, "xtitle": "muonPhi", "ytitle": "Multiplicity", "condition": None},
+    {"output": "muoniso_faleRate", "name": "muon_iso", "ymean" : "isFake", "bins": 30, "xmin": 0.0, "xmax": 0.15, "xtitle": "muonIso", "ytitle": "Multiplicity", "condition": None}
 ]
 
 ################################################################
@@ -84,16 +88,20 @@ def log_corrupted_entry(event_number):
 
 def draw_profile(root_rdf, tree_name, branch, output_dir="."):
     profiles = {}
-    origial_branch = branch["name"]
+    filtered_root_rdf = root_rdf.Define("isFake",
+                                        f"""
+                                        std::vector<double> filtered;
+                                        for (size_t i = 0; i < muonMCMatched.size(); ++i) {{
+                                                filtered.push_back(!muonMCMatched[i]);
+                                        }}
+                                        return filtered;
+                                        """
+                                        )
     # make Profile for all CONDITIONS
     for name, style in CONDITIONS.items():
         condition = style["condition"]
         branch["condition"] = condition # set condition
-        ymean = style["ymean"]
-        branch["ymean"] = ymean
-        branch_name = style["name"]
-        branch["name"] = branch_name + origial_branch
-        profiles[name] = Profile1D_filterx_def(root_rdf, branch)
+        profiles[name] = Profile1D_filtery_def(filtered_root_rdf, branch, True)
         profile = profiles[name].GetPtr()
 
         # Bin uncertainty calculate
@@ -102,7 +110,7 @@ def draw_profile(root_rdf, tree_name, branch, output_dir="."):
             for bin_idx in range(1, profile.GetNbinsX() + 1):
                 bin_stat_unc = profile.GetBinError(bin_idx)
                 total_unc = bin_stat_unc
-            #    profile.SetBinError(bin_idx, total_unc) #set error bar
+                profile.SetBinError(bin_idx, total_unc)
 
             # set Profile styles
             profile.SetMarkerStyle(style["marker"])
@@ -122,8 +130,8 @@ def draw_profile(root_rdf, tree_name, branch, output_dir="."):
         for idx, (name, style) in enumerate(CONDITIONS.items()):
             profile = profiles[name].GetPtr()
             draw_option = "E same" if idx > 0 else "E"
-            profile.SetMinimum(91)
-            profile.SetMaximum(91.3)
+            profile.SetMinimum(0)
+            profile.SetMaximum(1.1)
             profile.Draw(draw_option)
             if isinstance(profile, ROOT.TObject):
                 legend.AddEntry(profile, name, "lep")
@@ -139,8 +147,8 @@ def draw_profile(root_rdf, tree_name, branch, output_dir="."):
         latex.DrawLatex(0.21, 0.91, "#it{In Progress}")
         latex.DrawLatex(0.70, 0.91, "#sqrt{s} = 13.6 TeV, L = 7.6 /fb")
 
-        line = ROOT.TLine(branch['xmin'], 91.1876, branch['xmax'], 91.1876)
-        line.SetLineColor(ROOT.kGray)
+        line = ROOT.TLine(branch['xmin'], 1, branch['xmax'], 1)
+        line.SetLineColor(ROOT.kRed)
         line.SetLineStyle(2)
         line.Draw()
 

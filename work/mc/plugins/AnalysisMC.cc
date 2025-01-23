@@ -287,10 +287,10 @@ void AnalysisMC::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     int bestMuon2 = -1;
 
     for (size_t i = 0; i < genMuon_pt.size(); ++i) {
-      if (genMuon_pt[i] > 24 && fabs(genMuon_eta[i]) < 2.4) continue;
+      if (!(genMuon_pt[i] > 24 && fabs(genMuon_eta[i]) < 2.4)) continue;
       for (size_t j = i + 1; j < genMuon_pt.size(); ++j) {
         if (genMuon_charge[i] + genMuon_charge[j] != 0) continue;
-        if (genMuon_pt[j] > 24 && fabs(genMuon_eta[j]) < 2.4) continue;
+        if (!(genMuon_pt[j] > 24 && fabs(genMuon_eta[j]) < 2.4)) continue;
 
         double dvz = fabs(genMuon_vz[i] - genMuon_vz[j]);
         math::PtEtaPhiMLorentzVector p4_1(genMuon_pt[i], genMuon_eta[i], genMuon_phi[i], 0.10566);
