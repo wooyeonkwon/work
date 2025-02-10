@@ -8,25 +8,19 @@
 #include <cmath>
 #include <memory>
 #include <tuple>
+#include "interface/AnalysisClasses.h"
 #include <array>
 #include "ROOT/RDataFrame.hxx"
 #include <TSystem.h>
 
 const char* path = "/data1/users/dndus0107/AnalysisResults/processed_data/";
-const char* gen_name = "mini_DYto2Mu_MLL-50to120_22EEDR.root";
-const char* reco_name = "mini_Analysis_Data_22EFG";
+const char* mc_name = "mini_DYto2Mu_MLL-50to120_22EEDR.root";
+const char* data_name = "mini_Analysis_Data_22EFG";
 
 
 
 class MuonAnalyzer {
 private:
-
-/////////////////////////////
-//                         //
-//         Binning         //
-//                         //
-/////////////////////////////
-
     // Binning parameters
     std::vector<double> eta_bins;
     std::vector<double> phi_bins;
@@ -37,6 +31,7 @@ private:
     std::map<std::tuple<int, int>, std::array<double, 2>> correction_factors;
     // Constants
     const double Z_MASS = 91.1876;
+    const double MAX_ITERATIONS = 10;
     const double CONVERGENCE_THRESHOLD = 0.001;
 
 
@@ -77,8 +72,9 @@ private:
         return -1;  // charge 값이 범위에 없을 경우 -1 반환
     }
 
-//////////////////////////////////////////////////////////////////////////////////////////
-
+    void SetBranchAddress(TTree* tree, const char* branch, void* ptr) {
+        tree->SetBranchAddress(branch, ptr);
+    }
 
     // Calculate Z mass statistics for a given bin
     void calculateZMassStats(ROOT::RDF::RNode& frame) {
@@ -202,7 +198,7 @@ private:
         }
     }
 
-    ROOT::RDF::RNode ptCorrection(ROOT::RDataFrame& frame, const std::string& reco_name) {
+    ROOT::RDF::RNode ptCorrection(ROOT::RDataFrame& frame, const std::string& data_name) {
         std::cout << "Start pt correction for all muons in the dataset" << std::endl;
 
         // 'muons' 컬럼 존재 여부 확인
@@ -256,10 +252,14 @@ private:
                 }
                 return corrected_muons;  // 보정된 뮤온 리스트 반환
             }, {"muons"});  // 'muons' 열을 기반으로 계산
+            std::cout << "flag1" << std::endl;
             // 결과를 새로운 ROOT 파일로 저장
-            std::string output_filename = reco_name + "_corrected.root";
+            std::string output_filename = data_name + "_corrected.root";
+            std::cout << "flag2" << std::endl;
             //corrected_frame.Snapshot("Analysis", output_filename);
+            std::cout << "flag3" << std::endl;
             std::cout << "Finished pt correction and saved to " << output_filename << std::endl;
+            std::cout << "flag4" << std::endl;
             return corrected_frame;  // 보정된 데이터프레임 반환
         } catch (const std::exception& e) {
             std::cerr << "Error in ptCorrection: " << e.what() << std::endl;
@@ -271,8 +271,9 @@ private:
 
     double calculateInversePtAverage(ROOT::RDataFrame& frame, int charge, int eta_bin, int phi_bin, bool is_gen = false) {
 
+        // GenMuonInfo와 SelectedMuon에 대해 각각 다른 필터 함수 정의
         if (is_gen) {
-            auto filterFunc = [this, charge, eta_bin, phi_bin] -> bool {
+            auto filterFunc = [this, charge, eta_bin, phi_bin](const std::vector<GenMuonInfo>& muons) -> bool {
                 return std::any_of(muons.begin(), muons.end(), 
                     [&](const GenMuonInfo& muon) {
                         return muon.isGenZ && 
@@ -296,7 +297,7 @@ private:
                 return count > 0 ? sum_inv_pt / count : 0.0;
             };
 
-            auto filtered_frame = frame.Filter(filterFunc, {"genMuon_charge", "genMuon_eta", "genMuon_phi"});  // genMuons 브랜치 사용
+            auto filtered_frame = frame.Filter(filterFunc, {"genMuons"});  // genMuons 브랜치 사용
             auto inv_pt_frame = filtered_frame.Define("inv_pt", calculateInvPt, {"genMuons"});
             return *inv_pt_frame.Mean("inv_pt");
         } else {
@@ -335,31 +336,31 @@ private:
         }
     }
 
-    std::array<double, 2> calculateCorrectionFactors(ROOT::RDataFrame& gen_frame, ROOT::RDataFrame& reco_frame, int eta_bin, int phi_bin) {        
-        double gen_inv_pt_m = calculateInversePtAverage(gen_frame, -1, eta_bin, phi_bin, true);
-        double gen_inv_pt_p = calculateInversePtAverage(gen_frame, 1, eta_bin, phi_bin, true);
+    std::array<double, 2> calculateCorrectionFactors(ROOT::RDataFrame& mc_frame, ROOT::RDataFrame& data_frame, int eta_bin, int phi_bin) {        
+        double mc_inv_pt_m = calculateInversePtAverage(mc_frame, -1, eta_bin, phi_bin, true);
+        double mc_inv_pt_p = calculateInversePtAverage(mc_frame, 1, eta_bin, phi_bin, true);
 
-        double reco_inv_pt_avg_m = fine_tune_factors[std::make_tuple(-1, eta_bin, phi_bin)] * 
-                                  calculateInversePtAverage(reco_frame, -1, eta_bin, phi_bin, false);
-        double reco_inv_pt_avg_p = fine_tune_factors[std::make_tuple(1, eta_bin, phi_bin)] * 
-                                  calculateInversePtAverage(reco_frame, 1, eta_bin, phi_bin, false);
+        double data_inv_pt_avg_m = fine_tune_factors[std::make_tuple(-1, eta_bin, phi_bin)] * 
+                                  calculateInversePtAverage(data_frame, -1, eta_bin, phi_bin, false);
+        double data_inv_pt_avg_p = fine_tune_factors[std::make_tuple(1, eta_bin, phi_bin)] * 
+                                  calculateInversePtAverage(data_frame, 1, eta_bin, phi_bin, false);
 
-        std::cout << "GEN inverse pt averages (minus/plus): " << gen_inv_pt_m << " / " << gen_inv_pt_p << std::endl;
-        std::cout << "Data inverse pt averages (minus/plus): " << reco_inv_pt_avg_m << " / " << reco_inv_pt_avg_p << std::endl;
+        std::cout << "MC inverse pt averages (minus/plus): " << mc_inv_pt_m << " / " << mc_inv_pt_p << std::endl;
+        std::cout << "Data inverse pt averages (minus/plus): " << data_inv_pt_avg_m << " / " << data_inv_pt_avg_p << std::endl;
 
-        double C_m = gen_inv_pt_m - reco_inv_pt_avg_m;
-        double C_p = gen_inv_pt_p - reco_inv_pt_avg_p;
+        double C_m = mc_inv_pt_m - data_inv_pt_avg_m;
+        double C_p = mc_inv_pt_p - data_inv_pt_avg_p;
 
         double D_m = (C_p + C_m) / 2.0;
         double D_a = (C_p - C_m) / 2.0;
 
-        double denominator = reco_inv_pt_avg_m + reco_inv_pt_avg_p;
+        double denominator = data_inv_pt_avg_m + data_inv_pt_avg_p;
         if (denominator == 0) {
             std::cerr << "Warning: denominator is 0 for eta_bin: " << eta_bin << ", phi_bin: " << phi_bin << std::endl;
             return {0.0, 1.0};  // 기본값 반환
         }
 
-        double A = D_a - ((D_m * (reco_inv_pt_avg_m - reco_inv_pt_avg_p)) / denominator);
+        double A = D_a - ((D_m * (data_inv_pt_avg_m - data_inv_pt_avg_p)) / denominator);
         double M = 1 + (2 * D_m / denominator);
 
         std::cout << "Calculated correction factors A: " << A << ", M: " << M << std::endl;
@@ -377,16 +378,16 @@ private:
 
 public:
     
-    std::vector<TTree*> splited_reco_trees;
-    std::vector<TTree*> splited_gen_trees;
+    std::vector<TTree*> splited_mc_trees;
+    std::vector<TTree*> splited_data_trees;
     std::vector<TFile*> output_files;
 
-    TTree* GEN_TREE;
-    TTree* RECO_TREE;
+    TTree* MC_TREE;
+    TTree* DATA_TREE;
     
     void set_bin() {
         // Initialize binning
-        eta_bins = {0, 0.3, 0.6, 0.9, 1.2, 1.5, 1.8, 2.1, 2.4};
+        eta_bins = {0, 0.9, 1.2, 2.1, 2.4};
         phi_bins.resize(11);
         double phi_step = M_PI / 10;
         for (int i = 0; i < 11; ++i) {
@@ -413,52 +414,84 @@ public:
     }
 
 
-    void analyze(const std::string& gen_file_path, const std::string& reco_file_path) {
-        std::unique_ptr<TFile> GEN_FILE(TFile::Open((gen_file_path).c_str(), "READ"));
-        std::unique_ptr<TFile> RECO_FILE(TFile::Open((reco_file_path).c_str(), "READ"));
+    void analyze(const std::string& mc_file_path, const std::string& data_file_path) {
+        std::unique_ptr<TFile> MC_FILE(TFile::Open((mc_file_path).c_str(), "READ"));
+        std::unique_ptr<TFile> DATA_FILE(TFile::Open((data_file_path).c_str(), "READ"));
 
-        if (!GEN_FILE || !RECO_FILE) {
+        if (!MC_FILE || !DATA_FILE) {
             throw std::runtime_error("Failed to open input files");
         }
 
-        std::unique_ptr<TTree> GEN_TREE(static_cast<TTree*>(GEN_FILE->Get("Analysis")));
-        std::unique_ptr<TTree> RECO_TREE(static_cast<TTree*>(RECO_FILE->Get("Analysis")));
+        std::unique_ptr<TTree> MC_TREE(static_cast<TTree*>(MC_FILE->Get("Analysis")));
+        std::unique_ptr<TTree> DATA_TREE(static_cast<TTree*>(DATA_FILE->Get("Analysis")));
 
-        if (!GEN_TREE || !RECO_TREE) {
+        if (!MC_TREE || !DATA_TREE) {
             throw std::runtime_error("Failed to access trees");
         }
 
-        ROOT::RDataFrame GEN_FRAME("Analysis", GEN_FILE.get());
-        ROOT::RDataFrame RECO_FRAME("Analysis", RECO_FILE.get());
+        int iteration = 0;        
+        ROOT::RDataFrame MC_FRAME("Analysis", MC_FILE.get());
+        ROOT::RDataFrame DATA_FRAME("Analysis", DATA_FILE.get());
+
+        bool convergence = false;
+        std::string current_data_file = data_file_path;
         
         try {
-            factors_reset();
+            while (!convergence && iteration < MAX_ITERATIONS) {
+                std::cout << "\nIteration " << (iteration + 1) << std::endl;
 
-            for (const auto& [key, value] : correction_factors) {
-                size_t eta_bin = std::get<0>(key);
-                size_t phi_bin = std::get<1>(key);
-                calculateCorrectionFactors(GEN_FRAME, RECO_FRAME, eta_bin, phi_bin);
+                // 2회차부터는 보정된 데이터 파일을 사용
+                if (iteration > 0) {
+                    current_data_file = std::string(data_name) + "_corrected";
+                    DATA_FILE.reset(TFile::Open(current_data_file.c_str(), "READ"));
+                    if (!DATA_FILE) {
+                        throw std::runtime_error("Failed to open corrected data file: " + current_data_file);
+                    }
+                    DATA_FRAME = ROOT::RDataFrame("Analysis", DATA_FILE.get());
+                }
+
+                factors_reset();
+
+                for (const auto& [key, value] : correction_factors) {
+                    size_t eta_bin = std::get<0>(key);
+                    size_t phi_bin = std::get<1>(key);
+                    calculateCorrectionFactors(MC_FRAME, DATA_FRAME, eta_bin, phi_bin);
+                }
+                
+                // pt 보정
+
+                auto corrected_frame = ptCorrection(DATA_FRAME, std::string(data_name) + "_corrected" );
+
+                // Z mass 재계산
+                calculateZMassStats(corrected_frame);
+
+                // fine_tune_factors의 제곱의 합 계산
+                double sum_squared_diff = 0.0;
+                int total_factors = 0;
+                
+                for (const auto& [key, value] : fine_tune_factors) {
+                    double diff_from_one = value - 1.0;
+                    sum_squared_diff += diff_from_one * diff_from_one;
+                    total_factors++;
+                }
+                
+                double mean_squared_diff = sum_squared_diff / total_factors;
+                std::cout << "Mean squared difference from 1.0: " << mean_squared_diff << std::endl;
+                
+                // 수렴 여부 확인
+                convergence = mean_squared_diff < CONVERGENCE_THRESHOLD;
+                iteration++;
+
+                if (convergence) {
+                    std::cout << "Convergence achieved after " << iteration << " iterations" << std::endl;
+                    std::cout << "Final results saved in: " << current_data_file << std::endl;
+                }
             }
-            
-            // pt 보정
-            auto corrected_frame = ptCorrection(RECO_FRAME, std::string(reco_name) + "_corrected" );
 
-            // Z mass 재계산
-            calculateZMassStats(corrected_frame);
-
-            // fine_tune_factors의 제곱의 합 계산
-            double sum_squared_diff = 0.0;
-            int total_factors = 0;
-            
-            for (const auto& [key, value] : fine_tune_factors) {
-                double diff_from_one = value - 1.0;
-                sum_squared_diff += diff_from_one * diff_from_one;
-                total_factors++;
+            if (!convergence) {
+                std::cout << "Maximum iterations reached without convergence" << std::endl;
+                std::cout << "Final results saved in: " << current_data_file << std::endl;
             }
-            
-            double mean_squared_diff = sum_squared_diff / total_factors;
-            std::cout << "Mean squared difference from 1.0: " << mean_squared_diff << std::endl;
-
             
         } catch (const std::exception& e) {
             std::cerr << "Exception occurred: " << e.what() << std::endl;
@@ -470,41 +503,46 @@ public:
 
 int muonCorrection_tmp() {
 
+    if (gSystem->Load("libAnalysisClasses.so") < 0) {
+        std::cerr << "Failed to load libAnalysisClasses.so" << std::endl;
+        return 1;  // Return error code
+    }
+    std::cout << "flag5" << std::endl;
     MuonAnalyzer analyzer;
     analyzer.set_bin();
     
-    std::string gen_path = std::string(path) + gen_name;
-    std::string reco_path = std::string(path) + reco_name +".root";
+    std::string mc_path = std::string(path) + mc_name;
+    std::string data_path = std::string(path) + data_name +".root";
     
-    // Check GEN file
-    TFile* gen_file = TFile::Open(gen_path.c_str());
-    if (!gen_file) {
-        std::cerr << "Could not open gen file: " << gen_path << std::endl;
+    // Check MC file
+    TFile* mc_file = TFile::Open(mc_path.c_str());
+    if (!mc_file) {
+        std::cerr << "Could not open MC file: " << mc_path << std::endl;
         return 1;
     }
     
-    // List contents of GEN file
-    gen_file->ls();
+    // List contents of MC file
+    mc_file->ls();
     
-    // Check reco file
-    TFile* reco_file = TFile::Open(reco_path.c_str());
-    if (!reco_file) {
-        std::cerr << "Could not open reco file: " << reco_path << std::endl;
-        gen_file->Close();
+    // Check data file
+    TFile* data_file = TFile::Open(data_path.c_str());
+    if (!data_file) {
+        std::cerr << "Could not open data file: " << data_path << std::endl;
+        mc_file->Close();
         return 1;
     }
     
-    // List contents of reco file
-    reco_file->ls();
+    // List contents of data file
+    data_file->ls();
 
     // Clean up
-    gen_file->Close();
-    reco_file->Close();
-    delete gen_file;
-    delete reco_file;
+    mc_file->Close();
+    data_file->Close();
+    delete mc_file;
+    delete data_file;
     
     // Run the analysis
-    analyzer.analyze(gen_path, reco_path);
+    analyzer.analyze(mc_path, data_path);
     
     return 0;  // Return success
 }
