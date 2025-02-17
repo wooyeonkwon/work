@@ -123,7 +123,7 @@ void Analysis::beginJob() {
   tree->Branch("muon_iso", &muon_iso);
   tree->Branch("muon_vz", &muon_vz);
   
-  tree->Branch("muon_isGlboal", &muon_isGlobal);
+  tree->Branch("muon_isGlobal", &muon_isGlobal);
   tree->Branch("muon_isTracker", &muon_isTracker);
   tree->Branch("muon_isRPC", &muon_isRPC);
   tree->Branch("muon_isGEM", &muon_isGEM);

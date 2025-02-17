@@ -37,14 +37,14 @@ BRANCHES = [                            # see details at Histo1D_def in the modu
     {"output": "muoniso_isTightGlobalZ", "name": "muon_iso", "bins": 150, "xmin": 0.0, "xmax": 0.15, "xtitle": "muonIso", "ytitle": "Multiplicity", "condition": lambda i: "muon_isTightGlobalZ[i] && zMass_TightGlobal > 60 && zMass_TightGlobal < 120"},
     {"output": "zMass_isTightGlobal", "name": "zMass_TightGlobal", "bins": 120, "xmin": 60.0, "xmax": 120.0, "xtitle": "dimuon mass", "ytitle": "Multiplicity"},
     {"output": "zMass_isTightGlboal_narrow", "name": "zMass_TightGlobal", "bins": 100, "xmin": 85.0, "xmax": 95.0, "xtitle": "dimuon mass", "ytitle": "Multiplicity"},
-    {"output": "zDvz_Global", "name": "zDvz_Global", "bins": 100, "xmin": 0.0, "xmax": 0.1, "xtitle": "dimuon mass", "ytitle": "Multiplicity", "condition": "zMass_TightGlobal > 60 && zMass_TightGlobal < 120"},
+    {"output": "zDvz_Global", "name": "zDvz_Global", "bins": 100, "xmin": 0.0, "xmax": 0.1, "xtitle": "dvz", "ytitle": "Multiplicity", "condition": "zMass_TightGlobal > 60 && zMass_TightGlobal < 120"},
     {"output": "muonpt_isTightRPCZ", "name": "muon_pt", "bins": 2000, "xmin": 0.0, "xmax": 200.0, "xtitle": "muonPt [GeV]", "ytitle": "Multiplicity", "condition": lambda i: "muon_isTightRPCZ[i] && zMass_TightRPC > 60 && zMass_TightRPC < 120"},
     {"output": "muoneta_isTightRPCZ", "name": "muon_eta", "bins": 60, "xmin": -3.0, "xmax": 3.0, "xtitle": "muonEta", "ytitle": "Multiplicity", "condition": lambda i: "muon_isTightRPCZ[i] && zMass_TightRPC > 60 && zMass_TightRPC < 120"},
     {"output": "muonphi_isTightRPCZ", "name": "muon_phi", "bins": 70, "xmin": -3.5, "xmax": 3.5, "xtitle": "muonPhi", "ytitle": "Multiplicity", "condition": lambda i: "muon_isTightRPCZ[i] && zMass_TightRPC > 60 && zMass_TightRPC < 120"},
     {"output": "muoniso_isTightRPCZ", "name": "muon_iso", "bins": 150, "xmin": 0.0, "xmax": 0.15, "xtitle": "muonIso", "ytitle": "Multiplicity", "condition": lambda i: "muon_isTightRPCZ[i] && zMass_TightRPC > 60 && zMass_TightRPC < 120"},
     {"output": "zMass_isTightRPC", "name": "zMass_TightRPC", "bins": 120, "xmin": 60.0, "xmax": 120.0, "xtitle": "dimuon mass", "ytitle": "Multiplicity"},
     {"output": "zMass_isTightRPC_narrow", "name": "zMass_TightRPC", "bins": 100, "xmin": 85.0, "xmax": 95.0, "xtitle": "dimuon mass", "ytitle": "Multiplicity"},
-    {"output": "zDvz_RPC", "name": "zDvz_RPC", "bins": 100, "xmin": 0.0, "xmax": 0.1, "xtitle": "dimuon mass", "ytitle": "Multiplicity", "condition": "zMass_TightRPC > 60 && zMass_TightRPC < 120"},
+    {"output": "zDvz_RPC", "name": "zDvz_RPC", "bins": 100, "xmin": 0.0, "xmax": 0.1, "xtitle": "dvz mass", "ytitle": "Multiplicity", "condition": "zMass_TightRPC > 60 && zMass_TightRPC < 120"},
 ]
 
 

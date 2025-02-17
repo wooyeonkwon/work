@@ -101,7 +101,7 @@ int main(int argc, char** argv) {
                     TTreeReaderArray<double> muon_vz(reader, "muon_vz");
                     
                     // Reconstructed Muon Flags (vector<bool>는 TTreeReaderValue로 읽어 딕셔너리 문제 회피)
-                    TTreeReaderValue<std::vector<bool>> muon_isGlobal(reader, "muon_isGlobal");
+                    TTreeReaderValue<std::vector<bool>> muon_isGlboal(reader, "muon_isGlboal"); // 후에 오타 수정
                     TTreeReaderValue<std::vector<bool>> muon_isTracker(reader, "muon_isTracker");
                     TTreeReaderValue<std::vector<bool>> muon_isRPC(reader, "muon_isRPC");
                     TTreeReaderValue<std::vector<bool>> muon_isGEM(reader, "muon_isGEM");
@@ -164,7 +164,7 @@ int main(int argc, char** argv) {
                         probeMuon_iso->clear();
                         probeMuon_vz->clear();
                         // vector<bool> 브랜치는 객체에서 참조를 얻음
-                        const std::vector<bool>& isGlobal = *muon_isGlobal;
+                        const std::vector<bool>& isGlobal = *muon_isGlboal;
                         const std::vector<bool>& isTracker = *muon_isTracker;
                         const std::vector<bool>& isRPC = *muon_isRPC;
                         const std::vector<bool>& isGEM = *muon_isGEM;
